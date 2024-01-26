@@ -1,4 +1,4 @@
-# ScalerController
+﻿# ScalerController
 An Arduino-based MFU for RC scale crawlers and hillwalking rigs
 
 ## Outline
@@ -17,7 +17,7 @@ This controller acts as an interface between the receiver and the speed controll
 To install this controller you will need:
 
 - An Arduino Mega (other boards may be supported later)
-- A radio system that supports iBUS (TBC - other protocols maybe supported later)
+- A radio system that supports PPM (TBC - other protocols maybe supported later)
 - A speed controller with instant reverse and 100% drag brake (tested with Hobbywing WP-1080)
 - Steering servo
 - LEDs and resistors for lighting (optional)
@@ -31,15 +31,15 @@ To install this controller you will need:
 
 This is the base iteration from which all further work will be built upon.  There is an existing solution (SCRAPSpeed TruckController) which was built for big rigs, which has much of the code required to get this project off the ground.  ScalerController will be built on this codebase, changing it where necessary to get the required functionality.
 
-- Import all code from the TruckController solution
-- Delete any code that relates to unrequired functionality (such as sound)
-- Rename all objects as appropriate to meet the ScalerController naming convention
-- Comment out all code apart from the basic loop
-- Open a single input for iBUS
-- Implement basic pass-thru for throttle and steering
-  - Throttle channel to pass-thru to ESC output
-  - Steering channel to pass-thru to steering output
-  - No other outputs defined
+- ✔Import all code from the TruckController solution
+- ✔Delete any code that relates to unrequired functionality (such as sound)
+- ✔Rename all objects as appropriate to meet the ScalerController naming convention
+- ✔Comment out all code apart from the basic loop
+- ✔Open a single input for PPM
+- ✔Implement basic pass-thru for throttle and steering
+  - ✔Throttle channel to pass-thru to ESC output
+  - ✔Steering channel to pass-thru to steering output
+  - ✔No other outputs defined
   
 ### Version 0.0.2
 
