@@ -14,6 +14,9 @@
 
 // Input config
 
+// Mode flag
+#define MODE 1								// 0 = Pass-thru (no translation) mode, steering and ESC only; 1 = ScalerController mode (translation on all inputs, all advanced functionality available)
+
 // Input pin for PPM from receiver
 // Can be 18, 19, 20 or 21 (or 2 or 3 if not using lighting output on those pins)
 // Note: when tested on Elegoo Mega2560, pins 18 and 19 caused glitching in all channels
@@ -25,13 +28,9 @@
 
 // Radio channel config
 
-
 // Max Failsafe Count.  Number of times the Rx must receive identical data on all channels
 // before activating the failsafe.
 #define MAX_FAILSAFE_COUNT 30				//TODO: M: test that this is a valid number
-
-//// MODE channel.  Always operates.
-//#define CHN_MODE_CH 5                       // Channel should not be shared
 
 // STEERING channel.  Operates only in DRIVE mode.
 #define CHN_STEERING_CH 1                   // Input channel number
@@ -50,10 +49,12 @@
 //// LIGHTS operation channel.  Operates only in DRIVE mode.
 //// If set to 0, no lights will function.
 //#define CHN_LIGHTS      4                   // Input channel number.
-//
-//// GEAR operation channel.  Operates only in DRIVE mode.
-//#define CHN_GEAR        6                   // Input channel number
-//
+
+// GEAR operation channel.  Operates only in DRIVE mode.
+#define CHN_GEAR_CH			2               // Input channel number
+#define CHN_GEAR_SELECT_MIN	1000            // Band range (min) for selecting forward / reverse gear
+#define CHN_GEAR_SELECT_MAX 1250            // Band range (max) for selecting forward / reverse gear
+
 //// INDICATOR operation channel.  Operates only in DRIVE mode.
 //// If set to 0, indicators will not function.
 //#define CHN_INDICATOR   7                   // Input channel number

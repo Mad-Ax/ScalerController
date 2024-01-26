@@ -1,6 +1,7 @@
 #pragma once
 
 #include "structs.h"
+#include "enum.h"
 
 class IControlTranslator
 {
@@ -9,15 +10,12 @@ public:
 	// Returns true if the input values have failed to update for more than a set number of reads
 	virtual bool checkFailsafe(InputSetting input) = 0;
 
-//	// Translates the requested mode
-//	virtual Mode translateMode(int input) = 0;
-//
-//	// Translates the requested gear
-//	virtual Gear translateGear(int input) = 0;
-//
-//	// Translates the motor speed
-//	virtual int translateMotorSpeed(int currentMotorSpeed, int input, Gear gear) = 0;
-//
-//	// Translates the steering angle
-//	virtual int translateSteering(int input) = 0;
+	// Translates the channel input value to the requested gear
+	virtual Gear translateGear(InputSetting input, Gear lastGear) = 0;
+
+	// Translates the motor speed
+	virtual int translateMotorSpeed(InputSetting input, Gear gear) = 0;
+
+	// Translates the steering angle
+	virtual int translateSteering(InputSetting input) = 0;
 };

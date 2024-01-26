@@ -1,19 +1,11 @@
-//#pragma once
-//
-//enum class Mode
-//{
-//	Off = 0,
-//	Drive = 1,
-//	Park = 2
-//};
-//
-//enum class Gear
-//{
-//	Forward = 0,
-//	Neutral = 1,
-//	Reverse = 2,
-//};
-//
+#pragma once
+
+enum class Gear
+{
+	Forward = 0,
+	Reverse = 1,
+};
+
 //enum class Indicator
 //{
 //	Left = 0,

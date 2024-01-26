@@ -12,7 +12,7 @@
 #include "structs.h"
 #include "ppmwrapper.h"
 #include "controltranslator.h"
-//#include "inputtranslator.h"
+#include "inputtranslator.h"
 //#include "lightingtranslator.h"
 //#include "motorspeedtranslator.h"
 #include "outputservo.h"
@@ -44,7 +44,13 @@ void setup()
 //		CHN_GEAR - 1
 //	};
 
-	ChannelConfig throttleChannel = {
+	LatchChannel gearChannel = {
+		CHN_GEAR_CH - 1,
+		CHN_GEAR_SELECT_MIN,
+		CHN_GEAR_SELECT_MAX
+	};
+
+	AnalogChannel throttleChannel = {
 		CHN_THROTTLE_CH - 1,
 		CHN_THROTTLE_MIN,
 		CHN_THROTTLE_MAX,
@@ -52,7 +58,7 @@ void setup()
 		CHN_THROTTLE_DEADBAND_MAX
 	};
 
-	ChannelConfig steeringChannel = {
+	AnalogChannel steeringChannel = {
 		CHN_STEERING_CH - 1,
 		CHN_STEERING_MIN,
 		CHN_STEERING_MAX,
@@ -96,7 +102,7 @@ void setup()
 	ControlConfig controlConfig = {
 		MAX_FAILSAFE_COUNT,
 //		mode,
-//		gear,
+		gearChannel,
 		throttleChannel,
 		steeringChannel,
 //		indicator,
@@ -115,7 +121,7 @@ void setup()
 //		E_BRAKE_THRESHOLD
 	};
 
-//	IInputTranslator* inputTranslator = new InputTranslator();
+	IInputTranslator* inputTranslator = new InputTranslator();
 //	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttle, throttleServo);
 //	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 //	IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
@@ -124,8 +130,8 @@ void setup()
 //	IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 //	IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IControlTranslator* controlTranslator = new ControlTranslator(
-		controlConfig);
-//		inputTranslator,
+		controlConfig,
+		inputTranslator);
 //		motorSpeedTranslator,
 //		forwardAccel,
 //		forwardDecel,

@@ -45,12 +45,12 @@ This is the base iteration from which all further work will be built upon.  Ther
 
 Basic controller functionality with selectable reverse
 
-- Create a new flag to store Mode (Off or On)
-- When in Off mode, the controller continues to work in pass-thru mode as per 0.0.1
-- When in On mode, the controller uses selectable reverse by pulling full back on right stick
-  - When in Forward mode, the truck can only go forward.  Back-stick does nothing
-  - When in Reverse mode, forward-stick causes the truck to go backward.  Back-stick does nothing
-  - Steering continues to work normally
+- ✔Create a new flag to store Mode (Off or On)
+- ✔When in Off mode, the controller continues to work in pass-thru mode as per 0.0.1
+- ✔When in On mode, the controller uses selectable reverse by pulling full back on right stick
+  - ✔When in Forward mode, the truck can only go forward.  Back-stick does nothing
+  - ✔When in Reverse mode, forward-stick causes the truck to go backward.  Back-stick does nothing
+  - ✔Steering continues to work normally
 
 ### Version 0.0.3
 
@@ -144,3 +144,8 @@ Boot sequence - when the controller is powered on or set to On mode, all the lig
 To be provided
 
 ## Functionality not listed on roadmap / Wishlist / Gripe listed
+
+- Input value validation - if an input value read by the PPMReader is not within expected bounds, it should be assumed BAD and set to the centre value
+- Failsafe warning - if the failsafe is triggered, all lights should flash (if not in pass-thru mode)
+- Some way of reversing channels (especially throttle) without spoiling throttle / brake functionality
+  - we can probably just put negatives in the servo config and use map() for this

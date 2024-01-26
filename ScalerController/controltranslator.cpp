@@ -1,8 +1,8 @@
 #include "controltranslator.h"
 
 ControlTranslator::ControlTranslator(
-	ControlConfig config
-//	IInputTranslator* inputTranslator, 
+	ControlConfig config,
+	IInputTranslator* inputTranslator
 //	IMotorSpeedTranslator* motorSpeedTranslator,
 //	IInertia* forwardAccel,
 //	IInertia* forwardDecel,
@@ -13,7 +13,7 @@ ControlTranslator::ControlTranslator(
 )
 {
 	this->config = config;
-//	this->inputTranslator = inputTranslator;
+	this->inputTranslator = inputTranslator;
 //	this->motorSpeedTranslator = motorSpeedTranslator;
 //	this->forwardAccel = forwardAccel;
 //	this->forwardDecel = forwardDecel;
@@ -63,40 +63,73 @@ bool ControlTranslator::checkFailsafe(InputSetting input)
 	return (failed && (failsafeCount > this->config.maxFailsafeCount));
 }
 
-//// Translates the requested mode
-//Mode ControlTranslator::translateMode(int input)
-//{
-//	return static_cast<Mode>(inputTranslator->translateThreeWaySwitch(input, config.switchHigh, config.switchLow));
-//}
-//
-//// Translates the requested gear
-//Gear ControlTranslator::translateGear(int input)
-//{
-//	return static_cast<Gear>(inputTranslator->translateThreeWaySwitch(input, config.switchHigh, config.switchLow));
-//}
-//
-//// Translates the motor speed
+// Translates the requested gear
+Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
+{
+	// If the throttle is not under the forward deadband, we should not change gear
+	if (input.channel[this->config.throttleChannel.channel] > this->config.throttleChannel.dbMax)
+	{
+		return lastGear;
+	}
+
+	// TODO: M: all this code can go into a latching function
+
+	LatchChannel chCfg = this->config.gearChannel;
+	int chVal = input.channel[chCfg.channel];
+
+	if (chVal > chCfg.min && chVal < chCfg.max)
+	{
+		// We are within the range to change
+
+		// If we are already latching, we should not change the value
+		if (gearLatching)
+		{
+			return lastGear;
+		}
+		else
+		{
+			// Record the latching state
+			gearLatching = true;
+
+			if (lastGear == Gear::Forward)
+			{
+				return Gear::Reverse;
+			}
+			else
+			{
+				return Gear::Forward;
+			}
+		}
+	}
+	else
+	{
+		// We are outside of the latch range - Remove any latch
+		gearLatching = false;
+
+		return lastGear;
+	}
+}
+
+// Translates the motor speed
 //int ControlTranslator::translateMotorSpeed(int currentMotorSpeed, int input, Gear gear)
-//{
-//	int desiredMotorSpeed;
-//	switch (gear)
-//	{
-//	case Gear::Neutral:
-//		// Coast to stationary regardless of throttle position
-//		if (currentMotorSpeed > config.throttleServo.center)
-//		{
-//			// Truck is coasting forwards - work out coast / brake speed
-//			return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, input, config.throttleServo.center, forwardAccel, forwardDecel, forwardBrake);
-//		}
-//		if (currentMotorSpeed < config.throttleServo.center)
-//		{
-//			// Truck is coasting backwards - work out coast / brake speed
-//			return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, input, config.throttleServo.center, reverseAccel, reverseDecel, reverseBrake);
-//		}
-//		// Truck is already stationary
-//		return config.throttleServo.center;
-//
-//	case Gear::Forward:
+int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear)
+{
+	int desiredMotorSpeed;
+	AnalogChannel ch = config.throttleChannel;
+	int inputVal = input.channel[ch.channel];
+
+	if (inputVal < ch.dbMax)
+	{
+		// If we are in center / brake position, return neutral
+		return config.throttleServo.center;
+	}
+
+	switch (gear)
+	{
+	case Gear::Forward:
+		// Pass back the value we received
+		return inputVal;
+
 //		// Calculate applied forward throttle
 //		if (input > config.throttleChannel.dbMax)
 //			desiredMotorSpeed = map(input, config.throttleChannel.dbMax, config.throttleChannel.max, config.throttleServo.center, config.throttleServo.max);
@@ -107,7 +140,10 @@ bool ControlTranslator::checkFailsafe(InputSetting input)
 //
 //		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, input, desiredMotorSpeed, forwardAccel, forwardDecel, forwardBrake);
 //		
-//	case Gear::Reverse:
+	case Gear::Reverse:
+		// Translate the forward value into a reverse value, and pass it back
+		return ((inputVal - config.throttleServo.center) * -1) + config.throttleServo.center;
+
 //		// Calculate applied reverse throttle
 //		if (input > config.throttleChannel.dbMax)
 //			desiredMotorSpeed = map(input, config.throttleChannel.dbMax, config.throttleChannel.max, config.throttleServo.center, config.throttleServo.min);
@@ -117,13 +153,13 @@ bool ControlTranslator::checkFailsafe(InputSetting input)
 //			desiredMotorSpeed = config.throttleServo.center;
 //
 //		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, input, desiredMotorSpeed, reverseAccel, reverseDecel, reverseBrake);
-//	}
-//
-//	// Failsafe
-//	return config.throttleServo.center;
-//}
-//
-//int ControlTranslator::translateSteering(int input)
-//{
-//	return inputTranslator->translateStickInput(input, config.steeringChannel, config.steeringServo);
-//}
+	}
+
+	// Failsafe
+	return config.throttleServo.center;
+}
+
+int ControlTranslator::translateSteering(InputSetting input)
+{
+	return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);
+}

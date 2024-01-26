@@ -1,4 +1,5 @@
 #include "input.h"
+#include "defines.h"
 
 Input::Input(IPpmWrapper* ppmWrapper)
 {
@@ -11,4 +12,6 @@ void Input::update()
   {
     this->setting.channel[channel] = ppmWrapper->latestValidChannelValue(channel+1, 0);
   }
+
+  this->setting.mode = MODE;
 }

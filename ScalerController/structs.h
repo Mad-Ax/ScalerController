@@ -1,4 +1,5 @@
 #pragma once
+#include "enum.h"
 
 //#include "enum.h"
 
@@ -26,14 +27,18 @@ struct ServoConfig {
 	}
 };
 
-struct ChannelConfig {
+
+/// <summary>
+/// Configures an analog channel (e.g. ESC, steering) 
+/// </summary>
+struct AnalogChannel {
 	int channel;
 	int min;
 	int max;
 	int dbMin;
 	int dbMax;
 
-	bool operator==(const ChannelConfig& rhs)
+	bool operator==(const AnalogChannel& rhs)
 	{
 		return
 			channel == rhs.channel &&
@@ -42,6 +47,15 @@ struct ChannelConfig {
 			dbMin == rhs.dbMin &&
 			dbMax == rhs.dbMax;
 	}
+};
+
+/// <summary>
+/// Configures a latching switch, e.g. pull back on right stick to select forward / reverse
+/// </summary>
+struct LatchChannel {
+	int channel;
+	int min;
+	int max;
 };
 
 //// Configuration for lighting modes
@@ -61,8 +75,9 @@ struct ControlConfig {
 	int maxFailsafeCount;
 //	ChannelConfig mode;
 //	ChannelConfig gear;
-	ChannelConfig throttleChannel;
-	ChannelConfig steeringChannel;
+	LatchChannel gearChannel;
+	AnalogChannel throttleChannel;
+	AnalogChannel steeringChannel;
 //	ChannelConfig indicator;
 //	ChannelConfig lights;
 	ServoConfig throttleServo;
@@ -96,6 +111,8 @@ struct ControlConfig {
 // Channel input values
 struct InputSetting {
 	int channel[8];
+
+	int mode;
 
 	bool operator==(const InputSetting& rhs)
 	{
@@ -140,5 +157,6 @@ struct InputSetting {
 struct ControlSetting {
 	int motorSpeed;
 	int steering;
+	Gear gear;
 //	LightSetting lightSetting;
 };

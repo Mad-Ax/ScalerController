@@ -35,17 +35,25 @@ void Control::translate(InputSetting input)
 		return;
 	}
 
-//	// Get the requested mode
-//	translateMode(input.channel[config.mode.channel]);
-//
-//	// Get the requested gear
-//	translateGear(input.channel[config.gear.channel]);
+	// If we are in pass-thru mode, translate the steering and ESC only
+	// Set all other channels to centre
+	if (input.mode == 0) // TODO: M: we might want to use the control translator so we can remove dependency on config object
+	{
+		setting.motorSpeed = input.channel[config.throttleChannel.channel];
+		setting.steering = input.channel[config.steeringChannel.channel];
+
+		// TODO: M: all other channels to centre
+		return;
+	}
+
+	// Get the selected gear
+	setting.gear = this->controlTranslator->translateGear(input, setting.gear);
 
 	// Get the requested motor speed
-	translateMotorSpeed(input.channel[config.throttleChannel.channel]);
+	setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear);
 
 	// Get the steering servo position
-	translateSteering(input.channel[config.steeringChannel.channel]);
+	setting.steering = this->controlTranslator->translateSteering(input);
 
 //	// Get the indicator setting
 //	if (config.indicator.channel > -1)
@@ -65,64 +73,6 @@ void Control::translate(InputSetting input)
 //		// Get the reverse light setting
 //		translateReverseLight();
 //	}
-}
-
-//// Translates the requested mode
-//void Control::translateMode(int input)
-//{
-//	mode = controlTranslator->translateMode(input);
-//}
-//
-//// Translates the requested gear with the current mode to determine the selected gear
-//void Control::translateGear(int input)
-//{
-//	switch (mode)
-//	{
-//	case Mode::Off:
-//	case Mode::Park:
-//		gear = Gear::Neutral;
-//		return;
-//	case Mode::Drive:
-//		gear = controlTranslator->translateGear(input);
-//		return;
-//	}
-//
-//	gear = Gear::Neutral;
-//	return;
-//}
-
-// Translates the input into a motor speed
-void Control::translateMotorSpeed(int input)
-{
-	setting.motorSpeed = input;
-//	switch (this->mode)
-//	{
-//	case Mode::Off:
-//	case Mode::Park:
-//		setting.motorSpeed = config.throttleServo.center;
-//		return;
-//
-//	case Mode::Drive:
-//		if (input < config.eBrakeThreshold)
-//		{
-//			// E-brake applied - use drag brake to stop truck immediately regardless of gear
-//			setting.motorSpeed = config.throttleServo.center;
-//			return;
-//		}
-//
-//		setting.motorSpeed = controlTranslator->translateMotorSpeed(setting.motorSpeed, input, gear);
-//		return;
-//	}
-//
-//	// Default response if no other conditions met - apply drag brake
-//	this->setting.motorSpeed = this->config.throttleServo.center;
-}
-
-// Translates the steering position input to desired output depending on mode
-void Control::translateSteering(int input)
-{
-	setting.steering = input;
-	//setting.steering = controlTranslator->translateSteering(input);
 }
 
 //// Translates the indicator input to the desired output depending on mode

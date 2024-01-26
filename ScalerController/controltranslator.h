@@ -2,7 +2,7 @@
 
 //#include "Arduino.h"
 #include "icontroltranslator.h"
-//#include "iinputtranslator.h"
+#include "iinputtranslator.h"
 //#include "imotorspeedtranslator.h"
 //#include "iinertia.h"
 
@@ -10,8 +10,8 @@ class ControlTranslator : public IControlTranslator
 {
 public:
 	ControlTranslator(
-		ControlConfig config
-//		IInputTranslator* inputTranslator, 
+		ControlConfig config,
+		IInputTranslator* inputTranslator
 //		IMotorSpeedTranslator* motorSpeedTranslator,
 //		IInertia* forwardAccel,
 //		IInertia* forwardDecel,
@@ -25,24 +25,23 @@ public:
 	// Checks for a fail condition on the input
 	// Return true if the input values have failed to update for more than a set number of reads
 	bool checkFailsafe(InputSetting input);
-//
-//	// Translates the requested mode
-//	Mode translateMode(int input);
-//
-//	// Translates the requested gear
-//	Gear translateGear(int input);
-//
-//	// Translates the motor speed
+
+	// Translates the channel input value to the requested gear
+	Gear translateGear(InputSetting input, Gear lastGear);
+
+	// Translates the motor speed
+	int translateMotorSpeed(InputSetting input, Gear gear);
 //	int translateMotorSpeed(int currentMotorSpeed, int input, Gear gear);
-//
-//	// Translates the steering angle
-//	int translateSteering(int input);
-//
+
+	// Translates the steering angle
+	int translateSteering(InputSetting input);
+
 private:
 	int failsafeCount;
 	InputSetting *lastInput;
 	ControlConfig config;
-//	IInputTranslator* inputTranslator;
+	bool gearLatching;
+	IInputTranslator* inputTranslator;
 //	IMotorSpeedTranslator* motorSpeedTranslator;
 //	IInertia* forwardAccel;
 //	IInertia* forwardDecel;
