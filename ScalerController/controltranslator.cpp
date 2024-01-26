@@ -53,6 +53,7 @@ bool ControlTranslator::checkFailsafe(InputSetting input)
 		failsafeCount = 0;
 	}
 	
+	delete lastInput;
 	lastInput = new InputSetting(input);
 
 	// Note: this allows a failsafe condition to be reversed when reception

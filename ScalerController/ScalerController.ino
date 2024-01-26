@@ -156,9 +156,9 @@ void setup()
 
 //	output = new Output(outputEsc, outputSteering, outputLights);
 	output = new Output(outputEsc, outputSteering);
-//
-//	// Open the serial
-//	//Serial.begin(57600);
+
+	// Open the serial (for debugging)
+	//Serial.begin(57600);
 }
 
 
@@ -173,9 +173,9 @@ void loop()
 	// pass the translated values to the output
 	output->send(control->setting);
 
-//	// close out any serial lines
-//	//Serial.println();
-//
+	// close out any serial lines
+	//Serial.println();
+
 	// Perform the master delay
 	while (loopTime + MASTER_DELAY > micros())
 	{

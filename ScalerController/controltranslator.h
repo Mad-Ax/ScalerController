@@ -40,7 +40,7 @@ public:
 //
 private:
 	int failsafeCount;
-	InputSetting* lastInput = nullptr;
+	InputSetting *lastInput;
 	ControlConfig config;
 //	IInputTranslator* inputTranslator;
 //	IMotorSpeedTranslator* motorSpeedTranslator;

@@ -28,7 +28,7 @@
 
 // Max Failsafe Count.  Number of times the Rx must receive identical data on all channels
 // before activating the failsafe.
-#define MAX_FAILSAFE_COUNT 100				//TODO: M: test that this is a valid number
+#define MAX_FAILSAFE_COUNT 30				//TODO: M: test that this is a valid number
 
 //// MODE channel.  Always operates.
 //#define CHN_MODE_CH 5                       // Channel should not be shared
@@ -41,7 +41,7 @@
 #define CHN_STEERING_DEADBAND_MAX 1504      // Deadband (center position) range end
 
 // THROTTLE/BRAKE channel.  Operates only in DRIVE mode.
-#define CHN_THROTTLE_CH 2                   // Input channel number
+#define CHN_THROTTLE_CH 3                   // Input channel number
 #define CHN_THROTTLE_MIN 1000               // Minimum input  value
 #define CHN_THROTTLE_MAX 2000               // Maximum input value
 #define CHN_THROTTLE_DEADBAND_MIN 1488      // Deadband (center position) range start
