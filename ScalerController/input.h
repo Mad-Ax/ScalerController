@@ -12,10 +12,11 @@ public:
     InputSetting setting;
 
 private:
+    InputConfig config;
 	IPpmWrapper* ppmWrapper;
 
 public:
-	Input(IPpmWrapper* ppmWrapper);
+	Input(InputConfig config, IPpmWrapper* ppmWrapper);
 
     // Update method
     // Updates the class with the latest raw values from the receiver

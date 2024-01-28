@@ -14,7 +14,8 @@
 #include "controltranslator.h"
 #include "inputtranslator.h"
 //#include "lightingtranslator.h"
-//#include "motorspeedtranslator.h"
+#include "inertia.h"
+#include "motorspeedtranslator.h"
 #include "outputservo.h"
 //#include "outputlights.h"
 
@@ -29,12 +30,15 @@ void setup()
 {
 	InputConfig inputConfig = {
 		PPM_IN,
+		PPM_CHANNELS,
 		PPM_INPUT_MAX_ERROR,
-		PPM_BLANK_TIME
+		PPM_BLANK_TIME,
+		PPM_MIN_CHANNEL_VALUE,
+		PPM_MAX_CHANNEL_VALUE
 	};
 	PpmWrapper* ppmWrapper = new PpmWrapper(inputConfig);
 
-	input = new Input(ppmWrapper);
+	input = new Input(inputConfig, ppmWrapper);
 
 //	ChannelConfig mode = {
 //		CHN_MODE_CH - 1
@@ -112,33 +116,33 @@ void setup()
 //		lightModeConfig,
 //		SWITCH_HIGH,
 //		SWITCH_LOW,
-//		FWD_ACCEL_INERTIA,
-//		FWD_DECEL_INERTIA,
-//		FWD_BRAKE_INERTIA,
-//		REV_ACCEL_INERTIA,
-//		REV_DECEL_INERTIA,
-//		REV_BRAKE_INERTIA,
+		FWD_ACCEL_INERTIA,
+		FWD_DECEL_INERTIA,
+		FWD_BRAKE_INERTIA,
+		REV_ACCEL_INERTIA,
+		REV_DECEL_INERTIA,
+		REV_BRAKE_INERTIA,
 //		E_BRAKE_THRESHOLD
 	};
 
 	IInputTranslator* inputTranslator = new InputTranslator();
-//	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttle, throttleServo);
-//	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-//	IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-//	IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-//	IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-//	IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-//	IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
+	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IControlTranslator* controlTranslator = new ControlTranslator(
 		controlConfig,
-		inputTranslator);
-//		motorSpeedTranslator,
-//		forwardAccel,
-//		forwardDecel,
-//		forwardBrake,
-//		reverseAccel,
-//		reverseDecel,
-//		reverseBrake);
+		inputTranslator,
+		motorSpeedTranslator,
+		forwardAccel,
+		forwardDecel,
+		forwardBrake,
+		reverseAccel,
+		reverseDecel,
+		reverseBrake);
 //	ILightingTranslator* lightingTranslator = new LightingTranslator(inputTranslator, controlConfig);
 //
 //	control = new Control(controlTranslator, lightingTranslator, controlConfig);
@@ -164,7 +168,7 @@ void setup()
 	output = new Output(outputEsc, outputSteering);
 
 	// Open the serial (for debugging)
-	//Serial.begin(57600);
+	Serial.begin(57600);
 }
 
 
@@ -173,14 +177,21 @@ void loop()
 	// get the latest input values from the receiver
 	input->update();
 
+	for (int channel = 0; channel < 8; channel++)
+	{
+		Serial.print(input->setting.channel[channel]);
+		Serial.print(':');
+	}
+	Serial.println();
+
 	// translate the input values to control values that can be sent to the outputs
-	control->translate(input->setting);
+	control->translate(input->setting, Serial);
 
 	// pass the translated values to the output
 	output->send(control->setting);
 
 	// close out any serial lines
-	//Serial.println();
+	Serial.println();
 
 	// Perform the master delay
 	while (loopTime + MASTER_DELAY > micros())

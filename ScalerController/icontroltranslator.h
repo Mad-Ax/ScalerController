@@ -2,6 +2,7 @@
 
 #include "structs.h"
 #include "enum.h"
+#include "HardwareSerial.h"
 
 class IControlTranslator
 {
@@ -14,7 +15,7 @@ public:
 	virtual Gear translateGear(InputSetting input, Gear lastGear) = 0;
 
 	// Translates the motor speed
-	virtual int translateMotorSpeed(InputSetting input, Gear gear) = 0;
+	virtual int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) = 0;
 
 	// Translates the steering angle
 	virtual int translateSteering(InputSetting input) = 0;

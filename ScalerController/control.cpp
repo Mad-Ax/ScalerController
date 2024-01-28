@@ -17,7 +17,7 @@ Control::Control(IControlTranslator* controlTranslator, ControlConfig controlCon
 //	setting.lightSetting.brakeLightIntensity = 0;
 }
 
-void Control::translate(InputSetting input)
+void Control::translate(InputSetting input, HardwareSerial &ser)
 {
 	// Check for failsafe condition and shut off truck
 	if (this->controlTranslator->checkFailsafe(input))
@@ -46,11 +46,14 @@ void Control::translate(InputSetting input)
 		return;
 	}
 
-	// Get the selected gear
-	setting.gear = this->controlTranslator->translateGear(input, setting.gear);
+	// Get the selected gear (if the motor is stationary)
+	if (setting.motorSpeed == this->config.throttleServo.center)
+	{
+		setting.gear = this->controlTranslator->translateGear(input, setting.gear);
+	}
 
 	// Get the requested motor speed
-	setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear);
+	setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear, setting.motorSpeed, ser);
 
 	// Get the steering servo position
 	setting.steering = this->controlTranslator->translateSteering(input);

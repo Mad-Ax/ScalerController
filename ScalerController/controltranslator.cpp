@@ -1,26 +1,26 @@
 #include "controltranslator.h"
+#include "Arduino.h"
 
 ControlTranslator::ControlTranslator(
 	ControlConfig config,
-	IInputTranslator* inputTranslator
-//	IMotorSpeedTranslator* motorSpeedTranslator,
-//	IInertia* forwardAccel,
-//	IInertia* forwardDecel,
-//	IInertia* forwardBrake,
-//	IInertia* reverseAccel,
-//	IInertia* reverseDecel,
-//	IInertia* reverseBrake)
-)
+	IInputTranslator* inputTranslator,
+	IMotorSpeedTranslator* motorSpeedTranslator,
+	IInertia* forwardAccel,
+	IInertia* forwardDecel,
+	IInertia* forwardBrake,
+	IInertia* reverseAccel,
+	IInertia* reverseDecel,
+	IInertia* reverseBrake)
 {
 	this->config = config;
 	this->inputTranslator = inputTranslator;
-//	this->motorSpeedTranslator = motorSpeedTranslator;
-//	this->forwardAccel = forwardAccel;
-//	this->forwardDecel = forwardDecel;
-//	this->forwardBrake = forwardBrake;
-//	this->reverseAccel = reverseAccel;
-//	this->reverseDecel = reverseDecel;
-//	this->reverseBrake = reverseBrake;
+	this->motorSpeedTranslator = motorSpeedTranslator;
+	this->forwardAccel = forwardAccel;
+	this->forwardDecel = forwardDecel;
+	this->forwardBrake = forwardBrake;
+	this->reverseAccel = reverseAccel;
+	this->reverseDecel = reverseDecel;
+	this->reverseBrake = reverseBrake;
 }
 
 ControlTranslator::~ControlTranslator()
@@ -52,7 +52,7 @@ bool ControlTranslator::checkFailsafe(InputSetting input)
 	{
 		failsafeCount = 0;
 	}
-	
+
 	delete lastInput;
 	lastInput = new InputSetting(input);
 
@@ -66,6 +66,8 @@ bool ControlTranslator::checkFailsafe(InputSetting input)
 // Translates the requested gear
 Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 {
+	// TODO: M: make sure we can't get reverse if we're on cruise
+
 	// If the throttle is not under the forward deadband, we should not change gear
 	if (input.channel[this->config.throttleChannel.channel] > this->config.throttleChannel.dbMax)
 	{
@@ -74,10 +76,10 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 
 	// TODO: M: all this code can go into a latching function
 
-	LatchChannel chCfg = this->config.gearChannel;
-	int chVal = input.channel[chCfg.channel];
+	LatchChannel channel = this->config.gearChannel;
+	int value = input.channel[channel.channel];
 
-	if (chVal > chCfg.min && chVal < chCfg.max)
+	if (value > channel.min && value < channel.max)
 	{
 		// We are within the range to change
 
@@ -111,52 +113,58 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 }
 
 // Translates the motor speed
-//int ControlTranslator::translateMotorSpeed(int currentMotorSpeed, int input, Gear gear)
-int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear)
+int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial &ser)
 {
 	int desiredMotorSpeed;
-	AnalogChannel ch = config.throttleChannel;
-	int inputVal = input.channel[ch.channel];
-
-	if (inputVal < ch.dbMax)
-	{
-		// If we are in center / brake position, return neutral
-		return config.throttleServo.center;
-	}
+	AnalogChannel channel = config.throttleChannel;
+	ServoConfig servo = config.throttleServo;
+	int inputVal = input.channel[channel.channel];
 
 	switch (gear)
 	{
 	case Gear::Forward:
-		// Pass back the value we received
-		return inputVal;
+		// Calculate applied forward throttle
+		if (inputVal > channel.dbMax)
+		{
+			// Throttle is on
+			desiredMotorSpeed = map(inputVal, channel.dbMax, channel.max, servo.center, servo.max);
+		}
+		else if (inputVal < channel.dbMax && inputVal > channel.dbMin)
+		{
+			// Coasting
+			desiredMotorSpeed = servo.center;
+		}
+		else
+		{
+			// Brake is on
+			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.min, servo.center);
+		}
 
-//		// Calculate applied forward throttle
-//		if (input > config.throttleChannel.dbMax)
-//			desiredMotorSpeed = map(input, config.throttleChannel.dbMax, config.throttleChannel.max, config.throttleServo.center, config.throttleServo.max);
-//		else if (input < config.throttleChannel.dbMin)
-//			desiredMotorSpeed = map(input, config.throttleChannel.min, config.throttleChannel.dbMin, config.throttleServo.min, config.throttleServo.center);
-//		else
-//			desiredMotorSpeed = config.throttleServo.center;
-//
-//		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, input, desiredMotorSpeed, forwardAccel, forwardDecel, forwardBrake);
-//		
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, forwardAccel, forwardDecel, forwardBrake);
+		
 	case Gear::Reverse:
-		// Translate the forward value into a reverse value, and pass it back
-		return ((inputVal - config.throttleServo.center) * -1) + config.throttleServo.center;
+		// Calculate applied reverse throttle
+		if (inputVal > channel.dbMax)
+		{
+			// Throttle is on
+			desiredMotorSpeed = map(inputVal, channel.dbMax, channel.max, servo.center, servo.min);
+		}
+		else if (inputVal < channel.dbMax && inputVal > channel.dbMin)
+		{
+			// Coasting
+			desiredMotorSpeed = servo.center;
+		}
+		else
+		{
+			// Brake is on
+			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.max, servo.center);
+		}
 
-//		// Calculate applied reverse throttle
-//		if (input > config.throttleChannel.dbMax)
-//			desiredMotorSpeed = map(input, config.throttleChannel.dbMax, config.throttleChannel.max, config.throttleServo.center, config.throttleServo.min);
-//		else if (input < config.throttleChannel.dbMin)
-//			desiredMotorSpeed = map(input, config.throttleChannel.min, config.throttleChannel.dbMin, config.throttleServo.max, config.throttleServo.center);
-//		else
-//			desiredMotorSpeed = config.throttleServo.center;
-//
-//		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, input, desiredMotorSpeed, reverseAccel, reverseDecel, reverseBrake);
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, reverseAccel, reverseDecel, reverseBrake);
 	}
 
 	// Failsafe
-	return config.throttleServo.center;
+	return servo.center;
 }
 
 int ControlTranslator::translateSteering(InputSetting input)

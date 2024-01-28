@@ -6,6 +6,7 @@
 #include "icontroltranslator.h"
 //#include "ilightingtranslator.h"
 //#include "Arduino.h"
+#include "HardwareSerial.h"
 
 // Control class
 // Translates raw inputted values from the transmitter to output values that will be sent to the outputs
@@ -20,7 +21,7 @@ public:
 
 	// Translate method
 	// Translates the requested Input object into a set of values that can be sent to the Output
-	void translate(InputSetting input);
+	void translate(InputSetting input, HardwareSerial& ser);
 
 private:
 	IControlTranslator* controlTranslator;

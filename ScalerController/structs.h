@@ -6,8 +6,11 @@
 // Configuration for input from receiver
 struct InputConfig {
 	int ppmInput;
+	int totalChannels;
 	unsigned long ppmChannelValueMaxError;
 	unsigned long ppmBlankTime;
+	unsigned int minChannelValue;
+	unsigned int maxChannelValue;
 };
 
 // Configuration for servo
@@ -73,8 +76,6 @@ struct LatchChannel {
 // Configuration for Control methods
 struct ControlConfig {
 	int maxFailsafeCount;
-//	ChannelConfig mode;
-//	ChannelConfig gear;
 	LatchChannel gearChannel;
 	AnalogChannel throttleChannel;
 	AnalogChannel steeringChannel;
@@ -85,13 +86,13 @@ struct ControlConfig {
 //	LightModeConfig lightModeConfig;
 //	int switchHigh;
 //	int switchLow;
-//	int fwdAccelInertia;
-//	int fwdDecelInertia;
-//	int fwdBrakeInertia;
-//	int revAccelInertia;
-//	int revDecelInertia;
-//	int revBrakeInertia;
-//	int eBrakeThreshold;
+	int fwdAccelInertia;
+	int fwdDecelInertia;
+	int fwdBrakeInertia;
+	int revAccelInertia;
+	int revDecelInertia;
+	int revBrakeInertia;
+	int eBrakeThreshold;
 //	//TODO: Option for 4 aux servos?
 };
 

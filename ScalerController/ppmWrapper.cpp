@@ -2,9 +2,11 @@
 
 PpmWrapper::PpmWrapper(InputConfig inputConfig)
 {
-	ppm = new PPMReader(inputConfig.ppmInput, 8);
+	ppm = new PPMReader(inputConfig.ppmInput, inputConfig.totalChannels);
 	ppm->channelValueMaxError = inputConfig.ppmChannelValueMaxError;
 	ppm->blankTime = inputConfig.ppmBlankTime;
+	ppm->minChannelValue = inputConfig.minChannelValue;
+	ppm->maxChannelValue = inputConfig.maxChannelValue;
 }
 
 PpmWrapper::~PpmWrapper()

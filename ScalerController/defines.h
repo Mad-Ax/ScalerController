@@ -23,8 +23,11 @@
 // rendering the system unusable.  Pin 21 was found to have no such problems.  This is
 // probably due to a conflict with some other internal operation or library (such as Servo)
 #define PPM_IN 21                   // PPM input pin
+#define PPM_CHANNELS 8				// Total number of channels transmitted
 #define PPM_INPUT_MAX_ERROR 10      // Max error leeway for PPM reader (see https://github.com/Nikkilae/PPM-reader#fine-tuning)
-#define PPM_BLANK_TIME 2100         // Blank time for PPM reader (see above link)
+#define PPM_BLANK_TIME 2250         // Blank time for PPM reader (see above link)
+#define PPM_MIN_CHANNEL_VALUE 850	// Minimum PPM value for the channel
+#define PPM_MAX_CHANNEL_VALUE 2150	// Maximum PPM value for the channel
 
 // Radio channel config
 
@@ -83,14 +86,14 @@
 #define SVO_ESC_MAX 2000            // Adjusts ESC maximum throttle position
 #define SVO_ESC_CENTER 1500         // Adjusts ESC neutral / drag brake position
 
-//#define FWD_ACCEL_INERTIA 6         // Accelerator inertia (forward)
-//#define FWD_DECEL_INERTIA 2         // Decelerator inertia (forward)
-//#define FWD_BRAKE_INERTIA 8         // Brake interia (forward)
-//
-//#define REV_ACCEL_INERTIA 6         // Accelerator inertia (reverse)
-//#define REV_DECEL_INERTIA 2         // Decelerator inertia (reverse)
-//#define REV_BRAKE_INERTIA 8         // Brake interia (reverse)
-//
+#define FWD_ACCEL_INERTIA 6         // Accelerator inertia (forward)
+#define FWD_DECEL_INERTIA 2         // Decelerator inertia (forward)
+#define FWD_BRAKE_INERTIA 8         // Brake interia (forward)
+
+#define REV_ACCEL_INERTIA 6         // Accelerator inertia (reverse)
+#define REV_DECEL_INERTIA 2         // Decelerator inertia (reverse)
+#define REV_BRAKE_INERTIA 8         // Brake interia (reverse)
+
 //#define AUX_OUT_1 10                // Outputs aux1 channel value when in Park mode
 //#define AUX_OUT_2 11                // Outputs aux2 channel value when in Park mode
 //#define AUX_OUT_3 12                // Outputs aux3 channel value when in Park mode

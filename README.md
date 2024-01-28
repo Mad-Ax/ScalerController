@@ -56,14 +56,14 @@ Basic controller functionality with selectable reverse
 
 Inertia - the truck will take time to accelerate and brake depending on how far the stick is pushed
 
-- Create a new variable to store the inertia value in (use existing value from TruckController)
-- When in On mode
-  - Pushing forward on the stick causes the truck to accelerate slowly to the value indicated by the stick
-  - Pulling backward on the stick causes the truck to slow down at a rate indicated by the stick
-  - Pulling full back on the stick causes the truck to instantly stop
-  - When the stick is released, the truck will slow eventually to a stop
-  - This works in forward and reverse modes
-- When in Off mode, the controller is in full pass-thru mode
+- ✔Create a new variable to store the inertia value in (use existing value from TruckController)
+- ✔When in On mode
+  - ✔Pushing forward on the stick causes the truck to accelerate slowly to the value indicated by the stick
+  - ✔Pulling backward on the stick causes the truck to slow down at a rate indicated by the stick
+  - ✔Pulling full back on the stick causes the truck to instantly stop
+  - ✔When the stick is released, the truck will slow eventually to a stop
+  - ✔This works in forward and reverse modes
+- ✔When in Off mode, the controller is in full pass-thru mode
 
 ### Version 0.0.4
  
