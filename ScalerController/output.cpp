@@ -2,12 +2,12 @@
 
 Output::Output(
 	IOutputServo* outputEsc, 
-	IOutputServo* outputSteering)
-//	IOutputLights* outputLights)
+	IOutputServo* outputSteering,
+	IOutputLights* outputLights)
 {
 	this->outputEsc = outputEsc;
 	this->outputSteering = outputSteering;
-//	this->outputLights = outputLights;
+	this->outputLights = outputLights;
 }
 
 void Output::send(ControlSetting control)
@@ -18,7 +18,6 @@ void Output::send(ControlSetting control)
 	// output steering control
 	this->outputSteering->send(control.steering);
 
-//	// output lights
-//	if (this->outputLights != nullptr)
-//		this->outputLights->send(control.lightSetting);
+	// output lights
+	this->outputLights->send(control.lightSetting);
 }

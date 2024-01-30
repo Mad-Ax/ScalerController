@@ -51,7 +51,7 @@
 
 #define CHN_THROTTLE_EBRAKE_THRESHOLD 1100	// Brake value below which the ESC all-stop signal will be given
 
-//// LIGHTS operation channel.  Operates only in DRIVE mode.
+//// LIGHTS operation channel
 //// If set to 0, no lights will function.
 //#define CHN_LIGHTS      4                   // Input channel number.
 
@@ -75,8 +75,6 @@
 //#define CHN_AUX3        3           // Output this channel to Aux3 servo when mode is Park
 //#define CHN_AUX4        4           // Output this channel to Aux4 servo when mode is Park
 //
-//// Control configuration for radio, ESC and servo
-//#define E_BRAKE_THRESHOLD 1100      // Drag brake comes on with input below this value
 //
 //#define SWITCH_HIGH 1650            // Value for "high" or "up" on a Tx switch or knob
 //#define SWITCH_LOW 1350             // Value for "low" or "down" on a Tx switch or knob
@@ -105,28 +103,29 @@
 //#define AUX_OUT_2 11                // Outputs aux2 channel value when in Park mode
 //#define AUX_OUT_3 12                // Outputs aux3 channel value when in Park mode
 //#define AUX_OUT_4 13                // Outputs aux4 channel value when in Park mode
-//
-//// Light configuration
-//
-//// LED output pins
+
+// Light configuration
+
+// LED output pins
 //#define HEADLIGHT_OUT 2             // front headlights (PWM)
-//#define BRAKELIGHT_OUT 3            // brake / tail lights (PWM)
+#define BRAKELIGHT_OUT 3            // brake / tail lights (PWM)
+#define REVERSE_OUT 4               // reverse lights (PWM)
 //#define FOGLIGHT_F_OUT 22           // front fog lights (digital)
 //#define FOGLIGHT_R_OUT 23           // rear fog lights (digital)
 //#define INDICATOR_L_OUT 24          // left indicators (digital)
 //#define INDICATOR_R_OUT 25          // right indicators (digital)
 //#define ROOFLIGHT_OUT 26            // roof / aux lights (digital)
-//#define REVERSE_OUT 27              // reverse lights (digital)
 //#define FAILSAFE_OUT 28				// check valid LED output (digital)
 //
 //// Timing settings
 //#define INDICATOR_TIME 400			// Indicator on/off time (approx)
 //#define FAILSAFE_FLASH_TIME 100		// Indicator on/off time in failsafe
-//
-//// LED output settings
-//// Intensity values range from 0 (off) to 255 (max, 5V)
-//#define BRAKE_MAX_PWM 255           // Brakes on
+
+// LED output settings
+// Intensity values range from 0 (off) to 255 (max, 5V)
+#define BRAKE_MAX_PWM 255           // Brakes on
 //#define BRAKE_MED_PWM 100           // Sidelights/headlights on
+#define REVERSE_PWM 255				// Reverse light on
 //
 //#define HEADLIGHT_MAX_PWM 255       // Main beam
 //#define HEADLIGHT_MED_PWM 100       // Dipped beam

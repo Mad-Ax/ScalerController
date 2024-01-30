@@ -1,11 +1,10 @@
 #include "control.h"
 
 // Initializes a new instance of the object with the required config data
-//Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig controlConfig)
-Control::Control(IControlTranslator* controlTranslator, ControlConfig controlConfig)
+Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig controlConfig)
 {
 	this->controlTranslator = controlTranslator;
-//	this->lightingTranslator = lightingTranslator;
+	this->lightingTranslator = lightingTranslator;
 	config = controlConfig;
 //	forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 //	forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
@@ -20,6 +19,7 @@ Control::Control(IControlTranslator* controlTranslator, ControlConfig controlCon
 	setting.gear = Gear::Forward;
 	setting.motorSpeed = config.throttleServo.center;
 	setting.steering = config.steeringServo.center;
+	setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
 }
 
 void Control::translate(InputSetting input, HardwareSerial &ser)
@@ -29,7 +29,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	{
 		setting.motorSpeed = config.throttleServo.center;
 		setting.steering = config.steeringServo.center;
-//		setting.lightSetting.brakeLightIntensity = config.lightModeConfig.brakeMax;
+		setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
 //		setting.lightSetting.reverseLightIntensity = LOW;
 //		setting.lightSetting.headLightIntensity = 0;
 //		setting.lightSetting.frontFogIntensity = 0;
@@ -46,6 +46,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	{
 		setting.motorSpeed = input.channel[config.throttleChannel.channel];
 		setting.steering = input.channel[config.steeringChannel.channel];
+		setting.lightSetting.brakeIntensity = 0;
 
 		// TODO: M: all other channels to centre
 		return;
@@ -72,8 +73,6 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		break;
 	}
 
-	//ser.println(setting.motorSpeed);
-
 	// Get the steering servo position
 	setting.steering = this->controlTranslator->translateSteering(input);
 
@@ -89,11 +88,11 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 //		// Get the main beam setting
 //		translateMainBeam(input.channel[config.lights.channel]);
 //
-//		// Get the brake light setting
-//		translateBrakeLight(input.channel[config.throttleChannel.channel]);
-//
-//		// Get the reverse light setting
-//		translateReverseLight();
+	// Get the brake light setting
+	setting.lightSetting.brakeIntensity = this->lightingTranslator->translateBrakeLight(input);
+
+	// Get the reverse light setting
+	setting.lightSetting.reverseIntensity = this->lightingTranslator->translateReverseLight(setting.gear);
 //	}
 }
 
@@ -191,29 +190,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 //		break;
 //	}
 //}
-//
-//// Translates the brake light (on, off, sidelight depending on stick / headlight setting)
-//void Control::translateBrakeLight(int input)
-//{
-//	if (mode == Mode::Park)
-//		return;
-//
-//	switch (lightingTranslator->translateBrakeLight(input, lightMode))
-//	{
-//	case BrakeLight::Off:
-//		setting.lightSetting.brakeLightIntensity = 0;
-//		break;
-//
-//	case BrakeLight::Braking:
-//		setting.lightSetting.brakeLightIntensity = config.lightModeConfig.brakeMax;
-//		break;
-//
-//	case BrakeLight::Sidelight:
-//		setting.lightSetting.brakeLightIntensity = config.lightModeConfig.brakeMed;
-//		break;
-//	};
-//}
-//
+
 //// Translates the reverse light setting based on mode and gear
 //void Control::translateReverseLight()
 //{

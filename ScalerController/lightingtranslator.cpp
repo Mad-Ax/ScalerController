@@ -1,15 +1,16 @@
-//#include "lightingtranslator.h"
-//
+#include "lightingtranslator.h"
+
 //LightingTranslator::LightingTranslator(IInputTranslator* translator, ControlConfig config)
-//{
-//	this->config = config;
+LightingTranslator::LightingTranslator(ControlConfig config)
+{
+	this->config = config;
 //	this->translator = translator;
-//}
-//
-//LightingTranslator::~LightingTranslator()
-//{
-//}
-//
+}
+
+LightingTranslator::~LightingTranslator()
+{
+}
+
 //// Translates the indicator input to the desired output depending on mode
 //Indicator LightingTranslator::translateIndicator(int input)
 //{
@@ -87,21 +88,41 @@
 //	// If lights are on, return whatever the current setting is
 //	return currentMainBeam;
 //}
-//
-//// Translates the brake light setting based on throttle input and current lighting mode
+
+// Translates the brake light setting based on throttle input and current lighting mode
 //BrakeLight LightingTranslator::translateBrakeLight(int input, LightMode currentLightMode)
-//{
-//	if (input < config.throttleChannel.dbMin)
-//		return BrakeLight::Braking;
+int LightingTranslator::translateBrakeLight(InputSetting input)
+{
+	ThrottleChannel channel = config.throttleChannel;
+	int inputVal = input.channel[channel.channel];
+
+	if (inputVal < config.throttleChannel.dbMin)
+	{
+		// We are braking - return the high intensity value for the brake light
+		return config.lightModeConfig.brakeIntensityMax;
+	}
+
+	// We are not braking - return 0 intensity
+	return 0;
+
 //
 //	if (currentLightMode == LightMode::Off)
 //		return BrakeLight::Off;
 //
 //	return BrakeLight::Sidelight;
-//}
-//
-//// Translates the reverse light setting based on gear setting
-//bool LightingTranslator::translateReverseLight(Gear gear)
-//{
-//	return gear == Gear::Reverse;
-//}
+}
+
+// Translates the reverse light setting based on gear setting
+int LightingTranslator::translateReverseLight(Gear gear)
+{
+	switch (gear)
+	{
+	case Gear::Forward:
+		return 0;
+
+	case Gear::Reverse:
+		return config.lightModeConfig.reverseIntensity;
+	}
+
+	return 0;
+}

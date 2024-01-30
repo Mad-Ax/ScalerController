@@ -13,12 +13,12 @@
 #include "ppmwrapper.h"
 #include "controltranslator.h"
 #include "inputtranslator.h"
-//#include "lightingtranslator.h"
+#include "lightingtranslator.h"
 #include "inertia.h"
 #include "motorspeedtranslator.h"
 #include "latchtranslator.h"
 #include "outputservo.h"
-//#include "outputlights.h"
+#include "outputlights.h"
 
 // Global pointers
 Input* input;
@@ -92,16 +92,17 @@ void setup()
 		SVO_STEERING_MAX
 	};
 
-//	LightModeConfig lightModeConfig = {
+	LightModeConfig lightModeConfig = {
 //		CHN_LIGHTS > 0,
 //		INDICATOR_TIME,
-//		BRAKE_MAX_PWM,
+		BRAKE_MAX_PWM,
 //		BRAKE_MED_PWM,
+		REVERSE_PWM,
 //		HEADLIGHT_MAX_PWM,
 //		HEADLIGHT_MED_PWM,
 //		HEADLIGHT_MIN_PWM,
 //		FAILSAFE_FLASH_TIME,
-//	};
+	};
 
 	ControlConfig controlConfig = {
 		MAX_FAILSAFE_COUNT,
@@ -114,7 +115,7 @@ void setup()
 //		lights,
 		throttleServo,
 		steeringServo,
-//		lightModeConfig,
+		lightModeConfig,
 //		SWITCH_HIGH,
 //		SWITCH_LOW,
 		FWD_ACCEL_INERTIA,
@@ -123,7 +124,6 @@ void setup()
 		REV_ACCEL_INERTIA,
 		REV_DECEL_INERTIA,
 		REV_BRAKE_INERTIA,
-//		E_BRAKE_THRESHOLD
 	};
 
 	IInputTranslator* inputTranslator = new InputTranslator();
@@ -148,29 +148,30 @@ void setup()
 		reverseAccel,
 		reverseDecel,
 		reverseBrake);
-//	ILightingTranslator* lightingTranslator = new LightingTranslator(inputTranslator, controlConfig);
-//
-//	control = new Control(controlTranslator, lightingTranslator, controlConfig);
-	control = new Control(controlTranslator, controlConfig);
-//
-//	LightOutputConfig lightOutputConfig = {
+
+	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig);
+	//ILightingTranslator* lightingTranslator = new LightingTranslator(inputTranslator, controlConfig);
+
+	control = new Control(controlTranslator, lightingTranslator, controlConfig);
+
+	LightOutputConfig lightOutputConfig = {
 //		INDICATOR_L_OUT,
 //		INDICATOR_R_OUT,
-//		BRAKELIGHT_OUT,
+		BRAKELIGHT_OUT,
+		REVERSE_OUT,
 //		HEADLIGHT_OUT,
 //		FOGLIGHT_F_OUT,
 //		FOGLIGHT_R_OUT,
 //		ROOFLIGHT_OUT,
-//		REVERSE_OUT,
 //		FAILSAFE_OUT
-//	};
+	};
 
 	IOutputServo* outputEsc = new OutputServo(throttleServo);
 	IOutputServo* outputSteering = new OutputServo(steeringServo);
 //	IOutputLights* outputLights = CHN_LIGHTS > 0 ? new OutputLights(lightModeConfig, lightOutputConfig) : nullptr;
+	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
-//	output = new Output(outputEsc, outputSteering, outputLights);
-	output = new Output(outputEsc, outputSteering);
+	output = new Output(outputEsc, outputSteering, outputLights);
 
 	// Open the serial (for debugging)
 	Serial.begin(57600);

@@ -4,7 +4,7 @@
 //#include "input.h"
 //#include "inertia.h"
 #include "icontroltranslator.h"
-//#include "ilightingtranslator.h"
+#include "ilightingtranslator.h"
 //#include "Arduino.h"
 #include "HardwareSerial.h"
 
@@ -16,8 +16,7 @@ public:
 	ControlSetting setting;
 
 	// Constructor
-//	Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig controlConfig);//TODO: remove config when not needed
-	Control(IControlTranslator* controlTranslator, ControlConfig controlConfig);
+	Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig controlConfig);//TODO: remove config when not needed
 
 	// Translate method
 	// Translates the requested Input object into a set of values that can be sent to the Output
@@ -25,7 +24,7 @@ public:
 
 private:
 	IControlTranslator* controlTranslator;
-//	ILightingTranslator* lightingTranslator;
+	ILightingTranslator* lightingTranslator;
 //	InputSetting* lastInput;
 //	bool failsafe = false;
 //	int failsafeCount;

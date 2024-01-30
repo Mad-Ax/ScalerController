@@ -35,14 +35,14 @@ enum class Cruise
 //	Flash,
 //	On
 //};
-//
-//enum class BrakeLight
-//{
-//	Off,
+
+enum class BrakeLight
+{
+	Off,
 //	Sidelight,
-//	Braking
-//};
-//
+	Braking
+};
+
 //enum class ThreeWayPosition
 //{
 //	PosA = 0,

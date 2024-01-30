@@ -97,12 +97,12 @@ Cruise control - the truck's speed will remain constant when cruise is on and ca
 
 Operational lights - brake and reverse lights illuminate according to settings
 
-- Brake and reverse lights will operate through PWM pins
-- There will be setting values for brake and reverse light intensity
-- When the truck is in reverse mode, the reverse lights will come on
-- When not in reverse mode, the reverse lights will be off
-- When the left stick is below centre, the brake lights will come on
-- When the left stick is centre or above centre, the brake lights will be off
+- ✔Brake and reverse lights will operate through PWM pins
+- ✔There will be setting values for brake and reverse light intensity
+- ✔When the truck is in reverse mode, the reverse lights will come on
+- ✔When not in reverse mode, the reverse lights will be off
+- ✔When the left stick is below centre, the brake lights will come on
+- ✔When the left stick is centre or above centre, the brake lights will be off
 
 ### Version 0.0.6
 

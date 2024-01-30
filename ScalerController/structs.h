@@ -77,16 +77,17 @@ struct LatchChannel
 };
 
 //// Configuration for lighting modes
-//struct LightModeConfig {
+struct LightModeConfig {
 //	bool lights;
 //	int indicatorTime;
-//	int brakeMax;
+	int brakeIntensityMax;
 //	int brakeMed;
+	int reverseIntensity;
 //	int headlightMax;
 //	int headlightMed;
 //	int headlightMin;
 //	int failsafeFlashDelay;
-//};
+};
 
 // Configuration for Control methods
 struct ControlConfig
@@ -100,7 +101,7 @@ struct ControlConfig
 //	ChannelConfig lights;
 	ServoConfig throttleServo;
 	ServoConfig steeringServo;
-//	LightModeConfig lightModeConfig;
+	LightModeConfig lightModeConfig;
 //	int switchHigh;
 //	int switchLow;
 	int fwdAccelInertia;
@@ -113,18 +114,18 @@ struct ControlConfig
 //	//TODO: Option for 4 aux servos?
 };
 
-//// Configuration for lighting output
-//struct LightOutputConfig {
+// Configuration for lighting output
+struct LightOutputConfig {
 //	int indicatorLeftPin;
 //	int indicatorRightPin;
-//	int brakeLightPin;
+	int brakePin;
+	int reversePin;
 //	int headLightPin;
 //	int fogLightFrontPin;
 //	int fogLightRearPin;
 //	int roofLightPin;
-//	int reverseLightPin;
 //	int failsafePin;
-//};
+};
 
 // Channel input values
 struct InputSetting
@@ -147,30 +148,30 @@ struct InputSetting
 	}
 };
 
-//// Light control values
-//struct LightSetting {
+// Light control values
+struct LightSetting {
 //	int indicatorLeftIntensity;
 //	int indicatorRightIntensity;
-//	int brakeLightIntensity;
+	int brakeIntensity;
+	int reverseIntensity;
 //	int headLightIntensity;
 //	int frontFogIntensity;
 //	int rearFogIntensity;
 //	int roofLightIntensity;
-//	int reverseLightIntensity;
-//
-//	bool operator==(const LightSetting& rhs)
-//	{
-//		return
-//			indicatorLeftIntensity == rhs.indicatorLeftIntensity &&
-//			indicatorRightIntensity == rhs.indicatorRightIntensity &&
-//			brakeLightIntensity == rhs.brakeLightIntensity &&
+
+	bool operator==(const LightSetting& rhs)
+	{
+		return
+			//			indicatorLeftIntensity == rhs.indicatorLeftIntensity &&
+			//			indicatorRightIntensity == rhs.indicatorRightIntensity &&
+			brakeIntensity == rhs.brakeIntensity;
 //			headLightIntensity == rhs.headLightIntensity &&
 //			frontFogIntensity == rhs.frontFogIntensity &&
 //			rearFogIntensity == rhs.rearFogIntensity &&
 //			roofLightIntensity == rhs.roofLightIntensity &&
 //			reverseLightIntensity == rhs.reverseLightIntensity;
-//	}
-//};
+	}
+};
 
 // Converted control values
 struct ControlSetting
@@ -179,5 +180,5 @@ struct ControlSetting
 	int steering;
 	Gear gear;
 	Cruise cruise;
-//	LightSetting lightSetting;
+	LightSetting lightSetting;
 };
