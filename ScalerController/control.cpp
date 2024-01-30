@@ -15,6 +15,11 @@ Control::Control(IControlTranslator* controlTranslator, ControlConfig controlCon
 //	reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 //
 //	setting.lightSetting.brakeLightIntensity = 0;
+
+	setting.cruise = Cruise::Off;
+	setting.gear = Gear::Forward;
+	setting.motorSpeed = config.throttleServo.center;
+	setting.steering = config.steeringServo.center;
 }
 
 void Control::translate(InputSetting input, HardwareSerial &ser)
@@ -52,8 +57,22 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.gear = this->controlTranslator->translateGear(input, setting.gear);
 	}
 
+	// Determine if cruise is on or off
+	setting.cruise = this->controlTranslator->translateCruise(input, setting.cruise);
+	
 	// Get the requested motor speed
-	setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear, setting.motorSpeed, ser);
+	switch (setting.cruise)
+	{
+	case Cruise::Off:
+		setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear, setting.motorSpeed, ser);
+		break;
+
+	case Cruise::On:
+		setting.motorSpeed = this->controlTranslator->translateCruiseSpeed(input, setting.gear, setting.motorSpeed, ser);
+		break;
+	}
+
+	//ser.println(setting.motorSpeed);
 
 	// Get the steering servo position
 	setting.steering = this->controlTranslator->translateSteering(input);

@@ -4,6 +4,7 @@
 #include "icontroltranslator.h"
 #include "iinputtranslator.h"
 #include "imotorspeedtranslator.h"
+#include "ilatchtranslator.h"
 #include "iinertia.h"
 
 class ControlTranslator : public IControlTranslator
@@ -13,6 +14,8 @@ public:
 		ControlConfig config,
 		IInputTranslator* inputTranslator,
 		IMotorSpeedTranslator* motorSpeedTranslator,
+		ILatchTranslator* gearTranslator,
+		ILatchTranslator* cruiseTranslator,
 		IInertia* forwardAccel,
 		IInertia* forwardDecel,
 		IInertia* forwardBrake,
@@ -28,8 +31,14 @@ public:
 	// Translates the channel input value to the requested gear
 	Gear translateGear(InputSetting input, Gear lastGear);
 
-	// Translates the motor speed
+	// Translates the channel input value to the requested cruise value
+	Cruise translateCruise(InputSetting input, Cruise lastCruise);
+
+	// Translates the motor speed in drive mode
 	int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
+
+	// Translates the motor speed in cruise mode
+	int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
 
 	// Translates the steering angle
 	int translateSteering(InputSetting input);
@@ -38,9 +47,11 @@ private:
 	int failsafeCount;
 	InputSetting *lastInput = nullptr;
 	ControlConfig config;
-	bool gearLatching;
+	//bool gearLatching;
 	IInputTranslator* inputTranslator;
 	IMotorSpeedTranslator* motorSpeedTranslator;
+	ILatchTranslator* gearTranslator;
+	ILatchTranslator* cruiseTranslator;
 	IInertia* forwardAccel;
 	IInertia* forwardDecel;
 	IInertia* forwardBrake;

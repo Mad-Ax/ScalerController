@@ -4,7 +4,8 @@
 //#include "enum.h"
 
 // Configuration for input from receiver
-struct InputConfig {
+struct InputConfig
+{
 	int ppmInput;
 	int totalChannels;
 	unsigned long ppmChannelValueMaxError;
@@ -14,7 +15,8 @@ struct InputConfig {
 };
 
 // Configuration for servo
-struct ServoConfig {
+struct ServoConfig
+{
 	int pin;
 	int center;
 	int min;
@@ -34,7 +36,8 @@ struct ServoConfig {
 /// <summary>
 /// Configures an analog channel (e.g. ESC, steering) 
 /// </summary>
-struct AnalogChannel {
+struct AnalogChannel
+{
 	int channel;
 	int min;
 	int max;
@@ -53,9 +56,21 @@ struct AnalogChannel {
 };
 
 /// <summary>
+/// A special analog channel for throttle, with an e-brake threshold
+/// </summary>
+struct ThrottleChannel : AnalogChannel
+{
+	ThrottleChannel() {}
+	ThrottleChannel(int channel, int min, int max, int dbMin, int dbMax, int eBrakeThreshold) : AnalogChannel{ channel, min, max, dbMin, dbMax }, eBrakeThreshold{ eBrakeThreshold } {}
+
+	int eBrakeThreshold;
+};
+
+/// <summary>
 /// Configures a latching switch, e.g. pull back on right stick to select forward / reverse
 /// </summary>
-struct LatchChannel {
+struct LatchChannel
+{
 	int channel;
 	int min;
 	int max;
@@ -74,10 +89,12 @@ struct LatchChannel {
 //};
 
 // Configuration for Control methods
-struct ControlConfig {
+struct ControlConfig
+{
 	int maxFailsafeCount;
 	LatchChannel gearChannel;
-	AnalogChannel throttleChannel;
+	LatchChannel cruiseChannel;
+	ThrottleChannel throttleChannel;
 	AnalogChannel steeringChannel;
 //	ChannelConfig indicator;
 //	ChannelConfig lights;
@@ -110,7 +127,8 @@ struct ControlConfig {
 //};
 
 // Channel input values
-struct InputSetting {
+struct InputSetting
+{
 	int channel[8];
 
 	int mode;
@@ -155,9 +173,11 @@ struct InputSetting {
 //};
 
 // Converted control values
-struct ControlSetting {
+struct ControlSetting
+{
 	int motorSpeed;
 	int steering;
 	Gear gear;
+	Cruise cruise;
 //	LightSetting lightSetting;
 };

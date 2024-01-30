@@ -76,6 +76,7 @@
   <ItemGroup>
     <ClCompile Include="control.cpp" />
     <ClCompile Include="controltranslator.cpp" />
+    <ClCompile Include="latchtranslator.cpp" />
     <ClCompile Include="inertia.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputTranslator.cpp" />
@@ -98,6 +99,8 @@
     <ClInclude Include="icontroltranslator.h" />
     <ClInclude Include="iinertia.h" />
     <ClInclude Include="iinputtranslator.h" />
+    <ClInclude Include="ilatchtranslator.h" />
+    <ClInclude Include="latchtranslator.h" />
     <ClInclude Include="ilightingtranslator.h" />
     <ClInclude Include="imotorspeedtranslator.h" />
     <ClInclude Include="inertia.h" />

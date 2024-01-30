@@ -16,6 +16,7 @@
 //#include "lightingtranslator.h"
 #include "inertia.h"
 #include "motorspeedtranslator.h"
+#include "latchtranslator.h"
 #include "outputservo.h"
 //#include "outputlights.h"
 
@@ -40,26 +41,25 @@ void setup()
 
 	input = new Input(inputConfig, ppmWrapper);
 
-//	ChannelConfig mode = {
-//		CHN_MODE_CH - 1
-//	};
-//
-//	ChannelConfig gear = {
-//		CHN_GEAR - 1
-//	};
-
 	LatchChannel gearChannel = {
 		CHN_GEAR_CH - 1,
 		CHN_GEAR_SELECT_MIN,
 		CHN_GEAR_SELECT_MAX
 	};
 
-	AnalogChannel throttleChannel = {
+	LatchChannel cruiseChannel = {
+		CHN_CRUISE_CH - 1,
+		CHN_CRUISE_SELECT_MIN,
+		CHN_CRUISE_SELECT_MAX
+	};
+
+	ThrottleChannel throttleChannel {
 		CHN_THROTTLE_CH - 1,
 		CHN_THROTTLE_MIN,
 		CHN_THROTTLE_MAX,
 		CHN_THROTTLE_DEADBAND_MIN,
-		CHN_THROTTLE_DEADBAND_MAX
+		CHN_THROTTLE_DEADBAND_MAX,
+		CHN_THROTTLE_EBRAKE_THRESHOLD
 	};
 
 	AnalogChannel steeringChannel = {
@@ -107,6 +107,7 @@ void setup()
 		MAX_FAILSAFE_COUNT,
 //		mode,
 		gearChannel,
+		cruiseChannel,
 		throttleChannel,
 		steeringChannel,
 //		indicator,
@@ -127,6 +128,8 @@ void setup()
 
 	IInputTranslator* inputTranslator = new InputTranslator();
 	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
+	ILatchTranslator* gearTranslator = new LatchTranslator();
+	ILatchTranslator* cruiseTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
 	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
@@ -137,6 +140,8 @@ void setup()
 		controlConfig,
 		inputTranslator,
 		motorSpeedTranslator,
+		gearTranslator,
+		cruiseTranslator,
 		forwardAccel,
 		forwardDecel,
 		forwardBrake,
@@ -177,12 +182,12 @@ void loop()
 	// get the latest input values from the receiver
 	input->update();
 
-	for (int channel = 0; channel < 8; channel++)
-	{
-		Serial.print(input->setting.channel[channel]);
-		Serial.print(':');
-	}
-	Serial.println();
+	//for (int channel = 0; channel < 8; channel++)
+	//{
+	//	Serial.print(input->setting.channel[channel]);
+	//	Serial.print(':');
+	//}
+	//Serial.println();
 
 	// translate the input values to control values that can be sent to the outputs
 	control->translate(input->setting, Serial);
@@ -191,7 +196,7 @@ void loop()
 	output->send(control->setting);
 
 	// close out any serial lines
-	Serial.println();
+	//Serial.println();
 
 	// Perform the master delay
 	while (loopTime + MASTER_DELAY > micros())

@@ -6,6 +6,12 @@ enum class Gear
 	Reverse = 1,
 };
 
+enum class Cruise
+{
+	Off = 0,
+	On = 1
+};
+
 //enum class Indicator
 //{
 //	Left = 0,

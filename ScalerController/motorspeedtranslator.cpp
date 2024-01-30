@@ -20,24 +20,18 @@ int MotorSpeedTranslator::translateMotorSpeed(
 {
 	if (input < channel.dbMin)
 	{
-		// User is actively braking
+		// User is actively braking - use the brake map
 		return brake->map(currentMotorSpeed, desiredMotorSpeed);
-	}
-
-	if (input < channel.dbMax)
-	{
-		// Stick is at rest - use servo center as deceleration target
-		return decel->map(currentMotorSpeed, servo.center);
 	}
 
 	if (desiredMotorSpeed > currentMotorSpeed)
 	{
-		// Accelerating
+		// Accelerating - use the acceleration map
 		return accel->map(currentMotorSpeed, desiredMotorSpeed);
 	}
 	if (desiredMotorSpeed < currentMotorSpeed)
 	{
-		// Decelerating
+		// Decelerating - use the deceleration map
 		return decel->map(currentMotorSpeed, desiredMotorSpeed);
 	}
 

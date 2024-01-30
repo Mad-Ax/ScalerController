@@ -35,28 +35,35 @@
 // before activating the failsafe.
 #define MAX_FAILSAFE_COUNT 30				//TODO: M: test that this is a valid number
 
-// STEERING channel.  Operates only in DRIVE mode.
+// STEERING channel
 #define CHN_STEERING_CH 1                   // Input channel number
 #define CHN_STEERING_MIN 1000               // Minimum input  value
 #define CHN_STEERING_MAX 2000               // Maximum input value
 #define CHN_STEERING_DEADBAND_MIN 1486      // Deadband (center position) range start
 #define CHN_STEERING_DEADBAND_MAX 1504      // Deadband (center position) range end
 
-// THROTTLE/BRAKE channel.  Operates only in DRIVE mode.
+// THROTTLE/BRAKE channel
 #define CHN_THROTTLE_CH 3                   // Input channel number
 #define CHN_THROTTLE_MIN 1000               // Minimum input  value
 #define CHN_THROTTLE_MAX 2000               // Maximum input value
-#define CHN_THROTTLE_DEADBAND_MIN 1488      // Deadband (center position) range start
-#define CHN_THROTTLE_DEADBAND_MAX 1506      // Deadband (center position) range end
+#define CHN_THROTTLE_DEADBAND_MIN 1480      // Deadband (center position) range start
+#define CHN_THROTTLE_DEADBAND_MAX 1520      // Deadband (center position) range end
+
+#define CHN_THROTTLE_EBRAKE_THRESHOLD 1100	// Brake value below which the ESC all-stop signal will be given
 
 //// LIGHTS operation channel.  Operates only in DRIVE mode.
 //// If set to 0, no lights will function.
 //#define CHN_LIGHTS      4                   // Input channel number.
 
-// GEAR operation channel.  Operates only in DRIVE mode.
+// GEAR operation channel.  Operates only in Controller mode.
 #define CHN_GEAR_CH			2               // Input channel number
-#define CHN_GEAR_SELECT_MIN	1000            // Band range (min) for selecting forward / reverse gear
+#define CHN_GEAR_SELECT_MIN	800            // Band range (min) for selecting forward / reverse gear
 #define CHN_GEAR_SELECT_MAX 1250            // Band range (max) for selecting forward / reverse gear
+
+// CRUISE operation channel.  Operates only in Controller mode.
+#define CHN_CRUISE_CH			2           // Input channel number
+#define CHN_CRUISE_SELECT_MIN	1750            // Band range (min) for selecting cruise on / off
+#define CHN_CRUISE_SELECT_MAX 2200            // Band range (max) for selecting cruise on / off
 
 //// INDICATOR operation channel.  Operates only in DRIVE mode.
 //// If set to 0, indicators will not function.

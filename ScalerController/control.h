@@ -34,12 +34,6 @@ private:
 //	LightMode lightMode = LightMode::Off;
 //	MainBeam mainBeam = MainBeam::Off;
 	ControlConfig config;//TODO: remove config when not needed
-//	Inertia* forwardAccel;//TODO: remove these when not needed
-//	Inertia* forwardDecel;
-//	Inertia* forwardBrake;
-//	Inertia* reverseAccel;
-//	Inertia* reverseDecel;
-//	Inertia* reverseBrake;
 //	bool indicatorOn = false;
 //	Indicator indicator = Indicator::Off;
 //	unsigned long indicatorTime = 0;
@@ -52,12 +46,6 @@ private:
 //
 //	// Translates the requested gear with the current mode to determine the selected gear
 //	void translateGear(int input);
-
-	// Translates the input into a motor speed
-	void translateMotorSpeed(int input);
-
-	// Translates the steering position input to desired output depending on mode
-	void translateSteering(int input);
 
 //	// Translates the indicator input to the desired output depending on mode
 //	void translateIndicator(int input);

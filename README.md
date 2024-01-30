@@ -25,11 +25,27 @@ To install this controller you will need:
 - An understanding of soldering techniques and how to connect microcontrollers to RC equipment and how to correctly wire LEDs
 - Futher requirements to be confirmed as the project progresses
 
+## Setup Instructions
+
+to be completed
+
+## Operation Instructions
+
+to be completed
+
+## Known Issues
+
+#### PPM Timing
+
+Timing issues can cause some variation in the PPM signal as read.  This can introduce glitching in the servos and ESC, especially in the centre position.  If you experience excessive glitching in the center position, increase the deadband range for the analog channels
+
+**Warning:** Glitching on the throttle channel can cause the truck speed to change when cruise control is on.  **This can even cause the truck to start moving from stationary.**  Make sure your deadband range is correct
+
 ## Roadmap
 
 ### Version 0.0.1
 
-This is the base iteration from which all further work will be built upon.  There is an existing solution (SCRAPSpeed TruckController) which was built for big rigs, which has much of the code required to get this project off the ground.  ScalerController will be built on this codebase, changing it where necessary to get the required functionality.
+This is the base iteration from which all further work will be built upon.  There is an existing solution (SCRAPSpeed TruckController) which was built for big rigs, which has much of the code required to get this project off the ground.  ScalerController will be built on this codebase, changing it where necessary to get the required functionality
 
 - ✔Import all code from the TruckController solution
 - ✔Delete any code that relates to unrequired functionality (such as sound)
@@ -69,13 +85,13 @@ Inertia - the truck will take time to accelerate and brake depending on how far 
  
 Cruise control - the truck's speed will remain constant when cruise is on and can be adjusted 
 
-- Cruise is toggled on/off by pushing full-forward on the right stick and releasing
-- When cruise is on, the truck will maintain the current speed when the throttle is released
-- The farther forward the stick is pushed, the faster the speed will increase
-- When the stick is pulled back, the truck will slow down until the stick is released, after which the current speed is retained
-- The farther back the stick is pulled, the faster the truck slows down
-- If the stick is pulled full-back, the truck comes instantly to a full stop
-- When cruise is off, the truck will operate in Inertia mode as per 0.0.3
+- ✔Cruise is toggled on/off by pushing full-forward on the right stick and releasing
+- ✔When cruise is on, the truck will maintain the current speed when the throttle is released
+- ✔The farther forward the stick is pushed, the faster the speed will increase
+- ✔When the stick is pulled back, the truck will slow down until the stick is released, after which the current speed is retained
+- ✔The farther back the stick is pulled, the faster the truck slows down
+- ✔If the stick is pulled full-back, the truck comes instantly to a full stop
+- ✔When cruise is off, the truck will operate in Inertia mode as per 0.0.3
 
 ### Version 0.0.5
 
@@ -143,7 +159,7 @@ Boot sequence - when the controller is powered on or set to On mode, all the lig
 
 To be provided
 
-## Functionality not listed on roadmap / Wishlist / Gripe listed
+## Functionality not listed on roadmap / Wishlist / Gripe list
 
 - Input value validation - if an input value read by the PPMReader is not within expected bounds, it should be assumed BAD and set to the centre value
 - Failsafe warning - if the failsafe is triggered, all lights should flash (if not in pass-thru mode)

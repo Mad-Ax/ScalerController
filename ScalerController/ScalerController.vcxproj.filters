@@ -52,6 +52,9 @@
     <ClCompile Include="ppmWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="latchtranslator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.ScalerController.vsarduino.h">
@@ -122,6 +125,12 @@
     </ClInclude>
     <ClInclude Include="structs.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="latchtranslator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ilatchtranslator.h">
+      <Filter>Header Files\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
