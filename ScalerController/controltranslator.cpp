@@ -215,8 +215,36 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, forwardAccel, forwardDecel, forwardBrake);
 
 	case Gear::Reverse:
-		// TODO: M: same as above but backwards
-		return servo.center;
+		// Calculate applied reverse throttle
+		if (inputVal > channel.dbMax)
+		{
+			// Throttle is on - increase the set speed by the amount of throttle added
+
+			// Get the value of throttle applied, in terms of half a servo output
+			int throttleValue = map(inputVal, channel.dbMax, channel.max, servo.center, servo.max - ((servo.max - servo.center) / 2));
+
+			// Subtract the centerpoint from the absolute throtteValue to determine the increased value requested by the driver,
+			// and subtract it from the current motor speed to get our new desired speed
+			desiredMotorSpeed = constrain(currentMotorSpeed - (throttleValue - servo.center), servo.min, servo.center);
+		}
+		else if (inputVal < channel.dbMax && inputVal >= channel.dbMin)
+		{
+			// No throttle applied - continue at a constant speed
+			desiredMotorSpeed = currentMotorSpeed;
+		}
+		else
+		{
+			// Brake is on - decrease the set speed by the amount of throttle subtracted
+
+			// Get the value of brake applied, in terms of servo output
+			int brakeValue = map(inputVal, channel.min, channel.dbMin, servo.min + ((servo.center - servo.min) / 2), servo.center);
+
+			// Subtract the absolute brake value from the centerpoint to determine the decreased value requested by the driver,
+			// and add it to the current motor speed to get our new desired speed
+			desiredMotorSpeed = constrain(currentMotorSpeed + (servo.center - brakeValue), servo.min, servo.center);
+		}
+
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, reverseAccel, reverseDecel, reverseBrake);
 	}
 
 	// Failsafe
