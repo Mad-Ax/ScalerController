@@ -51,13 +51,17 @@
 
 #define CHN_THROTTLE_EBRAKE_THRESHOLD 1100	// Brake value below which the ESC all-stop signal will be given
 
-//// LIGHTS operation channel
-//// If set to 0, no lights will function.
-//#define CHN_LIGHTS      4                   // Input channel number.
+// LIGHTS operation channel
+// If set to 0, no lights will function.
+#define CHN_LIGHTS      4                   // Input channel number.
+#define CHN_LIGHTS_ON_SELECT_MIN 800		// Band range (min) for selecting lights on
+#define CHN_LIGHTS_ON_SELECT_MAX 1250		// Band range (max) for selecting lights on
+#define CHN_LIGHTS_OFF_SELECT_MIN 1750		// Band range (min) for selecting lights off
+#define CHN_LIGHTS_OFF_SELECT_MAX 2200		// Band range (max) for selecting lights off
 
 // GEAR operation channel.  Operates only in Controller mode.
 #define CHN_GEAR_CH			2               // Input channel number
-#define CHN_GEAR_SELECT_MIN	800            // Band range (min) for selecting forward / reverse gear
+#define CHN_GEAR_SELECT_MIN	800             // Band range (min) for selecting forward / reverse gear
 #define CHN_GEAR_SELECT_MAX 1250            // Band range (max) for selecting forward / reverse gear
 
 // CRUISE operation channel.  Operates only in Controller mode.
@@ -107,14 +111,10 @@
 // Light configuration
 
 // LED output pins
-//#define HEADLIGHT_OUT 2             // front headlights (PWM)
+#define HEADLIGHT_OUT 2             // front headlights (PWM)
 #define BRAKELIGHT_OUT 3            // brake / tail lights (PWM)
 #define REVERSE_OUT 4               // reverse lights (PWM)
-//#define FOGLIGHT_F_OUT 22           // front fog lights (digital)
-//#define FOGLIGHT_R_OUT 23           // rear fog lights (digital)
-//#define INDICATOR_L_OUT 24          // left indicators (digital)
-//#define INDICATOR_R_OUT 25          // right indicators (digital)
-//#define ROOFLIGHT_OUT 26            // roof / aux lights (digital)
+#define ROOFLIGHT_OUT 5				// roof lights (PWM)
 //#define FAILSAFE_OUT 28				// check valid LED output (digital)
 //
 //// Timing settings
@@ -124,8 +124,12 @@
 // LED output settings
 // Intensity values range from 0 (off) to 255 (max, 5V)
 #define BRAKE_MAX_PWM 255           // Brakes on
-//#define BRAKE_MED_PWM 100           // Sidelights/headlights on
+#define BRAKE_LOW_PWM 100           // Sidelights/headlights on
 #define REVERSE_PWM 255				// Reverse light on
+#define HEADLIGHT_MAX_PWM 255		// Main beams
+#define HEADLIGHT_LOW_PWM 100		// Dipped beams
+#define ROOFLIGHT_MAX_PWM 255		// Full rooflight
+#define ROOFLIGHT_LOW_PWM 100		// Low rooflight
 //
 //#define HEADLIGHT_MAX_PWM 255       // Main beam
 //#define HEADLIGHT_MED_PWM 100       // Dipped beam

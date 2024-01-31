@@ -30,13 +30,12 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.motorSpeed = config.throttleServo.center;
 		setting.steering = config.steeringServo.center;
 		setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
-//		setting.lightSetting.reverseLightIntensity = LOW;
-//		setting.lightSetting.headLightIntensity = 0;
-//		setting.lightSetting.frontFogIntensity = 0;
-//		setting.lightSetting.rearFogIntensity = 0;
-//		setting.lightSetting.roofLightIntensity = 0;
-//
-//		setting.lightSetting.indicatorLeftIntensity = setting.lightSetting.indicatorRightIntensity = this->indicatorToggle(this->config.lightModeConfig.failsafeFlashDelay);
+		setting.lightSetting.reverseIntensity = 0;
+		setting.lightSetting.headLightIntensity = 0;
+		setting.lightSetting.roofLightIntensity = 0;
+
+		// TODO: M: all other channels to centre
+		// TODO: failsafe flash mode
 		return;
 	}
 
@@ -47,6 +46,9 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.motorSpeed = input.channel[config.throttleChannel.channel];
 		setting.steering = input.channel[config.steeringChannel.channel];
 		setting.lightSetting.brakeIntensity = 0;
+		setting.lightSetting.reverseIntensity = 0;
+		setting.lightSetting.headLightIntensity = 0;
+		setting.lightSetting.roofLightIntensity = 0;
 
 		// TODO: M: all other channels to centre
 		return;
@@ -76,12 +78,9 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	// Get the steering servo position
 	setting.steering = this->controlTranslator->translateSteering(input);
 
-//	// Get the indicator setting
-//	if (config.indicator.channel > -1)
-//		translateIndicator(input.channel[config.indicator.channel]);
-//
-//	if (config.lights.channel > -1)
-//	{
+	// Get the light setting
+	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear);
+
 //		// Get the light mode
 //		translateLightMode(input.channel[config.lights.channel]);
 //
@@ -89,11 +88,10 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 //		translateMainBeam(input.channel[config.lights.channel]);
 //
 	// Get the brake light setting
-	setting.lightSetting.brakeIntensity = this->lightingTranslator->translateBrakeLight(input);
+	//setting.lightSetting.brakeIntensity = this->lightingTranslator->translateBrakeLight(input);
 
 	// Get the reverse light setting
-	setting.lightSetting.reverseIntensity = this->lightingTranslator->translateReverseLight(setting.gear);
-//	}
+	//setting.lightSetting.reverseIntensity = this->lightingTranslator->translateReverseLight(setting.gear);
 }
 
 //// Translates the indicator input to the desired output depending on mode

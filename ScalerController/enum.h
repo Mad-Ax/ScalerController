@@ -12,23 +12,14 @@ enum class Cruise
 	On = 1
 };
 
-//enum class Indicator
-//{
-//	Left = 0,
-//	Off = 1,
-//	Right = 2,
-//	ErrorCodeFailsafe = 3,
-//};
-//
-//enum class LightMode
-//{
-//	Off,
-//	Sidelights,
-//	Headlights,
-//	Foglights,
-//	Max // This is for iteration through the enums - it is not used as a mode.  Do no delete it.
-//};
-//
+enum class LightMode
+{
+	Off = 0,
+	Dipped = 1,
+	Rooflights = 2,
+	Full = 3
+};
+
 //enum class MainBeam
 //{
 //	Off,
@@ -39,7 +30,7 @@ enum class Cruise
 enum class BrakeLight
 {
 	Off,
-//	Sidelight,
+	Sidelight,
 	Braking
 };
 

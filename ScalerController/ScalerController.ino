@@ -70,13 +70,17 @@ void setup()
 		CHN_STEERING_DEADBAND_MAX
 	};
 
-//	ChannelConfig indicator = {
-//		CHN_INDICATOR - 1
-//	};
-//
-//	ChannelConfig lights = {
-//		CHN_LIGHTS - 1
-//	};
+	LatchChannel lightsOnChannel{
+		CHN_LIGHTS - 1,
+		CHN_LIGHTS_ON_SELECT_MIN,
+		CHN_LIGHTS_ON_SELECT_MAX
+	};
+
+	LatchChannel lightsOffChannel{
+		CHN_LIGHTS - 1,
+		CHN_LIGHTS_OFF_SELECT_MIN,
+		CHN_LIGHTS_OFF_SELECT_MAX
+	};
 
 	ServoConfig throttleServo = {
 		SVO_ESC_PIN,
@@ -93,14 +97,13 @@ void setup()
 	};
 
 	LightModeConfig lightModeConfig = {
-//		CHN_LIGHTS > 0,
-//		INDICATOR_TIME,
 		BRAKE_MAX_PWM,
-//		BRAKE_MED_PWM,
+		BRAKE_LOW_PWM,
 		REVERSE_PWM,
-//		HEADLIGHT_MAX_PWM,
-//		HEADLIGHT_MED_PWM,
-//		HEADLIGHT_MIN_PWM,
+		HEADLIGHT_MAX_PWM,
+		HEADLIGHT_LOW_PWM,
+		ROOFLIGHT_MAX_PWM,
+		ROOFLIGHT_LOW_PWM
 //		FAILSAFE_FLASH_TIME,
 	};
 
@@ -111,6 +114,8 @@ void setup()
 		cruiseChannel,
 		throttleChannel,
 		steeringChannel,
+		lightsOnChannel,
+		lightsOffChannel,
 //		indicator,
 //		lights,
 		throttleServo,
@@ -149,20 +154,17 @@ void setup()
 		reverseDecel,
 		reverseBrake);
 
-	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig);
-	//ILightingTranslator* lightingTranslator = new LightingTranslator(inputTranslator, controlConfig);
+	ILatchTranslator* lightsOnTranslator = new LatchTranslator();
+	ILatchTranslator* lightsOffTranslator = new LatchTranslator();
+	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, lightsOnTranslator, lightsOffTranslator);
 
 	control = new Control(controlTranslator, lightingTranslator, controlConfig);
 
 	LightOutputConfig lightOutputConfig = {
-//		INDICATOR_L_OUT,
-//		INDICATOR_R_OUT,
+		HEADLIGHT_OUT,
 		BRAKELIGHT_OUT,
 		REVERSE_OUT,
-//		HEADLIGHT_OUT,
-//		FOGLIGHT_F_OUT,
-//		FOGLIGHT_R_OUT,
-//		ROOFLIGHT_OUT,
+		ROOFLIGHT_OUT,
 //		FAILSAFE_OUT
 	};
 

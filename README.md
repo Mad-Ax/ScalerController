@@ -108,18 +108,18 @@ Operational lights - brake and reverse lights illuminate according to settings
 
 Driving lights - can be toggled through settings using the left stick to the full left and right positions
 
-- Full left will advance the light setting
-- Full right will retard the light setting
-- All lights will operate through PWM pins
-- There will be setting values for intensity of all lights
-- In all light modes, brake and reverse continue to operate as in version 0.0.5
-- Dipped and main beam use different intensity settings on the same pins
-- Tail lights use the same pin as brake lights, but with a lower PWM value
-- Light modes as follows
-  - All off
-  - Dipped beams - headlamps are low intensity, tail lights are on
-  - Roof lamps low - roof lamps are low intensity
-  - Main beams - roof lamps and headlamps are high intensity
+- ✔Full left will advance the light setting
+- ✔Full right will retard the light setting
+- ✔All lights will operate through PWM pins
+- ✔There will be setting values for intensity of all lights
+- ✔In all light modes, brake and reverse continue to operate as in version 0.0.5
+- ✔Dipped and main beam use different intensity settings on the same pins
+- ✔Tail lights use the same pin as brake lights, but with a lower PWM value
+- ✔Light modes as follows
+  - ✔All off
+  - ✔Dipped beams - headlamps are low intensity, tail lights are on
+  - ✔Roof lamps low - roof lamps are low intensity
+  - ✔Main beams - roof lamps and headlamps are high intensity
   
 ### Version 0.0.7
  
@@ -161,6 +161,7 @@ To be provided
 
 ## Functionality not listed on roadmap / Wishlist / Gripe list
 
+- Need a way of sending a 2-way gear selector thru the unit
 - Input value validation - if an input value read by the PPMReader is not within expected bounds, it should be assumed BAD and set to the centre value
 - Failsafe warning - if the failsafe is triggered, all lights should flash (if not in pass-thru mode)
 - Some way of reversing channels (especially throttle) without spoiling throttle / brake functionality

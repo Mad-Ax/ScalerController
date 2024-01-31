@@ -80,14 +80,20 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 	LatchChannel channel = this->config.gearChannel;
 	int value = input.channel[channel.channel];
 
-	int lastLatchValue = static_cast<int>(lastGear);
-	int newLatchValue = this->gearTranslator->translateLatch(channel, value, lastLatchValue);
-	if (lastLatchValue == newLatchValue)
+	if (this->gearTranslator->translateLatch(channel, value))
 	{
-		return lastGear;
-	}
+		// We have requested to change gear
+		switch (lastGear)
+		{
+		case Gear::Forward:
+			return Gear::Reverse;
 
-	return static_cast<Gear>(newLatchValue);
+		case Gear::Reverse:
+			return Gear::Forward;
+		}
+	}
+	
+	return lastGear;
 }
 
 // Translates the channel input value to the requested cruise value
@@ -96,14 +102,20 @@ Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
 	LatchChannel channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
 
-	int lastLatchValue = static_cast<int>(lastCruise);
-	int newLatchValue = this->cruiseTranslator->translateLatch(channel, value, lastLatchValue);
-	if (lastLatchValue == newLatchValue)
+	if (this->cruiseTranslator->translateLatch(channel, value))
 	{
-		return lastCruise;
+		// We have requested to change the cruise mode
+		switch (lastCruise)
+		{
+		case Cruise::Off:
+			return Cruise::On;
+
+		case Cruise::On:
+			return Cruise::Off;
+		}
 	}
 
-	return static_cast<Cruise>(newLatchValue);
+	return lastCruise;
 }
 
 // Translates the motor speed in drive mode

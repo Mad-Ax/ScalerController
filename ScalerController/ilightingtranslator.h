@@ -14,10 +14,11 @@ public:
 //	// Translates the main beam setting based on lightmode and input
 //	virtual MainBeam translateMainBeam(int input, LightMode currentLightMode, MainBeam currentMainBeam) = 0;
 
-	// Translates the brake light setting based on throttle input and current lighting mode
-	virtual int translateBrakeLight(InputSetting input) = 0;
-	//virtual BrakeLight translateBrakeLight(int input, LightMode currentLightMode) = 0;
-
-	// Translates the reverse light setting based on gear setting
-	virtual int translateReverseLight(Gear gear) = 0;
+	/// <summary>
+	/// Translates the light settings based on current input
+	/// </summary>
+	/// <param name="input">Raw channel input data from the receiver</param>
+	/// <param name="gear">Current gear</param>
+	/// <returns></returns>
+	virtual LightSetting translateLightSetting(InputSetting input, Gear gear) = 0;
 };

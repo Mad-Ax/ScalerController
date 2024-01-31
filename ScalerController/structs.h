@@ -76,16 +76,15 @@ struct LatchChannel
 	int max;
 };
 
-//// Configuration for lighting modes
+// Configuration for lighting modes
 struct LightModeConfig {
-//	bool lights;
-//	int indicatorTime;
 	int brakeIntensityMax;
-//	int brakeMed;
+	int brakeIntensityLow;
 	int reverseIntensity;
-//	int headlightMax;
-//	int headlightMed;
-//	int headlightMin;
+	int headlightIntensityMax;
+	int headlightIntensityLow;
+	int rooflightIntensityMax;
+	int rooflightIntensityLow;
 //	int failsafeFlashDelay;
 };
 
@@ -97,8 +96,8 @@ struct ControlConfig
 	LatchChannel cruiseChannel;
 	ThrottleChannel throttleChannel;
 	AnalogChannel steeringChannel;
-//	ChannelConfig indicator;
-//	ChannelConfig lights;
+	LatchChannel lightsOnChannel;
+	LatchChannel lightsOffChannel;
 	ServoConfig throttleServo;
 	ServoConfig steeringServo;
 	LightModeConfig lightModeConfig;
@@ -111,19 +110,14 @@ struct ControlConfig
 	int revDecelInertia;
 	int revBrakeInertia;
 	int eBrakeThreshold;
-//	//TODO: Option for 4 aux servos?
 };
 
 // Configuration for lighting output
 struct LightOutputConfig {
-//	int indicatorLeftPin;
-//	int indicatorRightPin;
+	int headLightPin;
 	int brakePin;
 	int reversePin;
-//	int headLightPin;
-//	int fogLightFrontPin;
-//	int fogLightRearPin;
-//	int roofLightPin;
+	int roofLightPin;
 //	int failsafePin;
 };
 
@@ -150,26 +144,18 @@ struct InputSetting
 
 // Light control values
 struct LightSetting {
-//	int indicatorLeftIntensity;
-//	int indicatorRightIntensity;
 	int brakeIntensity;
 	int reverseIntensity;
-//	int headLightIntensity;
-//	int frontFogIntensity;
-//	int rearFogIntensity;
-//	int roofLightIntensity;
+	int headLightIntensity;
+	int roofLightIntensity;
 
 	bool operator==(const LightSetting& rhs)
 	{
 		return
-			//			indicatorLeftIntensity == rhs.indicatorLeftIntensity &&
-			//			indicatorRightIntensity == rhs.indicatorRightIntensity &&
-			brakeIntensity == rhs.brakeIntensity;
-//			headLightIntensity == rhs.headLightIntensity &&
-//			frontFogIntensity == rhs.frontFogIntensity &&
-//			rearFogIntensity == rhs.rearFogIntensity &&
-//			roofLightIntensity == rhs.roofLightIntensity &&
-//			reverseLightIntensity == rhs.reverseLightIntensity;
+			brakeIntensity == rhs.brakeIntensity &&
+			reverseIntensity == rhs.reverseIntensity &&
+			headLightIntensity == rhs.headLightIntensity &&
+			roofLightIntensity == rhs.roofLightIntensity;
 	}
 };
 

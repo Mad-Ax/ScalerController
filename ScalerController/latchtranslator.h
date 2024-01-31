@@ -8,7 +8,7 @@ public:
 	LatchTranslator();
 	~LatchTranslator();
 
-	int translateLatch(LatchChannel channel, int value, int lastValue);
+	bool translateLatch(LatchChannel channel, int value);
 
 private:
 	bool latching;
