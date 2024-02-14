@@ -18,4 +18,5 @@ void OutputLights::send(LightSetting setting)
 	analogWrite(this->outputConfig.reversePin, setting.reverseIntensity);
 	analogWrite(this->outputConfig.headLightPin, setting.headLightIntensity);
 	analogWrite(this->outputConfig.roofLightPin, setting.roofLightIntensity);
+	analogWrite(this->outputConfig.floodlightPin, setting.floodlightIntensity);
 }

@@ -55,6 +55,9 @@
     <ClCompile Include="latchtranslator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="switchtranslatortwoway.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.ScalerController.vsarduino.h">
@@ -131,6 +134,12 @@
     </ClInclude>
     <ClInclude Include="ilatchtranslator.h">
       <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="iswitchtranslatortwoway.h">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="switchtranslatortwoway.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

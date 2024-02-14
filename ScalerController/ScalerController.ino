@@ -19,6 +19,7 @@
 #include "latchtranslator.h"
 #include "outputservo.h"
 #include "outputlights.h"
+#include "switchtranslatortwoway.h"
 
 // Global pointers
 Input* input;
@@ -82,6 +83,11 @@ void setup()
 		CHN_LIGHTS_OFF_SELECT_MAX
 	};
 
+	SwitchChannelTwoWay floodlightChannel{
+		CHN_FLOOD_CH - 1,
+		SWITCH_HIGH
+	};
+
 	ServoConfig throttleServo = {
 		SVO_ESC_PIN,
 		SVO_ESC_CENTER,
@@ -103,7 +109,8 @@ void setup()
 		HEADLIGHT_MAX_PWM,
 		HEADLIGHT_LOW_PWM,
 		ROOFLIGHT_MAX_PWM,
-		ROOFLIGHT_LOW_PWM
+		ROOFLIGHT_LOW_PWM,
+		FLOODLIGHT_PWM,
 //		FAILSAFE_FLASH_TIME,
 	};
 
@@ -116,6 +123,7 @@ void setup()
 		steeringChannel,
 		lightsOnChannel,
 		lightsOffChannel,
+		floodlightChannel,
 //		indicator,
 //		lights,
 		throttleServo,
@@ -156,7 +164,8 @@ void setup()
 
 	ILatchTranslator* lightsOnTranslator = new LatchTranslator();
 	ILatchTranslator* lightsOffTranslator = new LatchTranslator();
-	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, lightsOnTranslator, lightsOffTranslator);
+	ISwitchTranslatorTwoWay* floodlightTranslator = new SwitchTranslatorTwoWay();
+	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, lightsOnTranslator, lightsOffTranslator, floodlightTranslator);
 
 	control = new Control(controlTranslator, lightingTranslator, controlConfig);
 
@@ -165,6 +174,7 @@ void setup()
 		BRAKELIGHT_OUT,
 		REVERSE_OUT,
 		ROOFLIGHT_OUT,
+		FLOODLIGHT_OUT
 //		FAILSAFE_OUT
 	};
 

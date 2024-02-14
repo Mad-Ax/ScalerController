@@ -69,6 +69,9 @@
 #define CHN_CRUISE_SELECT_MIN	1750            // Band range (min) for selecting cruise on / off
 #define CHN_CRUISE_SELECT_MAX 2200            // Band range (max) for selecting cruise on / off
 
+// FLOODLIGHT operation channel.  Operates only in Controller mode.
+#define CHN_FLOOD_CH			5			// Input channel number
+
 //// INDICATOR operation channel.  Operates only in DRIVE mode.
 //// If set to 0, indicators will not function.
 //#define CHN_INDICATOR   7                   // Input channel number
@@ -80,8 +83,8 @@
 //#define CHN_AUX4        4           // Output this channel to Aux4 servo when mode is Park
 //
 //
-//#define SWITCH_HIGH 1650            // Value for "high" or "up" on a Tx switch or knob
-//#define SWITCH_LOW 1350             // Value for "low" or "down" on a Tx switch or knob
+#define SWITCH_HIGH 1650            // Value for "high" or "up" on a Tx switch or knob
+#define SWITCH_LOW 1350             // Value for "low" or "down" on a Tx switch or knob
 
 // STEERING output settings
 #define SVO_STEERING_PIN 8          // Output pin for steering servo
@@ -115,6 +118,7 @@
 #define BRAKELIGHT_OUT 3            // brake / tail lights (PWM)
 #define REVERSE_OUT 4               // reverse lights (PWM)
 #define ROOFLIGHT_OUT 5				// roof lights (PWM)
+#define FLOODLIGHT_OUT 9			// floodlight (PWM)
 //#define FAILSAFE_OUT 28				// check valid LED output (digital)
 //
 //// Timing settings
@@ -130,7 +134,4 @@
 #define HEADLIGHT_LOW_PWM 100		// Dipped beams
 #define ROOFLIGHT_MAX_PWM 255		// Full rooflight
 #define ROOFLIGHT_LOW_PWM 100		// Low rooflight
-//
-//#define HEADLIGHT_MAX_PWM 255       // Main beam
-//#define HEADLIGHT_MED_PWM 100       // Dipped beam
-//#define HEADLIGHT_MIN_PWM 50        // Sidelights
+#define FLOODLIGHT_PWM 255			// Floodlight on

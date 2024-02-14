@@ -90,6 +90,7 @@
       <FileType>CppCode</FileType>
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="switchtranslatortwoway.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="control.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="iinertia.h" />
     <ClInclude Include="iinputtranslator.h" />
     <ClInclude Include="ilatchtranslator.h" />
+    <ClInclude Include="iswitchtranslatortwoway.h" />
     <ClInclude Include="latchtranslator.h" />
     <ClInclude Include="ilightingtranslator.h" />
     <ClInclude Include="imotorspeedtranslator.h" />
@@ -116,6 +118,7 @@
     <ClInclude Include="outputServo.h" />
     <ClInclude Include="ppmWrapper.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="switchtranslatortwoway.h" />
     <ClInclude Include="__vm\.ScalerController.vsarduino.h" />
   </ItemGroup>
   <PropertyGroup>

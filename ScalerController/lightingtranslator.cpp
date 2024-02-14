@@ -4,11 +4,13 @@
 LightingTranslator::LightingTranslator(
 	ControlConfig config,
 	ILatchTranslator* lightsOnTranslator,
-	ILatchTranslator* lightsOffTranslator)
+	ILatchTranslator* lightsOffTranslator,
+	ISwitchTranslatorTwoWay* floodlightTranslator)
 {
 	this->config = config;
 	this->lightsOnTranslator = lightsOnTranslator;
 	this->lightsOffTranslator = lightsOffTranslator;
+	this->floodlightTranslator = floodlightTranslator;
 	this->currentLightMode = LightMode::Off;
 }
 
@@ -174,6 +176,9 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 	// Set the reverse light intensity
 	newSetting.reverseIntensity = this->translateReverseLight(gear);
 
+	// Set the floodlight intensity
+	newSetting.floodlightIntensity = this->translateFloodlight(input);
+
 	return newSetting;
 }
 
@@ -211,6 +216,20 @@ int LightingTranslator::translateReverseLight(Gear gear)
 
 	case Gear::Reverse:
 		return config.lightModeConfig.reverseIntensity;
+	}
+
+	return 0;
+}
+
+// Translates the floodlight setting based on switch setting
+int LightingTranslator::translateFloodlight(InputSetting input)
+{
+	// Check if the floodlight channel is on
+	SwitchChannelTwoWay floodlightChannel = this->config.floodlightChannel;
+	int switchValue = input.channel[floodlightChannel.channel];
+	if (this->floodlightTranslator->translateSwitch(floodlightChannel, switchValue))
+	{
+		return config.lightModeConfig.floodlightIntensity;
 	}
 
 	return 0;

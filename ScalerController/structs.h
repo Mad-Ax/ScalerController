@@ -76,6 +76,15 @@ struct LatchChannel
 	int max;
 };
 
+/// <summary>
+/// Configures a 2-way switch, e.g. a toggle on the transmitter to turn a function on and off
+/// </summary>
+struct SwitchChannelTwoWay
+{
+	int channel;
+	int high;
+};
+
 // Configuration for lighting modes
 struct LightModeConfig {
 	int brakeIntensityMax;
@@ -85,6 +94,7 @@ struct LightModeConfig {
 	int headlightIntensityLow;
 	int rooflightIntensityMax;
 	int rooflightIntensityLow;
+	int floodlightIntensity;
 //	int failsafeFlashDelay;
 };
 
@@ -98,6 +108,7 @@ struct ControlConfig
 	AnalogChannel steeringChannel;
 	LatchChannel lightsOnChannel;
 	LatchChannel lightsOffChannel;
+	SwitchChannelTwoWay floodlightChannel;
 	ServoConfig throttleServo;
 	ServoConfig steeringServo;
 	LightModeConfig lightModeConfig;
@@ -118,6 +129,7 @@ struct LightOutputConfig {
 	int brakePin;
 	int reversePin;
 	int roofLightPin;
+	int floodlightPin;
 //	int failsafePin;
 };
 
@@ -148,6 +160,7 @@ struct LightSetting {
 	int reverseIntensity;
 	int headLightIntensity;
 	int roofLightIntensity;
+	int floodlightIntensity;
 
 	bool operator==(const LightSetting& rhs)
 	{
@@ -155,7 +168,8 @@ struct LightSetting {
 			brakeIntensity == rhs.brakeIntensity &&
 			reverseIntensity == rhs.reverseIntensity &&
 			headLightIntensity == rhs.headLightIntensity &&
-			roofLightIntensity == rhs.roofLightIntensity;
+			roofLightIntensity == rhs.roofLightIntensity &&
+			floodlightIntensity == rhs.floodlightIntensity;
 	}
 };
 
