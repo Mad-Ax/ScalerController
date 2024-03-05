@@ -125,14 +125,14 @@ Driving lights - can be toggled through settings using the left stick to the ful
  
 Rear floodlight - a bright lamp that shines out the back of the truck, can be toggled on and off via a 2-way switch on the controller
  
-- Floodlight will use a PWM pin
-- There will be a setting value for floodlight intensity
-- When the switch is down, the floodlight will be on
-- When the switch is up, the floodlight will be off
+- ✔Floodlight will use a PWM pin
+- ✔There will be a setting value for floodlight intensity
+- ✔When the switch is down, the floodlight will be on
+- ✔When the switch is up, the floodlight will be off
 
 ### Version 0.0.8
 
-Switch Off (pass-thru) - when a 2-way switch inside the truck is on the open position, the controller will revert to pass-thru mode
+Switch Off (pass-thru) - when a 2-way switch inside the truck is in the open position, the controller will revert to pass-thru mode
 
 - When the switch is closed, all functionality from previous versions works as expected
 - When the switch is open, the inputted throttle and steering channel data is output unchanged to the ESC and steering servo
@@ -147,6 +147,14 @@ Winch controller - the use of a 3-way switch on the transmitter can enable eithe
 - When the switch is in the middle position, the right vertical channel controls the front winch
 - When the switch is in the bottom position, the right vertical channel controls the rear winch
 - It is not possible to change cruise mode or select / deselect reverse while winch operation is taking place
+
+## Version 0.0.10
+
+Gearbox controller - an analog channel (generally a 2-way switch) will be output unmodified to the gear selector channel
+
+- When the switch or channel is moved, the corresponding signal is sent direct to the gear servo
+- If the servo experiences glitching on the test bench, some smoothing will be applied (no change will be sent if the signal change is within a small amount)
+- When on Switch Off (pass-thru) mode, the gear servo will continue to operate as it does in Controller mode
 
 ### Version 1.0.0
 
