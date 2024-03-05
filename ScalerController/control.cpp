@@ -33,6 +33,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
 		setting.lightSetting.roofLightIntensity = 0;
+		setting.lightSetting.brakeIntensity = 0;
 
 		// TODO: M: all other channels to centre
 		// TODO: failsafe flash mode
@@ -41,7 +42,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 
 	// If we are in pass-thru mode, translate the steering and ESC only
 	// Set all other channels to centre
-	if (input.mode == 0) // TODO: M: we might want to use the control translator so we can remove dependency on config object
+	if (input.mode == Mode::PassThru) // TODO: M: we might want to use the control translator so we can remove dependency on config object
 	{
 		setting.motorSpeed = input.channel[config.throttleChannel.channel];
 		setting.steering = input.channel[config.steeringChannel.channel];

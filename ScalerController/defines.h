@@ -14,8 +14,10 @@
 
 // Input config
 
-// Mode flag
-#define MODE 1								// 0 = Pass-thru (no translation) mode, steering and ESC only; 1 = ScalerController mode (translation on all inputs, all advanced functionality available)
+// Mode switch (physical switch - connect to GND to enable controller; leave open for pass-thru mode)
+#define MODE_PIN 10					// Digital input pin for pass-thru switch
+									// When closed (connected to 0V), ScalerController mode is active
+									// When open (internal pullup to 5V), pass-thru mode is active and only basic steering and throttle will work
 
 // Input pin for PPM from receiver
 // Can be 18, 19, 20 or 21 (or 2 or 3 if not using lighting output on those pins)

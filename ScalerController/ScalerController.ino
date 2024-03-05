@@ -36,7 +36,8 @@ void setup()
 		PPM_INPUT_MAX_ERROR,
 		PPM_BLANK_TIME,
 		PPM_MIN_CHANNEL_VALUE,
-		PPM_MAX_CHANNEL_VALUE
+		PPM_MAX_CHANNEL_VALUE,
+		MODE_PIN
 	};
 	PpmWrapper* ppmWrapper = new PpmWrapper(inputConfig);
 

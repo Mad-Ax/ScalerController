@@ -1,5 +1,13 @@
 #pragma once
 
+#include "Arduino.h"
+
+enum class Mode
+{
+	Controler = LOW,
+	PassThru = HIGH
+};
+
 enum class Gear
 {
 	Forward = 0,

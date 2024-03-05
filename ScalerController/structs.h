@@ -12,6 +12,7 @@ struct InputConfig
 	unsigned long ppmBlankTime;
 	unsigned int minChannelValue;
 	unsigned int maxChannelValue;
+	int modePin;
 };
 
 // Configuration for servo
@@ -138,7 +139,7 @@ struct InputSetting
 {
 	int channel[8];
 
-	int mode;
+	Mode mode;
 
 	bool operator==(const InputSetting& rhs)
 	{
