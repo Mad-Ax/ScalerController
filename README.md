@@ -134,10 +134,10 @@ Rear floodlight - a bright lamp that shines out the back of the truck, can be to
 
 Switch Off (pass-thru) - when a 2-way switch inside the truck is in the open position, the controller will revert to pass-thru mode
 
-- When the switch is closed, all functionality from previous versions works as expected
-- When the switch is open, the inputted throttle and steering channel data is output unchanged to the ESC and steering servo
-- All other servo outputs are set to the centre position
-- All lights are off
+- ✔When the switch is closed, all functionality from previous versions works as expected
+- ✔When the switch is open, the inputted throttle and steering channel data is output unchanged to the ESC and steering servo
+- ✔All other servo outputs are set to the centre position
+- ✔All lights are off
 
 ### Version 0.0.9
 
