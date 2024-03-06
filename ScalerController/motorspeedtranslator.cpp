@@ -3,7 +3,7 @@
 MotorSpeedTranslator::MotorSpeedTranslator(AnalogChannel channel, ServoConfig servo)
 {
 	this->channel = channel;
-	this->servo = servo;
+	this->servo = servo; // TODO: M: don't think we need the servo here
 }
 
 MotorSpeedTranslator::~MotorSpeedTranslator()
@@ -16,7 +16,7 @@ int MotorSpeedTranslator::translateMotorSpeed(
 	int desiredMotorSpeed, 
 	IInertia* accel, 
 	IInertia* decel, 
-	IInertia* brake)
+	IInertia* brake) // TODO: why is Inertia here - shouldn't it be in the ctor?
 {
 	if (input < channel.dbMin)
 	{

@@ -139,6 +139,13 @@ Switch Off (pass-thru) - when a 2-way switch inside the truck is in the open pos
 - ✔All other servo outputs are set to the centre position
 - ✔All lights are off
 
+### Version 0.0.8.1
+
+Inertial steering - apply inertia to the steering to smooth out driver input
+
+- ✔Steering servo speed is moderated by an inertia value
+- ✔Larger steering inputs will move the servo faster than smaller inputs
+
 ### Version 0.0.9
 
 Winch controller - the use of a 3-way switch on the transmitter can enable either the front or rear winch to be operated by the right vertical axis

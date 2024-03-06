@@ -2,7 +2,8 @@
 
 //#include "Arduino.h"
 #include "icontroltranslator.h"
-#include "iinputtranslator.h"
+#include "iinputtranslator.h" // TODO: M: remove
+#include "isteeringtranslator.h"
 #include "imotorspeedtranslator.h"
 #include "ilatchtranslator.h"
 #include "iinertia.h"
@@ -13,6 +14,7 @@ public:
 	ControlTranslator(
 		ControlConfig config,
 		IInputTranslator* inputTranslator,
+		ISteeringTranslator* steeringTranslator,
 		IMotorSpeedTranslator* motorSpeedTranslator,
 		ILatchTranslator* gearTranslator,
 		ILatchTranslator* cruiseTranslator,
@@ -21,7 +23,8 @@ public:
 		IInertia* forwardBrake,
 		IInertia* reverseAccel,
 		IInertia* reverseDecel,
-		IInertia* reverseBrake);
+		IInertia* reverseBrake,
+		IInertia* steeringInertia);
 	~ControlTranslator();
 
 	// Checks for a fail condition on the input
@@ -41,14 +44,14 @@ public:
 	int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
 
 	// Translates the steering angle
-	int translateSteering(InputSetting input);
+	int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser);
 
 private:
 	int failsafeCount;
 	InputSetting *lastInput = nullptr;
 	ControlConfig config;
-	//bool gearLatching;
-	IInputTranslator* inputTranslator;
+	IInputTranslator* inputTranslator; // TODO: M: remove if not used
+	ISteeringTranslator* steeringTranslator;
 	IMotorSpeedTranslator* motorSpeedTranslator;
 	ILatchTranslator* gearTranslator;
 	ILatchTranslator* cruiseTranslator;
@@ -58,4 +61,5 @@ private:
 	IInertia* reverseAccel;
 	IInertia* reverseDecel;
 	IInertia* reverseBrake;
+	IInertia* steeringInertia;
 };

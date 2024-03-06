@@ -121,7 +121,7 @@ struct ControlConfig
 	int revAccelInertia;
 	int revDecelInertia;
 	int revBrakeInertia;
-	int eBrakeThreshold;
+	int steeringInertia;
 };
 
 // Configuration for lighting output

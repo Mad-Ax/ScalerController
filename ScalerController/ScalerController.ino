@@ -12,7 +12,8 @@
 #include "structs.h"
 #include "ppmwrapper.h"
 #include "controltranslator.h"
-#include "inputtranslator.h"
+#include "inputtranslator.h" // TODO: M: remove
+#include "steeringtranslator.h"
 #include "lightingtranslator.h"
 #include "inertia.h"
 #include "motorspeedtranslator.h"
@@ -138,9 +139,11 @@ void setup()
 		REV_ACCEL_INERTIA,
 		REV_DECEL_INERTIA,
 		REV_BRAKE_INERTIA,
+		STEERING_INERTIA
 	};
 
-	IInputTranslator* inputTranslator = new InputTranslator();
+	IInputTranslator* inputTranslator = new InputTranslator();// TODO: remove when not noeded
+	ISteeringTranslator* steeringTranslator = new SteeringTranslator(steeringChannel, steeringServo);
 	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
 	ILatchTranslator* gearTranslator = new LatchTranslator();
 	ILatchTranslator* cruiseTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
@@ -150,9 +153,11 @@ void setup()
 	IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	IInertia* steeringInertia = new Inertia(controlConfig.steeringInertia, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
 	IControlTranslator* controlTranslator = new ControlTranslator(
 		controlConfig,
 		inputTranslator,
+		steeringTranslator,
 		motorSpeedTranslator,
 		gearTranslator,
 		cruiseTranslator,
@@ -161,7 +166,8 @@ void setup()
 		forwardBrake,
 		reverseAccel,
 		reverseDecel,
-		reverseBrake);
+		reverseBrake,
+		steeringInertia);
 
 	ILatchTranslator* lightsOnTranslator = new LatchTranslator();
 	ILatchTranslator* lightsOffTranslator = new LatchTranslator();
@@ -196,12 +202,12 @@ void loop()
 	// get the latest input values from the receiver
 	input->update();
 
-	//for (int channel = 0; channel < 8; channel++)
-	//{
-	//	Serial.print(input->setting.channel[channel]);
-	//	Serial.print(':');
-	//}
-	//Serial.println();
+	/*for (int channel = 0; channel < 8; channel++)
+	{
+		Serial.print(input->setting.channel[channel]);
+		Serial.print(':');
+	}
+	Serial.println();*/
 
 	// translate the input values to control values that can be sent to the outputs
 	control->translate(input->setting, Serial);

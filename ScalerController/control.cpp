@@ -77,7 +77,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	}
 
 	// Get the steering servo position
-	setting.steering = this->controlTranslator->translateSteering(input);
+	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, ser);
 
 	// Get the light setting
 	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear);

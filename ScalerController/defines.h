@@ -108,6 +108,8 @@
 #define REV_DECEL_INERTIA 2         // Decelerator inertia (reverse)
 #define REV_BRAKE_INERTIA 8         // Brake interia (reverse)
 
+#define STEERING_INERTIA  40		// Steering inertia
+
 //#define AUX_OUT_1 10                // Outputs aux1 channel value when in Park mode
 //#define AUX_OUT_2 11                // Outputs aux2 channel value when in Park mode
 //#define AUX_OUT_3 12                // Outputs aux3 channel value when in Park mode

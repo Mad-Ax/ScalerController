@@ -4,6 +4,7 @@
 ControlTranslator::ControlTranslator(
 	ControlConfig config,
 	IInputTranslator* inputTranslator,
+	ISteeringTranslator* steeringTranslator,
 	IMotorSpeedTranslator* motorSpeedTranslator,
 	ILatchTranslator* gearTranslator,
 	ILatchTranslator* cruiseTranslator,
@@ -12,10 +13,12 @@ ControlTranslator::ControlTranslator(
 	IInertia* forwardBrake,
 	IInertia* reverseAccel,
 	IInertia* reverseDecel,
-	IInertia* reverseBrake)
+	IInertia* reverseBrake,
+	IInertia* steeringInertia)
 {
 	this->config = config;
 	this->inputTranslator = inputTranslator;
+	this->steeringTranslator = steeringTranslator;
 	this->motorSpeedTranslator = motorSpeedTranslator;
 	this->gearTranslator = gearTranslator;
 	this->cruiseTranslator = cruiseTranslator;
@@ -25,6 +28,7 @@ ControlTranslator::ControlTranslator(
 	this->reverseAccel = reverseAccel;
 	this->reverseDecel = reverseDecel;
 	this->reverseBrake = reverseBrake;
+	this->steeringInertia = steeringInertia;
 }
 
 ControlTranslator::~ControlTranslator()
@@ -263,7 +267,17 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 	return servo.center;
 }
 
-int ControlTranslator::translateSteering(InputSetting input)
+int ControlTranslator::translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser)
 {
-	return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);
+	auto channel = config.steeringChannel;
+	auto servo = config.steeringServo;
+	int inputVal = input.channel[channel.channel];
+
+	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.min, servo.max);
+
+	// TODO M: isn't it possible to store "current steering" inside the translator..?
+	return this->steeringTranslator->translateSteering(currentSteering, desiredSteering, steeringInertia);
+
+	// TODO: M: remove this:
+	//return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);
 }
