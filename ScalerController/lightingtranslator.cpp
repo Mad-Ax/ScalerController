@@ -146,8 +146,8 @@ int LightingTranslator::translateReverseLight(Gear gear)
 int LightingTranslator::translateFloodlight(InputSetting input)
 {
 	// Check if the floodlight channel is on
-	SwitchChannelTwoWay* floodlightChannel = config.floodlightChannel;
-	int switchValue = input.channel[floodlightChannel->channel];
+	SwitchChannelTwoWay floodlightChannel = config.floodlightChannel;
+	int switchValue = input.channel[floodlightChannel.channel];
 	if (this->floodlightTranslator->translateSwitch(switchValue))
 	{
 		return config.lightModeConfig.floodlightIntensity;

@@ -28,9 +28,6 @@ private:
 	ILatchTranslator* lightsOffTranslator;
 	ISwitchTranslatorTwoWay* floodlightTranslator;
 	LightMode currentLightMode;
-//	IInputTranslator* translator;
-//	bool lightModeLatch = false;
-//	bool mainBeamLatch = false;
 
 	// Translates the brake light setting based on throttle input and current lighting mode
 	int translateBrakeLight(InputSetting input, LightMode lightMode);

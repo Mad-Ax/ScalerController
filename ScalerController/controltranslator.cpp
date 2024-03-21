@@ -3,31 +3,20 @@
 
 ControlTranslator::ControlTranslator(
 	ControlConfig config,
-	IInputTranslator* inputTranslator,
 	const ISteeringTranslator& steeringTranslator,
-	IMotorSpeedTranslator* motorSpeedTranslator,
+	const IMotorSpeedTranslator& forwardMotorSpeedTranslator,
+	const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
 	ILatchTranslator* gearTranslator,
 	ILatchTranslator* cruiseTranslator,
-	ISwitchTranslatorThreeWay* winchSelectTranslator,
-	IInertia* forwardAccel,
-	IInertia* forwardDecel,
-	IInertia* forwardBrake,
-	IInertia* reverseAccel,
-	IInertia* reverseDecel,
-	IInertia* reverseBrake) : steeringTranslator(steeringTranslator)
+	ISwitchTranslatorThreeWay* winchSelectTranslator) :
+	steeringTranslator(steeringTranslator),
+	forwardMotorSpeedTranslator(forwardMotorSpeedTranslator),
+	reverseMotorSpeedTranslator(reverseMotorSpeedTranslator)
 {
 	this->config = config;
-	this->inputTranslator = inputTranslator;
-	this->motorSpeedTranslator = motorSpeedTranslator;
 	this->gearTranslator = gearTranslator;
 	this->cruiseTranslator = cruiseTranslator;
 	this->winchSelectTranslator = winchSelectTranslator;
-	this->forwardAccel = forwardAccel;
-	this->forwardDecel = forwardDecel;
-	this->forwardBrake = forwardBrake;
-	this->reverseAccel = reverseAccel;
-	this->reverseDecel = reverseDecel;
-	this->reverseBrake = reverseBrake;
 }
 
 ControlTranslator::~ControlTranslator()
@@ -122,7 +111,7 @@ Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
 }
 
 // Translates the motor speed in drive mode
-int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial &ser)
+int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial &ser) const
 {
 	int desiredMotorSpeed;
 	ThrottleChannel channel = config.throttleChannel;
@@ -155,7 +144,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.min, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, forwardAccel, forwardDecel, forwardBrake);
+		return this->forwardMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
 		
 	case Gear::Reverse:
 		// Calculate applied reverse throttle
@@ -174,7 +163,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.max, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, reverseAccel, reverseDecel, reverseBrake);
+		return this->reverseMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
 	}
 
 	// Failsafe
@@ -182,7 +171,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 }
 
 // Translates the motor speed in cruise mode
-int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser)
+int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const
 {
 	int desiredMotorSpeed;
 	ThrottleChannel channel = config.throttleChannel;
@@ -227,7 +216,7 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 			desiredMotorSpeed = constrain(currentMotorSpeed - (servo.center - brakeValue), servo.center, servo.max);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, forwardAccel, forwardDecel, forwardBrake);
+		return forwardMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
 
 	case Gear::Reverse:
 		// Calculate applied reverse throttle
@@ -259,7 +248,7 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 			desiredMotorSpeed = constrain(currentMotorSpeed + (servo.center - brakeValue), servo.min, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, reverseAccel, reverseDecel, reverseBrake);
+		return reverseMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
 	}
 
 	// Failsafe

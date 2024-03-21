@@ -25,7 +25,7 @@ public:
 	/// <param name="currentMotorSpeed">Current motor speed</param>
 	/// <param name="ser">Serial (for debugging - remove in production)</param>
 	/// <returns>An integer value to be sent to the ESC</returns>
-	virtual int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) = 0;
+	virtual int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const = 0;
 
 	/// <summary>
 	/// Translates the motor speed in cruise mode
@@ -35,7 +35,7 @@ public:
 	/// <param name="currentMotorSpeed">Current motor speed</param>
 	/// <param name="ser">Serial (for debugging - remove in production)</param>
 	/// <returns>An integer value to be sent to the ESC</returns>
-	virtual int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) = 0;
+	virtual int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const = 0;
 
 	// Translates the steering angle
 	virtual int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) const = 0;

@@ -12,7 +12,6 @@
 #include "structs.h"
 #include "ppmwrapper.h"
 #include "controltranslator.h"
-#include "inputtranslator.h" // TODO: M: remove
 #include "steeringtranslator.h"
 #include "lightingtranslator.h"
 #include "inertia.h"
@@ -32,9 +31,6 @@ unsigned long loopTime;
 
 void setup()
 {
-	// Open the serial (for debugging)
-	Serial.begin(57600);
-
 	InputConfig inputConfig = {
 		PPM_IN,
 		PPM_CHANNELS,
@@ -97,14 +93,14 @@ void setup()
 		CHN_LIGHTS_OFF_SELECT_MAX
 	};
 
-	SwitchChannelTwoWay* floodlightChannel = new SwitchChannelTwoWay(); // TODO: make ctor?
-	floodlightChannel->channel = CHN_FLOOD_CH - 1;
-	floodlightChannel->high = SWITCH_HIGH;
-	//SwitchChannelTwoWay floodlightChannel
-	//{
-	//	CHN_FLOOD_CH - 1,
-	//	SWITCH_HIGH
-	//};
+	//SwitchChannelTwoWay* floodlightChannel = new SwitchChannelTwoWay(); // TODO: make ctor?
+	//floodlightChannel->channel = CHN_FLOOD_CH - 1;
+	//floodlightChannel->high = SWITCH_HIGH;
+	SwitchChannelTwoWay floodlightChannel
+	{
+		CHN_FLOOD_CH - 1,
+		SWITCH_HIGH
+	};
 
 	SwitchChannelThreeWay winchSelectChannel{
 		CHN_WINCH_SELECT - 1,
@@ -176,35 +172,30 @@ void setup()
 		STEERING_INERTIA
 	};
 
-	IInputTranslator* inputTranslator = new InputTranslator();// TODO: remove when not noeded
-
 	const IInertia* steeringInertia = new Inertia(controlConfig.steeringInertia, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
 	const ISteeringTranslator* steeringTranslator = new SteeringTranslator(*steeringInertia);
 
-	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
+	const IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	const IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	const IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	const IMotorSpeedTranslator* forwardMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo, *forwardAccel, *forwardDecel, *forwardBrake);
+
+	const IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	const IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	const IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	const IMotorSpeedTranslator* reverseMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo, *reverseAccel, *reverseDecel, *reverseBrake);
+
 	ILatchTranslator* gearTranslator = new LatchTranslator(gearChannel);
 	ILatchTranslator* cruiseTranslator = new LatchTranslator(cruiseChannel);
 	ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
-	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IControlTranslator* controlTranslator = new ControlTranslator(
 		controlConfig,
-		inputTranslator,
 		*steeringTranslator,
-		motorSpeedTranslator,
+		*forwardMotorSpeedTranslator,
+		*reverseMotorSpeedTranslator,
 		gearTranslator,
 		cruiseTranslator,
-		winchSelectTranslator,
-		forwardAccel,
-		forwardDecel,
-		forwardBrake,
-		reverseAccel,
-		reverseDecel,
-		reverseBrake);
+		winchSelectTranslator);
 
 	ILatchTranslator* lightsOnTranslator = new LatchTranslator(lightsOnChannel);
 	ILatchTranslator* lightsOffTranslator = new LatchTranslator(lightsOffChannel);
@@ -228,6 +219,9 @@ void setup()
 	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
 	output = new Output(outputEsc, outputSteering, outputWinch1, outputWinch2, outputLights);
+
+	// Open the serial (for debugging)
+	Serial.begin(57600);
 }
 
 

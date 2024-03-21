@@ -119,7 +119,7 @@ struct ControlConfig
 	AnalogChannel winchOperationChannel;
 	LatchChannel lightsOnChannel;
 	LatchChannel lightsOffChannel;
-	SwitchChannelTwoWay* floodlightChannel;
+	SwitchChannelTwoWay floodlightChannel;
 	SwitchChannelThreeWay winchSelectChannel;
 	ServoConfig throttleServo;
 	ServoConfig steeringServo;
