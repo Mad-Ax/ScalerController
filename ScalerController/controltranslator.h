@@ -22,25 +22,25 @@ public:
 
 	// Checks for a fail condition on the input
 	// Return true if the input values have failed to update for more than a set number of reads
-	bool checkFailsafe(InputSetting input);
+	bool checkFailsafe(const InputSetting& input);
 
 	// Translates the channel input value to the requested gear
-	Gear translateGear(InputSetting input, Gear lastGear);
+	Gear translateGear(const InputSetting& input, Gear lastGear);
 
 	// Translates the channel input value to the requested cruise value
-	Cruise translateCruise(InputSetting input, Cruise lastCruise);
+	Cruise translateCruise(const InputSetting& input, Cruise lastCruise);
 
 	// Translates the motor speed in drive mode
-	int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const;
+	int translateMotorSpeed(const InputSetting& input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const;
 
 	// Translates the motor speed in cruise mode
-	int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const;
+	int translateCruiseSpeed(const InputSetting& input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const;
 
 	// Translates the steering angle
-	int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) const;
+	int translateSteering(const InputSetting& input, int currentSteering, HardwareSerial& ser) const;
 
 	// Translates the winch operation settings
-	WinchSetting translateWinch(InputSetting input);
+	WinchSetting translateWinch(const InputSetting& input);
 
 private:
 	int failsafeCount;

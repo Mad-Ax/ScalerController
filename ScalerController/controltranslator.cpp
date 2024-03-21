@@ -25,7 +25,7 @@ ControlTranslator::~ControlTranslator()
 
 // Checks for a fail condition on the input
 // Returns true if the input values have failed to update for more than a set number of reads
-bool ControlTranslator::checkFailsafe(InputSetting input)
+bool ControlTranslator::checkFailsafe(const InputSetting& input)
 {
 	if (lastInput == nullptr)
 	{
@@ -60,7 +60,7 @@ bool ControlTranslator::checkFailsafe(InputSetting input)
 }
 
 // Translates the channel input value to the requested gear value
-Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
+Gear ControlTranslator::translateGear(const InputSetting& input, Gear lastGear)
 {
 	// TODO: M: make sure we can't get reverse if we're on cruise
 
@@ -89,7 +89,7 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 }
 
 // Translates the channel input value to the requested cruise value
-Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
+Cruise ControlTranslator::translateCruise(const InputSetting& input, Cruise lastCruise)
 {
 	LatchChannel channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
@@ -111,7 +111,7 @@ Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
 }
 
 // Translates the motor speed in drive mode
-int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial &ser) const
+int ControlTranslator::translateMotorSpeed(const InputSetting& input, Gear gear, int currentMotorSpeed, HardwareSerial &ser) const
 {
 	int desiredMotorSpeed;
 	ThrottleChannel channel = config.throttleChannel;
@@ -171,7 +171,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 }
 
 // Translates the motor speed in cruise mode
-int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const
+int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const
 {
 	int desiredMotorSpeed;
 	ThrottleChannel channel = config.throttleChannel;
@@ -255,7 +255,7 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 	return servo.center;
 }
 
-int ControlTranslator::translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) const
+int ControlTranslator::translateSteering(const InputSetting& input, int currentSteering, HardwareSerial& ser) const
 {
 	auto channel = config.steeringChannel;
 	auto servo = config.steeringServo;
@@ -267,7 +267,7 @@ int ControlTranslator::translateSteering(InputSetting input, int currentSteering
 	return this->steeringTranslator.translateSteering(currentSteering, desiredSteering, ser);
 }
 
-WinchSetting ControlTranslator::translateWinch(InputSetting input)
+WinchSetting ControlTranslator::translateWinch(const InputSetting& input)
 {
 	auto selectChannel = config.winchSelectChannel;
 	auto operateChannel = config.winchOperationChannel;
