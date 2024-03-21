@@ -174,6 +174,10 @@ Boot sequence - when the controller is powered on or set to On mode, all the lig
 
 To be provided
 
+## Bugs
+
+- Pulling back on left stick causes reverse - this was introduced recently but I can't understand why
+
 ## Functionality not listed on roadmap / Wishlist / Gripe list
 
 - Need a way of sending a 2-way gear selector thru the unit

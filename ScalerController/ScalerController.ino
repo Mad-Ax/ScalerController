@@ -162,27 +162,20 @@ void setup()
 		steeringServo,
 		winch1Servo,
 		winch2Servo,
-		lightModeConfig,
-		FWD_ACCEL_INERTIA,
-		FWD_DECEL_INERTIA,
-		FWD_BRAKE_INERTIA,
-		REV_ACCEL_INERTIA,
-		REV_DECEL_INERTIA,
-		REV_BRAKE_INERTIA,
-		STEERING_INERTIA
+		lightModeConfig
 	};
 
-	const IInertia* steeringInertia = new Inertia(controlConfig.steeringInertia, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
+	const IInertia* steeringInertia = new Inertia(STEERING_INERTIA, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
 	const ISteeringTranslator* steeringTranslator = new SteeringTranslator(*steeringInertia);
 
-	const IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	const IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	const IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	const IInertia* forwardAccel = new Inertia(FWD_ACCEL_INERTIA, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	const IInertia* forwardDecel = new Inertia(FWD_DECEL_INERTIA, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
+	const IInertia* forwardBrake = new Inertia(FWD_BRAKE_INERTIA, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	const IMotorSpeedTranslator* forwardMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo, *forwardAccel, *forwardDecel, *forwardBrake);
 
-	const IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	const IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	const IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	const IInertia* reverseAccel = new Inertia(REV_ACCEL_INERTIA, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	const IInertia* reverseDecel = new Inertia(REV_DECEL_INERTIA, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	const IInertia* reverseBrake = new Inertia(REV_BRAKE_INERTIA, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	const IMotorSpeedTranslator* reverseMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo, *reverseAccel, *reverseDecel, *reverseBrake);
 
 	ILatchTranslator* gearTranslator = new LatchTranslator(gearChannel);

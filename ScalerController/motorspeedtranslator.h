@@ -10,9 +10,6 @@ public:
 	~MotorSpeedTranslator();
 
 	// Translates the input into a motor speed
-	int translateMotorSpeed(int currentMotorSpeed, int input, int desiredMotorSpeed, IInertia* accel, IInertia* decel, IInertia* brake);
-
-	// Translates the input into a motor speed
 	int translateMotorSpeed(int currentMotorSpeed, int input, int desiredMotorSpeed) const;
 
 private:

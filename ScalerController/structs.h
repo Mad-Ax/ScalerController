@@ -126,15 +126,6 @@ struct ControlConfig
 	ServoConfig winch1Servo;
 	ServoConfig winch2Servo;
 	LightModeConfig lightModeConfig;
-//	int switchHigh;
-//	int switchLow;
-	int fwdAccelInertia;
-	int fwdDecelInertia;
-	int fwdBrakeInertia;
-	int revAccelInertia;
-	int revDecelInertia;
-	int revBrakeInertia;
-	int steeringInertia;
 };
 
 // Configuration for lighting output
