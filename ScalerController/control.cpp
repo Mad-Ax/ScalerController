@@ -15,7 +15,7 @@ Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lig
 	setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
 }
 
-void Control::translate(InputSetting input, HardwareSerial &ser)
+void Control::translate(const InputSetting& input, HardwareSerial &ser)
 {
 	// Check for failsafe condition and shut off truck
 	if (this->controlTranslator->checkFailsafe(input))

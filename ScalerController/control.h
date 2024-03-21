@@ -20,7 +20,7 @@ public:
 
 	// Translate method
 	// Translates the requested Input object into a set of values that can be sent to the Output
-	void translate(InputSetting input, HardwareSerial& ser);
+	void translate(const InputSetting& input, HardwareSerial& ser);
 
 private:
 	IControlTranslator* controlTranslator;
