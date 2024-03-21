@@ -1,16 +1,17 @@
 #include "latchtranslator.h"
 
-LatchTranslator::LatchTranslator()
+LatchTranslator::LatchTranslator(LatchChannel channel)
 {
+	this->channel = channel;
 }
 
 LatchTranslator::~LatchTranslator()
 {
 }
 
-bool LatchTranslator::translateLatch(LatchChannel channel, int value)
+bool LatchTranslator::translateLatch(int value)
 {
-	if (value <= channel.min || value >= channel.max)
+	if (value <= this->channel.min || value >= this->channel.max)
 	{
 		// We are not within the latch range - unset the latch (if we set it) and return false
 		latching = false;

@@ -1,24 +1,17 @@
 #include "control.h"
 
 // Initializes a new instance of the object with the required config data
-Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig controlConfig)
+Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig& controlConfig) : config(controlConfig)
 {
 	this->controlTranslator = controlTranslator;
 	this->lightingTranslator = lightingTranslator;
-	config = controlConfig;
-//	forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-//	forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-//	forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-//	reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-//	reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-//	reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-//
-//	setting.lightSetting.brakeLightIntensity = 0;
 
 	setting.cruise = Cruise::Off;
 	setting.gear = Gear::Forward;
 	setting.motorSpeed = config.throttleServo.center;
 	setting.steering = config.steeringServo.center;
+	setting.winch1 = config.winch1Servo.center;
+	setting.winch2 = config.winch2Servo.center;
 	setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
 }
 
@@ -29,6 +22,8 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	{
 		setting.motorSpeed = config.throttleServo.center;
 		setting.steering = config.steeringServo.center;
+		setting.winch1 = config.winch1Servo.center;
+		setting.winch2 = config.winch2Servo.center;
 		setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
@@ -46,6 +41,8 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	{
 		setting.motorSpeed = input.channel[config.throttleChannel.channel];
 		setting.steering = input.channel[config.steeringChannel.channel];
+		setting.winch1 = config.winch1Servo.center;
+		setting.winch2 = config.winch2Servo.center;
 		setting.lightSetting.brakeIntensity = 0;
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
@@ -79,20 +76,14 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	// Get the steering servo position
 	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, ser);
 
+	// TODO: reinstate lighting (why is it broken?)
 	// Get the light setting
 	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear);
 
-//		// Get the light mode
-//		translateLightMode(input.channel[config.lights.channel]);
-//
-//		// Get the main beam setting
-//		translateMainBeam(input.channel[config.lights.channel]);
-//
-	// Get the brake light setting
-	//setting.lightSetting.brakeIntensity = this->lightingTranslator->translateBrakeLight(input);
-
-	// Get the reverse light setting
-	//setting.lightSetting.reverseIntensity = this->lightingTranslator->translateReverseLight(setting.gear);
+	// Get the winch setting
+	auto winchSetting = this->controlTranslator->translateWinch(input);
+	setting.winch1 = winchSetting.winch1;
+	setting.winch2 = winchSetting.winch2;
 }
 
 //// Translates the indicator input to the desired output depending on mode

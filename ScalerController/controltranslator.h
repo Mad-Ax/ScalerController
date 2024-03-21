@@ -7,6 +7,7 @@
 #include "imotorspeedtranslator.h"
 #include "ilatchtranslator.h"
 #include "iinertia.h"
+#include "iswitchtranslatorthreeway.h"
 
 class ControlTranslator : public IControlTranslator
 {
@@ -14,17 +15,17 @@ public:
 	ControlTranslator(
 		ControlConfig config,
 		IInputTranslator* inputTranslator,
-		ISteeringTranslator* steeringTranslator,
+		const ISteeringTranslator& steeringTranslator,
 		IMotorSpeedTranslator* motorSpeedTranslator,
 		ILatchTranslator* gearTranslator,
 		ILatchTranslator* cruiseTranslator,
+		ISwitchTranslatorThreeWay* winchSelectTranslator,
 		IInertia* forwardAccel,
 		IInertia* forwardDecel,
 		IInertia* forwardBrake,
 		IInertia* reverseAccel,
 		IInertia* reverseDecel,
-		IInertia* reverseBrake,
-		IInertia* steeringInertia);
+		IInertia* reverseBrake);
 	~ControlTranslator();
 
 	// Checks for a fail condition on the input
@@ -44,22 +45,25 @@ public:
 	int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
 
 	// Translates the steering angle
-	int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser);
+	int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) const;
+
+	// Translates the winch operation settings
+	WinchSetting translateWinch(InputSetting input);
 
 private:
 	int failsafeCount;
 	InputSetting *lastInput = nullptr;
 	ControlConfig config;
 	IInputTranslator* inputTranslator; // TODO: M: remove if not used
-	ISteeringTranslator* steeringTranslator;
+	const ISteeringTranslator& steeringTranslator;
 	IMotorSpeedTranslator* motorSpeedTranslator;
 	ILatchTranslator* gearTranslator;
 	ILatchTranslator* cruiseTranslator;
+	ISwitchTranslatorThreeWay* winchSelectTranslator;
 	IInertia* forwardAccel;
 	IInertia* forwardDecel;
 	IInertia* forwardBrake;
 	IInertia* reverseAccel;
 	IInertia* reverseDecel;
 	IInertia* reverseBrake;
-	IInertia* steeringInertia;
 };

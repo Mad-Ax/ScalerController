@@ -21,6 +21,7 @@
 #include "outputservo.h"
 #include "outputlights.h"
 #include "switchtranslatortwoway.h"
+#include "switchtranslatorthreeway.h"
 
 // Global pointers
 Input* input;
@@ -31,6 +32,9 @@ unsigned long loopTime;
 
 void setup()
 {
+	// Open the serial (for debugging)
+	Serial.begin(57600);
+
 	InputConfig inputConfig = {
 		PPM_IN,
 		PPM_CHANNELS,
@@ -73,21 +77,39 @@ void setup()
 		CHN_STEERING_DEADBAND_MAX
 	};
 
-	LatchChannel lightsOnChannel{
+	AnalogChannel winchOperationChannel = {
+		CHN_WINCH_OPERATE - 1,
+		CHN_MIN,
+		CHN_MAX,
+		CHN_DEADBAND_MIN,
+		CHN_DEADBAND_MAX
+	};
+
+	LatchChannel lightsOnChannel {
 		CHN_LIGHTS - 1,
 		CHN_LIGHTS_ON_SELECT_MIN,
 		CHN_LIGHTS_ON_SELECT_MAX
 	};
 
-	LatchChannel lightsOffChannel{
+	LatchChannel lightsOffChannel {
 		CHN_LIGHTS - 1,
 		CHN_LIGHTS_OFF_SELECT_MIN,
 		CHN_LIGHTS_OFF_SELECT_MAX
 	};
 
-	SwitchChannelTwoWay floodlightChannel{
-		CHN_FLOOD_CH - 1,
-		SWITCH_HIGH
+	SwitchChannelTwoWay* floodlightChannel = new SwitchChannelTwoWay(); // TODO: make ctor?
+	floodlightChannel->channel = CHN_FLOOD_CH - 1;
+	floodlightChannel->high = SWITCH_HIGH;
+	//SwitchChannelTwoWay floodlightChannel
+	//{
+	//	CHN_FLOOD_CH - 1,
+	//	SWITCH_HIGH
+	//};
+
+	SwitchChannelThreeWay winchSelectChannel{
+		CHN_WINCH_SELECT - 1,
+		SWITCH_HIGH,
+		SWITCH_LOW
 	};
 
 	ServoConfig throttleServo = {
@@ -104,6 +126,20 @@ void setup()
 		SVO_STEERING_MAX
 	};
 
+	ServoConfig winch1Servo = {
+		SVO_WINCH_1_PIN,
+		SVO_CENTER,
+		SVO_MIN,
+		SVO_MAX
+	};
+
+	ServoConfig winch2Servo = {
+		SVO_WINCH_2_PIN,
+		SVO_CENTER,
+		SVO_MIN,
+		SVO_MAX
+	};
+
 	LightModeConfig lightModeConfig = {
 		BRAKE_MAX_PWM,
 		BRAKE_LOW_PWM,
@@ -113,26 +149,24 @@ void setup()
 		ROOFLIGHT_MAX_PWM,
 		ROOFLIGHT_LOW_PWM,
 		FLOODLIGHT_PWM,
-//		FAILSAFE_FLASH_TIME,
 	};
 
 	ControlConfig controlConfig = {
 		MAX_FAILSAFE_COUNT,
-//		mode,
 		gearChannel,
 		cruiseChannel,
 		throttleChannel,
 		steeringChannel,
+		winchOperationChannel,
 		lightsOnChannel,
 		lightsOffChannel,
 		floodlightChannel,
-//		indicator,
-//		lights,
+		winchSelectChannel,
 		throttleServo,
 		steeringServo,
+		winch1Servo,
+		winch2Servo,
 		lightModeConfig,
-//		SWITCH_HIGH,
-//		SWITCH_LOW,
 		FWD_ACCEL_INERTIA,
 		FWD_DECEL_INERTIA,
 		FWD_BRAKE_INERTIA,
@@ -143,35 +177,38 @@ void setup()
 	};
 
 	IInputTranslator* inputTranslator = new InputTranslator();// TODO: remove when not noeded
-	ISteeringTranslator* steeringTranslator = new SteeringTranslator(steeringChannel, steeringServo);
+
+	const IInertia* steeringInertia = new Inertia(controlConfig.steeringInertia, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
+	const ISteeringTranslator* steeringTranslator = new SteeringTranslator(*steeringInertia);
+
 	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
-	ILatchTranslator* gearTranslator = new LatchTranslator();
-	ILatchTranslator* cruiseTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
+	ILatchTranslator* gearTranslator = new LatchTranslator(gearChannel);
+	ILatchTranslator* cruiseTranslator = new LatchTranslator(cruiseChannel);
+	ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
 	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	IInertia* steeringInertia = new Inertia(controlConfig.steeringInertia, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
 	IControlTranslator* controlTranslator = new ControlTranslator(
 		controlConfig,
 		inputTranslator,
-		steeringTranslator,
+		*steeringTranslator,
 		motorSpeedTranslator,
 		gearTranslator,
 		cruiseTranslator,
+		winchSelectTranslator,
 		forwardAccel,
 		forwardDecel,
 		forwardBrake,
 		reverseAccel,
 		reverseDecel,
-		reverseBrake,
-		steeringInertia);
+		reverseBrake);
 
-	ILatchTranslator* lightsOnTranslator = new LatchTranslator();
-	ILatchTranslator* lightsOffTranslator = new LatchTranslator();
-	ISwitchTranslatorTwoWay* floodlightTranslator = new SwitchTranslatorTwoWay();
+	ILatchTranslator* lightsOnTranslator = new LatchTranslator(lightsOnChannel);
+	ILatchTranslator* lightsOffTranslator = new LatchTranslator(lightsOffChannel);
+	ISwitchTranslatorTwoWay* floodlightTranslator = new SwitchTranslatorTwoWay(floodlightChannel);
 	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, lightsOnTranslator, lightsOffTranslator, floodlightTranslator);
 
 	control = new Control(controlTranslator, lightingTranslator, controlConfig);
@@ -182,18 +219,15 @@ void setup()
 		REVERSE_OUT,
 		ROOFLIGHT_OUT,
 		FLOODLIGHT_OUT
-//		FAILSAFE_OUT
 	};
 
 	IOutputServo* outputEsc = new OutputServo(throttleServo);
 	IOutputServo* outputSteering = new OutputServo(steeringServo);
-//	IOutputLights* outputLights = CHN_LIGHTS > 0 ? new OutputLights(lightModeConfig, lightOutputConfig) : nullptr;
+	IOutputServo* outputWinch1 = new OutputServo(winch1Servo);
+	IOutputServo* outputWinch2 = new OutputServo(winch2Servo);
 	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
-	output = new Output(outputEsc, outputSteering, outputLights);
-
-	// Open the serial (for debugging)
-	Serial.begin(57600);
+	output = new Output(outputEsc, outputSteering, outputWinch1, outputWinch2, outputLights);
 }
 
 
@@ -202,12 +236,12 @@ void loop()
 	// get the latest input values from the receiver
 	input->update();
 
-	/*for (int channel = 0; channel < 8; channel++)
+	for (int channel = 0; channel < 8; channel++)
 	{
 		Serial.print(input->setting.channel[channel]);
 		Serial.print(':');
 	}
-	Serial.println();*/
+	Serial.println();
 
 	// translate the input values to control values that can be sent to the outputs
 	control->translate(input->setting, Serial);

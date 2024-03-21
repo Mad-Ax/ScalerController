@@ -5,8 +5,11 @@
 class SwitchTranslatorTwoWay : public ISwitchTranslatorTwoWay
 {
 public:
-	SwitchTranslatorTwoWay();
+	SwitchTranslatorTwoWay(SwitchChannelTwoWay* channel);
 	~SwitchTranslatorTwoWay();
 
-	bool translateSwitch(SwitchChannelTwoWay channel, int value);
+	bool translateSwitch(int value);
+
+private:
+	SwitchChannelTwoWay* channel;
 };

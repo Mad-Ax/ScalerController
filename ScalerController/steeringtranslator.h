@@ -2,17 +2,17 @@
 
 #include "isteeringtranslator.h"
 #include "structs.h"
+#include "HardwareSerial.h"
 
 class SteeringTranslator : public ISteeringTranslator
 {
 public:
-	SteeringTranslator(AnalogChannel channel, ServoConfig servo);
+	SteeringTranslator(const IInertia& inertia);
 	~SteeringTranslator();
 
 	// Translates the input into a steering position
-	int translateSteering(int currentSteering, int desiredSteering, IInertia* inertia);
+	int translateSteering(int currentSteering, int desiredSteering, HardwareSerial& ser) const;
 
 private:
-	AnalogChannel channel;
-	ServoConfig servo;
+	const IInertia& inertia;
 };

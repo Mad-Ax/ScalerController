@@ -5,12 +5,13 @@
 class LatchTranslator : public ILatchTranslator
 {
 public:
-	LatchTranslator();
+	LatchTranslator(LatchChannel channel);
 	~LatchTranslator();
 
-	bool translateLatch(LatchChannel channel, int value);
+	bool translateLatch(int value);
 
 private:
 	bool latching;
+	LatchChannel channel;
 };
 

@@ -38,5 +38,8 @@ public:
 	virtual int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) = 0;
 
 	// Translates the steering angle
-	virtual int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) = 0;
+	virtual int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) const = 0;
+
+	// Translates the winch operation settings
+	virtual WinchSetting translateWinch(InputSetting input) = 0;
 };

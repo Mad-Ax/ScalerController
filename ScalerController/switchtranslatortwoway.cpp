@@ -1,16 +1,17 @@
 #include "switchtranslatortwoway.h"
 
-SwitchTranslatorTwoWay::SwitchTranslatorTwoWay()
+SwitchTranslatorTwoWay::SwitchTranslatorTwoWay(SwitchChannelTwoWay* channel)
 {
+	this->channel = channel;
 }
 
 SwitchTranslatorTwoWay::~SwitchTranslatorTwoWay()
 {
 }
 
-bool SwitchTranslatorTwoWay::translateSwitch(SwitchChannelTwoWay channel, int value)
+bool SwitchTranslatorTwoWay::translateSwitch(int value)
 {
-	if (value > channel.high)
+	if (value > this->channel->high)
 	{
 		return true;
 	}

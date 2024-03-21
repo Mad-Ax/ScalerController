@@ -5,15 +5,15 @@
 class Inertia : public IInertia
 {
 private:
-    int inertia;
-    int min;
-    int max;
-    int factor;
+    const int inertia;
+    const int mininum;
+    const int maximum;
+    const int factor;
 
 public:
     // Constructor
-    Inertia(int inertia, int min, int max);
+    Inertia(int inertia, int minimum, int maximum);
 
     // Maps the requested value with inertia
-    int map(int current, int requested);
+    int map(int current, int requested) const;
 };

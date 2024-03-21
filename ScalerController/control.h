@@ -16,7 +16,7 @@ public:
 	ControlSetting setting;
 
 	// Constructor
-	Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig controlConfig);//TODO: remove config when not needed
+	Control(IControlTranslator* controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig& controlConfig);//TODO: remove config when not needed
 
 	// Translate method
 	// Translates the requested Input object into a set of values that can be sent to the Output
@@ -32,7 +32,7 @@ private:
 //	Gear gear;
 //	LightMode lightMode = LightMode::Off;
 //	MainBeam mainBeam = MainBeam::Off;
-	ControlConfig config;//TODO: remove config when not needed
+	ControlConfig& config;//TODO: remove config when not needed
 //	bool indicatorOn = false;
 //	Indicator indicator = Indicator::Off;
 //	unsigned long indicatorTime = 0;

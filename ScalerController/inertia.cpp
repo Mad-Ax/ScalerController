@@ -1,16 +1,15 @@
 #include "inertia.h"
 
-Inertia::Inertia(int inertia, int min, int max)
-{   
-    this->inertia = inertia;
-    this->min = min;
-    this->max = max;
-    this->factor = (max - min) / inertia; 
+Inertia::Inertia(int inertia, int minimum, int maximum) : inertia(inertia), mininum(mininum), maximum(maximum), factor((maximum - mininum) / inertia)
+{
 }
 
-int Inertia::map(int current, int requested)
+int Inertia::map(int current, int requested) const
 {
-    if (current == requested) return current;
+    if (current == requested)
+    {
+        return current;
+    }
 
     int val;
     if (requested > current)
@@ -22,9 +21,9 @@ int Inertia::map(int current, int requested)
         val = current - (((current - requested) + this->factor - 1) / this->factor);
     }
 
-    if (val > this->max) return max;
+    if (val > this->maximum) return this->maximum;
 
-    if (val < this->min) return min;
+    if (val < this->mininum) return this->mininum;
 
     return val;
 }

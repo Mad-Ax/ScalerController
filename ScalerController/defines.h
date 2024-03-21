@@ -12,6 +12,22 @@
 
 #define MASTER_DELAY 10000
 
+// Servo config
+
+// This is static config data and generally should not be changed
+
+#define CHN_MIN 1000				// Minimum input value for any radio channel
+#define CHN_MAX 2000				// Minimum input value for any radio channel
+#define CHN_DEADBAND_MIN 1486       // Deadband (center position) range start
+#define CHN_DEADBAND_MAX 1504       // Deadband (center position) range end
+
+#define SWITCH_HIGH 1650            // Value for "high" or "up" on a Tx switch or knob
+#define SWITCH_LOW 1350             // Value for "low" or "down" on a Tx switch or knob
+
+#define SVO_MIN 1000				// Minimum output value for any ESC / servo channel
+#define SVO_MAX	2000				// Maximum output value for any ESC / servo channel
+#define SVO_CENTER 1500				// Center value for any ESC / servo channel
+
 // Input config
 
 // Mode switch (physical switch - connect to GND to enable controller; leave open for pass-thru mode)
@@ -68,25 +84,15 @@
 
 // CRUISE operation channel.  Operates only in Controller mode.
 #define CHN_CRUISE_CH			2           // Input channel number
-#define CHN_CRUISE_SELECT_MIN	1750            // Band range (min) for selecting cruise on / off
-#define CHN_CRUISE_SELECT_MAX 2200            // Band range (max) for selecting cruise on / off
+#define CHN_CRUISE_SELECT_MIN	1750        // Band range (min) for selecting cruise on / off
+#define CHN_CRUISE_SELECT_MAX   2200        // Band range (max) for selecting cruise on / off
 
 // FLOODLIGHT operation channel.  Operates only in Controller mode.
 #define CHN_FLOOD_CH			5			// Input channel number
 
-//// INDICATOR operation channel.  Operates only in DRIVE mode.
-//// If set to 0, indicators will not function.
-//#define CHN_INDICATOR   7                   // Input channel number
-//
-////TODO: S: these are not yet used...
-//#define CHN_AUX1        1           // Output this channel to Aux1 servo when mode is Park
-//#define CHN_AUX2        2           // Output this channel to Aux2 servo when mode is Park
-//#define CHN_AUX3        3           // Output this channel to Aux3 servo when mode is Park
-//#define CHN_AUX4        4           // Output this channel to Aux4 servo when mode is Park
-//
-//
-#define SWITCH_HIGH 1650            // Value for "high" or "up" on a Tx switch or knob
-#define SWITCH_LOW 1350             // Value for "low" or "down" on a Tx switch or knob
+// WINCH channels.  Operates only in Controller mode.
+#define CHN_WINCH_SELECT		6			// Input channel number.  Determines which winch should be operated
+#define CHN_WINCH_OPERATE		7			// Input channel number.  Determines input value for winch
 
 // STEERING output settings
 #define SVO_STEERING_PIN 8          // Output pin for steering servo
@@ -110,11 +116,6 @@
 
 #define STEERING_INERTIA  40		// Steering inertia
 
-//#define AUX_OUT_1 10                // Outputs aux1 channel value when in Park mode
-//#define AUX_OUT_2 11                // Outputs aux2 channel value when in Park mode
-//#define AUX_OUT_3 12                // Outputs aux3 channel value when in Park mode
-//#define AUX_OUT_4 13                // Outputs aux4 channel value when in Park mode
-
 // Light configuration
 
 // LED output pins
@@ -123,11 +124,6 @@
 #define REVERSE_OUT 4               // reverse lights (PWM)
 #define ROOFLIGHT_OUT 5				// roof lights (PWM)
 #define FLOODLIGHT_OUT 9			// floodlight (PWM)
-//#define FAILSAFE_OUT 28				// check valid LED output (digital)
-//
-//// Timing settings
-//#define INDICATOR_TIME 400			// Indicator on/off time (approx)
-//#define FAILSAFE_FLASH_TIME 100		// Indicator on/off time in failsafe
 
 // LED output settings
 // Intensity values range from 0 (off) to 255 (max, 5V)
@@ -139,3 +135,7 @@
 #define ROOFLIGHT_MAX_PWM 255		// Full rooflight
 #define ROOFLIGHT_LOW_PWM 100		// Low rooflight
 #define FLOODLIGHT_PWM 255			// Floodlight on
+
+// Winch configuration
+#define SVO_WINCH_1_PIN		11			// Output for winch 1
+#define SVO_WINCH_2_PIN		12			// Output for winch 2

@@ -4,31 +4,30 @@
 ControlTranslator::ControlTranslator(
 	ControlConfig config,
 	IInputTranslator* inputTranslator,
-	ISteeringTranslator* steeringTranslator,
+	const ISteeringTranslator& steeringTranslator,
 	IMotorSpeedTranslator* motorSpeedTranslator,
 	ILatchTranslator* gearTranslator,
 	ILatchTranslator* cruiseTranslator,
+	ISwitchTranslatorThreeWay* winchSelectTranslator,
 	IInertia* forwardAccel,
 	IInertia* forwardDecel,
 	IInertia* forwardBrake,
 	IInertia* reverseAccel,
 	IInertia* reverseDecel,
-	IInertia* reverseBrake,
-	IInertia* steeringInertia)
+	IInertia* reverseBrake) : steeringTranslator(steeringTranslator)
 {
 	this->config = config;
 	this->inputTranslator = inputTranslator;
-	this->steeringTranslator = steeringTranslator;
 	this->motorSpeedTranslator = motorSpeedTranslator;
 	this->gearTranslator = gearTranslator;
 	this->cruiseTranslator = cruiseTranslator;
+	this->winchSelectTranslator = winchSelectTranslator;
 	this->forwardAccel = forwardAccel;
 	this->forwardDecel = forwardDecel;
 	this->forwardBrake = forwardBrake;
 	this->reverseAccel = reverseAccel;
 	this->reverseDecel = reverseDecel;
 	this->reverseBrake = reverseBrake;
-	this->steeringInertia = steeringInertia;
 }
 
 ControlTranslator::~ControlTranslator()
@@ -84,7 +83,7 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 	LatchChannel channel = this->config.gearChannel;
 	int value = input.channel[channel.channel];
 
-	if (this->gearTranslator->translateLatch(channel, value))
+	if (this->gearTranslator->translateLatch(value))
 	{
 		// We have requested to change gear
 		switch (lastGear)
@@ -106,7 +105,7 @@ Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
 	LatchChannel channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
 
-	if (this->cruiseTranslator->translateLatch(channel, value))
+	if (this->cruiseTranslator->translateLatch(value))
 	{
 		// We have requested to change the cruise mode
 		switch (lastCruise)
@@ -267,7 +266,7 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 	return servo.center;
 }
 
-int ControlTranslator::translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser)
+int ControlTranslator::translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) const
 {
 	auto channel = config.steeringChannel;
 	auto servo = config.steeringServo;
@@ -276,8 +275,40 @@ int ControlTranslator::translateSteering(InputSetting input, int currentSteering
 	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.min, servo.max);
 
 	// TODO M: isn't it possible to store "current steering" inside the translator..?
-	return this->steeringTranslator->translateSteering(currentSteering, desiredSteering, steeringInertia);
+	return this->steeringTranslator.translateSteering(currentSteering, desiredSteering, ser);
+}
 
-	// TODO: M: remove this:
-	//return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);
+WinchSetting ControlTranslator::translateWinch(InputSetting input)
+{
+	auto selectChannel = config.winchSelectChannel;
+	auto operateChannel = config.winchOperationChannel;
+	auto winch1Servo = config.winch1Servo;
+	auto winch2Servo = config.winch2Servo;
+	int selectInputVal = input.channel[selectChannel.channel];
+	int operateInputVal = input.channel[operateChannel.channel];
+		
+	WinchSetting setting;
+
+	auto winchSwitch = this->winchSelectTranslator->translateSwitch(selectInputVal);
+
+	switch (winchSwitch)
+	{
+	case ThreeWayPosition::PosA:
+		setting.winch2 = map(operateInputVal, operateChannel.min, operateChannel.max, winch2Servo.min, winch2Servo.max);
+		setting.winch1 = winch1Servo.center;
+		break;
+
+	case ThreeWayPosition::PosB:
+		setting.winch1 = map(operateInputVal, operateChannel.min, operateChannel.max, winch1Servo.min, winch1Servo.max);
+		setting.winch2 = winch2Servo.center;
+		break;
+
+	case ThreeWayPosition::PosC:
+	default:
+		setting.winch1 = winch1Servo.center;
+		setting.winch2 = winch2Servo.center;
+		break;
+	}
+
+	return setting;
 }

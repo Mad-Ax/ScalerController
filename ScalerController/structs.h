@@ -1,8 +1,6 @@
 #pragma once
 #include "enum.h"
 
-//#include "enum.h"
-
 // Configuration for input from receiver
 struct InputConfig
 {
@@ -18,6 +16,7 @@ struct InputConfig
 // Configuration for servo
 struct ServoConfig
 {
+	// TODO: do we need to store center and EPs for all servos, or should this be a single static setting for all servos?
 	int pin;
 	int center;
 	int min;
@@ -86,8 +85,19 @@ struct SwitchChannelTwoWay
 	int high;
 };
 
+/// <summary>
+/// Configures a 3-way switch, e.g. a toggle on the transmitter to select a mode or function
+/// </summary>
+struct SwitchChannelThreeWay
+{
+	int channel;
+	int high;
+	int low;
+};
+
 // Configuration for lighting modes
-struct LightModeConfig {
+struct LightModeConfig
+{
 	int brakeIntensityMax;
 	int brakeIntensityLow;
 	int reverseIntensity;
@@ -96,7 +106,6 @@ struct LightModeConfig {
 	int rooflightIntensityMax;
 	int rooflightIntensityLow;
 	int floodlightIntensity;
-//	int failsafeFlashDelay;
 };
 
 // Configuration for Control methods
@@ -107,11 +116,15 @@ struct ControlConfig
 	LatchChannel cruiseChannel;
 	ThrottleChannel throttleChannel;
 	AnalogChannel steeringChannel;
+	AnalogChannel winchOperationChannel;
 	LatchChannel lightsOnChannel;
 	LatchChannel lightsOffChannel;
-	SwitchChannelTwoWay floodlightChannel;
+	SwitchChannelTwoWay* floodlightChannel;
+	SwitchChannelThreeWay winchSelectChannel;
 	ServoConfig throttleServo;
 	ServoConfig steeringServo;
+	ServoConfig winch1Servo;
+	ServoConfig winch2Servo;
 	LightModeConfig lightModeConfig;
 //	int switchHigh;
 //	int switchLow;
@@ -179,7 +192,17 @@ struct ControlSetting
 {
 	int motorSpeed;
 	int steering;
+	int winch1;
+	int winch2;
 	Gear gear;
 	Cruise cruise;
 	LightSetting lightSetting;
 };
+
+// Winch settings
+struct WinchSetting
+{
+	int winch1;
+	int winch2;
+};
+

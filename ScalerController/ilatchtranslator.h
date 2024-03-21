@@ -5,5 +5,5 @@
 class ILatchTranslator
 {
 public:
-	virtual bool translateLatch(LatchChannel channel, int value) = 0;
+	virtual bool translateLatch(int value) = 0;
 };

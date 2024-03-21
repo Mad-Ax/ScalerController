@@ -42,12 +42,12 @@ enum class BrakeLight
 	Braking
 };
 
-//enum class ThreeWayPosition
-//{
-//	PosA = 0,
-//	PosB = 1,
-//	PosC = 2
-//};
+enum class ThreeWayPosition
+{
+	PosA = 0,
+	PosB = 1,
+	PosC = 2
+};
 //
 //enum class TwoWayPosition
 //{

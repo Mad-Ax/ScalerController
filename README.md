@@ -181,3 +181,5 @@ To be provided
 - Failsafe warning - if the failsafe is triggered, all lights should flash (if not in pass-thru mode)
 - Some way of reversing channels (especially throttle) without spoiling throttle / brake functionality
   - we can probably just put negatives in the servo config and use map() for this
+- Basic forms application to read / write a defines.h file for custom setups
+- Multi-use channel option - if same channel used by, e.g. winch and lights, then when winch mode is active, lights do not change

@@ -5,5 +5,5 @@
 class ISwitchTranslatorTwoWay
 {
 public:
-	virtual bool translateSwitch(SwitchChannelTwoWay channel, int value) = 0;
+	virtual bool translateSwitch(int value) = 0;
 };

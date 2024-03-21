@@ -4,5 +4,5 @@ class IInertia
 {
 public:
 	// Maps the requested value with inertia
-	virtual int map(int current, int requested) = 0;
+	virtual int map(int current, int requested) const = 0;
 };
