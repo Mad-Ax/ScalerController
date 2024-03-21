@@ -2,13 +2,14 @@
 #include "Arduino.h"
 
 ControlTranslator::ControlTranslator(
-	ControlConfig config,
+	ControlConfig& config,
 	const ISteeringTranslator& steeringTranslator,
 	const IMotorSpeedTranslator& forwardMotorSpeedTranslator,
 	const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
 	ILatchTranslator& gearTranslator,
 	ILatchTranslator& cruiseTranslator,
 	const ISwitchTranslatorThreeWay& winchSelectTranslator) :
+	config(config),
 	steeringTranslator(steeringTranslator),
 	forwardMotorSpeedTranslator(forwardMotorSpeedTranslator),
 	reverseMotorSpeedTranslator(reverseMotorSpeedTranslator),
@@ -16,7 +17,6 @@ ControlTranslator::ControlTranslator(
 	cruiseTranslator(cruiseTranslator),
 	winchSelectTranslator(winchSelectTranslator)
 {
-	this->config = config;
 }
 
 ControlTranslator::~ControlTranslator()
