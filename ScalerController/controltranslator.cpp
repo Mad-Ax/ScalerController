@@ -69,7 +69,8 @@ Gear ControlTranslator::translateGear(const InputSetting& input, Gear lastGear)
 	{
 		return lastGear;
 	}
-	LatchChannel channel = this->config.gearChannel;
+
+	const LatchChannel& channel = this->config.gearChannel;
 	int value = input.channel[channel.channel];
 
 	if (this->gearTranslator->translateLatch(value))
@@ -91,7 +92,7 @@ Gear ControlTranslator::translateGear(const InputSetting& input, Gear lastGear)
 // Translates the channel input value to the requested cruise value
 Cruise ControlTranslator::translateCruise(const InputSetting& input, Cruise lastCruise)
 {
-	LatchChannel channel = this->config.cruiseChannel;
+	const LatchChannel& channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
 
 	if (this->cruiseTranslator->translateLatch(value))
