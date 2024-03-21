@@ -270,10 +270,10 @@ int ControlTranslator::translateSteering(const InputSetting& input, int currentS
 
 WinchSetting ControlTranslator::translateWinch(const InputSetting& input)
 {
-	auto selectChannel = config.winchSelectChannel;
-	auto operateChannel = config.winchOperationChannel;
-	auto winch1Servo = config.winch1Servo;
-	auto winch2Servo = config.winch2Servo;
+	const SwitchChannelThreeWay& selectChannel = config.winchSelectChannel;
+	const AnalogChannel& operateChannel = config.winchOperationChannel;
+	const ServoConfig& winch1Servo = config.winch1Servo;
+	const ServoConfig& winch2Servo = config.winch2Servo;
 	int selectInputVal = input.channel[selectChannel.channel];
 	int operateInputVal = input.channel[operateChannel.channel];
 		
