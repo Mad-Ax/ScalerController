@@ -186,8 +186,8 @@ void setup()
 		*steeringTranslator,
 		*forwardMotorSpeedTranslator,
 		*reverseMotorSpeedTranslator,
-		gearTranslator,
-		cruiseTranslator,
+		*gearTranslator,
+		*cruiseTranslator,
 		winchSelectTranslator);
 
 	ILatchTranslator* lightsOnTranslator = new LatchTranslator(lightsOnChannel);

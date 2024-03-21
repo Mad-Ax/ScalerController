@@ -15,8 +15,8 @@ public:
 		const ISteeringTranslator& steeringTranslator,
 		const IMotorSpeedTranslator& forwardMotorSpeedTranslator,
 		const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
-		ILatchTranslator* gearTranslator,
-		ILatchTranslator* cruiseTranslator,
+		ILatchTranslator& gearTranslator,
+		ILatchTranslator& cruiseTranslator,
 		ISwitchTranslatorThreeWay* winchSelectTranslator);
 	~ControlTranslator();
 
@@ -49,7 +49,7 @@ private:
 	const ISteeringTranslator& steeringTranslator;
 	const IMotorSpeedTranslator& forwardMotorSpeedTranslator;
 	const IMotorSpeedTranslator& reverseMotorSpeedTranslator;
-	ILatchTranslator* gearTranslator;
-	ILatchTranslator* cruiseTranslator;
+	ILatchTranslator& gearTranslator;
+	ILatchTranslator& cruiseTranslator;
 	ISwitchTranslatorThreeWay* winchSelectTranslator;
 };

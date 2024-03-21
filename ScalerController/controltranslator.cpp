@@ -6,16 +6,16 @@ ControlTranslator::ControlTranslator(
 	const ISteeringTranslator& steeringTranslator,
 	const IMotorSpeedTranslator& forwardMotorSpeedTranslator,
 	const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
-	ILatchTranslator* gearTranslator,
-	ILatchTranslator* cruiseTranslator,
+	ILatchTranslator& gearTranslator,
+	ILatchTranslator& cruiseTranslator,
 	ISwitchTranslatorThreeWay* winchSelectTranslator) :
 	steeringTranslator(steeringTranslator),
 	forwardMotorSpeedTranslator(forwardMotorSpeedTranslator),
-	reverseMotorSpeedTranslator(reverseMotorSpeedTranslator)
+	reverseMotorSpeedTranslator(reverseMotorSpeedTranslator),
+	gearTranslator(gearTranslator),
+	cruiseTranslator(cruiseTranslator)
 {
 	this->config = config;
-	this->gearTranslator = gearTranslator;
-	this->cruiseTranslator = cruiseTranslator;
 	this->winchSelectTranslator = winchSelectTranslator;
 }
 
@@ -73,7 +73,7 @@ Gear ControlTranslator::translateGear(const InputSetting& input, Gear lastGear)
 	const LatchChannel& channel = this->config.gearChannel;
 	int value = input.channel[channel.channel];
 
-	if (this->gearTranslator->translateLatch(value))
+	if (this->gearTranslator.translateLatch(value))
 	{
 		// We have requested to change gear
 		switch (lastGear)
@@ -95,7 +95,7 @@ Cruise ControlTranslator::translateCruise(const InputSetting& input, Cruise last
 	const LatchChannel& channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
 
-	if (this->cruiseTranslator->translateLatch(value))
+	if (this->cruiseTranslator.translateLatch(value))
 	{
 		// We have requested to change the cruise mode
 		switch (lastCruise)
