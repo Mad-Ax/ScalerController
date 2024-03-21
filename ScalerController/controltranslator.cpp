@@ -115,8 +115,8 @@ Cruise ControlTranslator::translateCruise(const InputSetting& input, Cruise last
 int ControlTranslator::translateMotorSpeed(const InputSetting& input, Gear gear, int currentMotorSpeed, HardwareSerial &ser) const
 {
 	int desiredMotorSpeed;
-	ThrottleChannel channel = config.throttleChannel;
-	ServoConfig servo = config.throttleServo;
+	const ThrottleChannel& channel = config.throttleChannel;
+	const ServoConfig& servo = config.throttleServo;
 	int inputVal = input.channel[channel.channel];
 
 	if (inputVal < channel.eBrakeThreshold)
@@ -175,8 +175,8 @@ int ControlTranslator::translateMotorSpeed(const InputSetting& input, Gear gear,
 int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) const
 {
 	int desiredMotorSpeed;
-	ThrottleChannel channel = config.throttleChannel;
-	ServoConfig servo = config.throttleServo;
+	const ThrottleChannel& channel = config.throttleChannel;
+	const ServoConfig& servo = config.throttleServo;
 	int inputVal = input.channel[channel.channel];
 
 	if (inputVal < channel.eBrakeThreshold)
@@ -258,8 +258,8 @@ int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear
 
 int ControlTranslator::translateSteering(const InputSetting& input, int currentSteering, HardwareSerial& ser) const
 {
-	auto channel = config.steeringChannel;
-	auto servo = config.steeringServo;
+	const AnalogChannel& channel = config.steeringChannel;
+	const ServoConfig& servo = config.steeringServo;
 	int inputVal = input.channel[channel.channel];
 
 	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.min, servo.max);
