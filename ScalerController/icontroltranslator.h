@@ -41,5 +41,5 @@ public:
 	virtual int translateSteering(const InputSetting& input, int currentSteering, HardwareSerial& ser) const = 0;
 
 	// Translates the winch operation settings
-	virtual WinchSetting translateWinch(const InputSetting& input) = 0;
+	virtual WinchSetting translateWinch(const InputSetting& input) const = 0;
 };

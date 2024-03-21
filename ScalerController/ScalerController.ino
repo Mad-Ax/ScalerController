@@ -196,7 +196,7 @@ void setup()
 	ISwitchTranslatorTwoWay* floodlightTranslator = new SwitchTranslatorTwoWay(floodlightChannel);
 	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, lightsOnTranslator, lightsOffTranslator, floodlightTranslator);
 
-	control = new Control(controlTranslator, lightingTranslator, controlConfig);
+	control = new Control(*controlTranslator, lightingTranslator, controlConfig);
 
 	LightOutputConfig lightOutputConfig = {
 		HEADLIGHT_OUT,

@@ -268,7 +268,7 @@ int ControlTranslator::translateSteering(const InputSetting& input, int currentS
 	return this->steeringTranslator.translateSteering(currentSteering, desiredSteering, ser);
 }
 
-WinchSetting ControlTranslator::translateWinch(const InputSetting& input)
+WinchSetting ControlTranslator::translateWinch(const InputSetting& input) const
 {
 	const SwitchChannelThreeWay& selectChannel = config.winchSelectChannel;
 	const AnalogChannel& operateChannel = config.winchOperationChannel;

@@ -40,7 +40,7 @@ public:
 	int translateSteering(const InputSetting& input, int currentSteering, HardwareSerial& ser) const;
 
 	// Translates the winch operation settings
-	WinchSetting translateWinch(const InputSetting& input);
+	WinchSetting translateWinch(const InputSetting& input) const;
 
 private:
 	int failsafeCount;
