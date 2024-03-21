@@ -8,15 +8,15 @@ ControlTranslator::ControlTranslator(
 	const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
 	ILatchTranslator& gearTranslator,
 	ILatchTranslator& cruiseTranslator,
-	ISwitchTranslatorThreeWay* winchSelectTranslator) :
+	const ISwitchTranslatorThreeWay& winchSelectTranslator) :
 	steeringTranslator(steeringTranslator),
 	forwardMotorSpeedTranslator(forwardMotorSpeedTranslator),
 	reverseMotorSpeedTranslator(reverseMotorSpeedTranslator),
 	gearTranslator(gearTranslator),
-	cruiseTranslator(cruiseTranslator)
+	cruiseTranslator(cruiseTranslator),
+	winchSelectTranslator(winchSelectTranslator)
 {
 	this->config = config;
-	this->winchSelectTranslator = winchSelectTranslator;
 }
 
 ControlTranslator::~ControlTranslator()
@@ -279,7 +279,7 @@ WinchSetting ControlTranslator::translateWinch(const InputSetting& input)
 		
 	WinchSetting setting;
 
-	auto winchSwitch = this->winchSelectTranslator->translateSwitch(selectInputVal);
+	auto winchSwitch = this->winchSelectTranslator.translateSwitch(selectInputVal);
 
 	switch (winchSwitch)
 	{

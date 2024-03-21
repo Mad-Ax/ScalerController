@@ -17,7 +17,7 @@ public:
 		const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
 		ILatchTranslator& gearTranslator,
 		ILatchTranslator& cruiseTranslator,
-		ISwitchTranslatorThreeWay* winchSelectTranslator);
+		const ISwitchTranslatorThreeWay& winchSelectTranslator);
 	~ControlTranslator();
 
 	// Checks for a fail condition on the input
@@ -51,5 +51,5 @@ private:
 	const IMotorSpeedTranslator& reverseMotorSpeedTranslator;
 	ILatchTranslator& gearTranslator;
 	ILatchTranslator& cruiseTranslator;
-	ISwitchTranslatorThreeWay* winchSelectTranslator;
+	const ISwitchTranslatorThreeWay& winchSelectTranslator;
 };

@@ -5,5 +5,5 @@
 class ISwitchTranslatorThreeWay
 {
 public:
-	virtual ThreeWayPosition translateSwitch(int value) = 0;
+	virtual ThreeWayPosition translateSwitch(int value) const = 0;
 };

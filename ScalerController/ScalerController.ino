@@ -180,7 +180,8 @@ void setup()
 
 	ILatchTranslator* gearTranslator = new LatchTranslator(gearChannel);
 	ILatchTranslator* cruiseTranslator = new LatchTranslator(cruiseChannel);
-	ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
+	const ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
+
 	IControlTranslator* controlTranslator = new ControlTranslator(
 		controlConfig,
 		*steeringTranslator,
@@ -188,7 +189,7 @@ void setup()
 		*reverseMotorSpeedTranslator,
 		*gearTranslator,
 		*cruiseTranslator,
-		winchSelectTranslator);
+		*winchSelectTranslator);
 
 	ILatchTranslator* lightsOnTranslator = new LatchTranslator(lightsOnChannel);
 	ILatchTranslator* lightsOffTranslator = new LatchTranslator(lightsOffChannel);

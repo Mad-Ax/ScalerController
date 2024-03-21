@@ -8,7 +8,7 @@ public:
 	SwitchTranslatorThreeWay(SwitchChannelThreeWay channel);
 	~SwitchTranslatorThreeWay();
 
-	ThreeWayPosition translateSwitch(int value);
+	ThreeWayPosition translateSwitch(int value) const;
 
 private:
 	SwitchChannelThreeWay channel;

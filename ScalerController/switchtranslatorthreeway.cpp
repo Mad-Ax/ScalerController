@@ -9,7 +9,7 @@ SwitchTranslatorThreeWay::~SwitchTranslatorThreeWay()
 {
 }
 
-ThreeWayPosition SwitchTranslatorThreeWay::translateSwitch(int value)
+ThreeWayPosition SwitchTranslatorThreeWay::translateSwitch(int value) const
 {
 	if (value > this->channel.high)
 	{
