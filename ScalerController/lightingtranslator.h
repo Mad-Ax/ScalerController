@@ -8,7 +8,7 @@ class LightingTranslator : public ILightingTranslator
 {
 public:
 	LightingTranslator(
-		ControlConfig config,
+		ControlConfig& config,
 		ILatchTranslator* lightsOnTranslator,
 		ILatchTranslator* lightsOffTranslator,
 		ISwitchTranslatorTwoWay* floodlightTranslator);
@@ -23,7 +23,7 @@ public:
 	LightSetting translateLightSetting(InputSetting input, Gear gear);
 
 private:
-	ControlConfig config;
+	ControlConfig& config;
 	ILatchTranslator* lightsOnTranslator;
 	ILatchTranslator* lightsOffTranslator;
 	ISwitchTranslatorTwoWay* floodlightTranslator;

@@ -1,12 +1,12 @@
 #include "lightingtranslator.h"
 
 LightingTranslator::LightingTranslator(
-	ControlConfig config,
+	ControlConfig& config,
 	ILatchTranslator* lightsOnTranslator,
 	ILatchTranslator* lightsOffTranslator,
-	ISwitchTranslatorTwoWay* floodlightTranslator)
+	ISwitchTranslatorTwoWay* floodlightTranslator) :
+	config(config)
 {
-	this->config = config;
 	this->lightsOnTranslator = lightsOnTranslator;
 	this->lightsOffTranslator = lightsOffTranslator;
 	this->floodlightTranslator = floodlightTranslator;
