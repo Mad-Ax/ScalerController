@@ -9,8 +9,8 @@ class LightingTranslator : public ILightingTranslator
 public:
 	LightingTranslator(
 		ControlConfig& config,
-		ILatchTranslator* lightsOnTranslator,
-		ILatchTranslator* lightsOffTranslator,
+		ILatchTranslator& lightsOnTranslator,
+		ILatchTranslator& lightsOffTranslator,
 		ISwitchTranslatorTwoWay* floodlightTranslator);
 	~LightingTranslator();
 
@@ -24,8 +24,8 @@ public:
 
 private:
 	ControlConfig& config;
-	ILatchTranslator* lightsOnTranslator;
-	ILatchTranslator* lightsOffTranslator;
+	ILatchTranslator& lightsOnTranslator;
+	ILatchTranslator& lightsOffTranslator;
 	ISwitchTranslatorTwoWay* floodlightTranslator;
 	LightMode currentLightMode;
 

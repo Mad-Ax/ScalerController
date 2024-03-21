@@ -2,13 +2,13 @@
 
 LightingTranslator::LightingTranslator(
 	ControlConfig& config,
-	ILatchTranslator* lightsOnTranslator,
-	ILatchTranslator* lightsOffTranslator,
+	ILatchTranslator& lightsOnTranslator,
+	ILatchTranslator& lightsOffTranslator,
 	ISwitchTranslatorTwoWay* floodlightTranslator) :
-	config(config)
+	config(config),
+	lightsOnTranslator(lightsOnTranslator),
+	lightsOffTranslator(lightsOffTranslator)
 {
-	this->lightsOnTranslator = lightsOnTranslator;
-	this->lightsOffTranslator = lightsOffTranslator;
 	this->floodlightTranslator = floodlightTranslator;
 	this->currentLightMode = LightMode::Off;
 }
@@ -24,7 +24,7 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 	LatchChannel onChannel = this->config.lightsOnChannel;
 	int onValue = input.channel[onChannel.channel];
 
-	if (this->lightsOnTranslator->translateLatch(onValue))
+	if (this->lightsOnTranslator.translateLatch(onValue))
 	{
 		// We have requested to increment the light mode
 		switch (currentLightMode)
@@ -47,7 +47,7 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 	LatchChannel offChannel = this->config.lightsOffChannel;
 	int offValue = input.channel[offChannel.channel];
 
-	if (this->lightsOffTranslator->translateLatch(offValue))
+	if (this->lightsOffTranslator.translateLatch(offValue))
 	{
 		// We have requested to increment the light mode
 		switch (currentLightMode)

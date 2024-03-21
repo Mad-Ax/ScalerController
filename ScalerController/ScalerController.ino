@@ -194,7 +194,7 @@ void setup()
 	ILatchTranslator* lightsOnTranslator = new LatchTranslator(lightsOnChannel);
 	ILatchTranslator* lightsOffTranslator = new LatchTranslator(lightsOffChannel);
 	ISwitchTranslatorTwoWay* floodlightTranslator = new SwitchTranslatorTwoWay(floodlightChannel);
-	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, lightsOnTranslator, lightsOffTranslator, floodlightTranslator);
+	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, *lightsOnTranslator, *lightsOffTranslator, floodlightTranslator);
 
 	control = new Control(*controlTranslator, lightingTranslator, controlConfig);
 
