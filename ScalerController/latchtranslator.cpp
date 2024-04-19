@@ -1,8 +1,7 @@
 #include "latchtranslator.h"
 
-LatchTranslator::LatchTranslator(LatchChannel channel)
+LatchTranslator::LatchTranslator(LatchChannel& channel) : channel(channel)
 {
-	this->channel = channel;
 }
 
 LatchTranslator::~LatchTranslator()

@@ -9,10 +9,9 @@
 class OutputLights : public IOutputLights
 {
 public: 
-	OutputLights(LightModeConfig modeConfig, LightOutputConfig outputConfig);
-    void send(LightSetting lightSetting);
+	OutputLights(LightOutputConfig& outputConfig);
+    void send(LightSetting& lightSetting);
 
 private:
-	LightModeConfig modeConfig;
-	LightOutputConfig outputConfig;
+	LightOutputConfig& outputConfig;
 };

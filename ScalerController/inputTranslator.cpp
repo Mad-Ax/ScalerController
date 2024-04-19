@@ -37,9 +37,9 @@ int InputTranslator::translateStickInput(int input, AnalogChannel channel, Servo
 
 	// If input is less than deadzone, map to value below deadzone
 	if (input < channel.dbMin) {
-		return map(input, channel.min, channel.dbMin, servo.min, servo.center);
+		return map(input, channel.min, channel.dbMin, servo.minimum, servo.center);
 	}
 
 	// If input is greater than deadzone, map to value above deadzone
-	return map(input, channel.dbMax, channel.max, servo.center, servo.max);
+	return map(input, channel.dbMax, channel.max, servo.center, servo.maximum);
 }

@@ -3,6 +3,11 @@
 
 ControlTranslator::ControlTranslator(
 	ControlConfig& config,
+	const int& throttleServoCenter,
+	const int& steeringServoPin,
+	const int& steeringServoCenter,
+	const int& steeringServoMin,
+	const int& steeringServoMax,
 	const ISteeringTranslator& steeringTranslator,
 	const IMotorSpeedTranslator& forwardMotorSpeedTranslator,
 	const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
@@ -10,6 +15,8 @@ ControlTranslator::ControlTranslator(
 	ILatchTranslator& cruiseTranslator,
 	const ISwitchTranslatorThreeWay& winchSelectTranslator) :
 	config(config),
+	throttleServo({0, throttleServoCenter, 0, 0}),
+	steeringServo(*new ServoConfig(steeringServoPin, steeringServoCenter, steeringServoMin, steeringServoMax)),
 	steeringTranslator(steeringTranslator),
 	forwardMotorSpeedTranslator(forwardMotorSpeedTranslator),
 	reverseMotorSpeedTranslator(reverseMotorSpeedTranslator),
@@ -116,13 +123,13 @@ int ControlTranslator::translateMotorSpeed(const InputSetting& input, Gear gear,
 {
 	int desiredMotorSpeed;
 	const ThrottleChannel& channel = config.throttleChannel;
-	const ServoConfig& servo = config.throttleServo;
+	const ServoConfig& throttleServo = throttleServo;
 	int inputVal = input.channel[channel.channel];
 
 	if (inputVal < channel.eBrakeThreshold)
 	{
 		// We have applied the e-brake - come to full stop
-		return servo.center;
+		return throttleServo.center;
 	}
 
 	switch (gear)
@@ -132,17 +139,17 @@ int ControlTranslator::translateMotorSpeed(const InputSetting& input, Gear gear,
 		if (inputVal > channel.dbMax)
 		{
 			// Throttle is on
-			desiredMotorSpeed = map(inputVal, channel.dbMax, channel.max, servo.center, servo.max);
+			desiredMotorSpeed = map(inputVal, channel.dbMax, channel.max, throttleServo.center, throttleServo.maximum);
 		}
 		else if (inputVal < channel.dbMax && inputVal >= channel.dbMin)
 		{
 			// Coasting to stationary
-			desiredMotorSpeed = servo.center;
+			desiredMotorSpeed = throttleServo.center;
 		}
 		else
 		{
 			// Brake is on
-			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.min, servo.center);
+			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, throttleServo.minimum, throttleServo.center);
 		}
 
 		return this->forwardMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
@@ -152,23 +159,23 @@ int ControlTranslator::translateMotorSpeed(const InputSetting& input, Gear gear,
 		if (inputVal > channel.dbMax)
 		{
 			// Throttle is on
-			desiredMotorSpeed = map(inputVal, channel.dbMax, channel.max, servo.center, servo.min);
+			desiredMotorSpeed = map(inputVal, channel.dbMax, channel.max, throttleServo.center, throttleServo.minimum);
 		}
 		else if (inputVal < channel.dbMax && inputVal >= channel.dbMin)
 		{
-			desiredMotorSpeed = servo.center;
+			desiredMotorSpeed = throttleServo.center;
 		}
 		else
 		{
 			// Brake is on
-			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.max, servo.center);
+			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, throttleServo.maximum, throttleServo.center);
 		}
 
 		return this->reverseMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
 	}
 
 	// Failsafe
-	return servo.center;
+	return throttleServo.center;
 }
 
 // Translates the motor speed in cruise mode
@@ -176,13 +183,12 @@ int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear
 {
 	int desiredMotorSpeed;
 	const ThrottleChannel& channel = config.throttleChannel;
-	const ServoConfig& servo = config.throttleServo;
 	int inputVal = input.channel[channel.channel];
 
 	if (inputVal < channel.eBrakeThreshold)
 	{
 		// We have applied the e-brake - come to full stop
-		return servo.center;
+		return throttleServo.center;
 	}
 
 	switch (gear)
@@ -194,11 +200,11 @@ int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear
 			// Throttle is on - increase the set speed by the amount of throttle added
 
 			// Get the value of throttle applied, in terms of half a servo output
-			int throttleValue = map(inputVal, channel.dbMax, channel.max, servo.center, servo.max - ((servo.max - servo.center) / 2) );
+			int throttleValue = map(inputVal, channel.dbMax, channel.max, throttleServo.center, throttleServo.maximum - ((throttleServo.maximum - throttleServo.center) / 2) );
 
 			// Subtract the centerpoint from the absolute throtteValue to determine the increased value requested by the driver,
 			// and add it to the current motor speed to get our new desired speed
-			desiredMotorSpeed = constrain((throttleValue - servo.center) + currentMotorSpeed, servo.center, servo.max);
+			desiredMotorSpeed = constrain((throttleValue - throttleServo.center) + currentMotorSpeed, throttleServo.center, throttleServo.maximum);
 		}
 		else if (inputVal < channel.dbMax && inputVal >= channel.dbMin)
 		{
@@ -210,11 +216,11 @@ int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear
 			// Brake is on - decrease the set speed by the amount of throttle subtracted
 
 			// Get the value of brake applied, in terms of servo output
-			int brakeValue = map(inputVal, channel.min, channel.dbMin, servo.min + ((servo.center - servo.min) / 2), servo.center);
+			int brakeValue = map(inputVal, channel.min, channel.dbMin, throttleServo.minimum + ((throttleServo.center - throttleServo.minimum) / 2), throttleServo.center);
 
 			// Subtract the absolute brake value from the centerpoint to determine the decreased value requested by the driver,
 			// and subtract it from the current motor speed to get our new desired speed
-			desiredMotorSpeed = constrain(currentMotorSpeed - (servo.center - brakeValue), servo.center, servo.max);
+			desiredMotorSpeed = constrain(currentMotorSpeed - (throttleServo.center - brakeValue), throttleServo.center, throttleServo.maximum);
 		}
 
 		return forwardMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
@@ -226,11 +232,11 @@ int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear
 			// Throttle is on - increase the set speed by the amount of throttle added
 
 			// Get the value of throttle applied, in terms of half a servo output
-			int throttleValue = map(inputVal, channel.dbMax, channel.max, servo.center, servo.max - ((servo.max - servo.center) / 2));
+			int throttleValue = map(inputVal, channel.dbMax, channel.max, throttleServo.center, throttleServo.maximum - ((throttleServo.maximum - throttleServo.center) / 2));
 
 			// Subtract the centerpoint from the absolute throtteValue to determine the increased value requested by the driver,
 			// and subtract it from the current motor speed to get our new desired speed
-			desiredMotorSpeed = constrain(currentMotorSpeed - (throttleValue - servo.center), servo.min, servo.center);
+			desiredMotorSpeed = constrain(currentMotorSpeed - (throttleValue - throttleServo.center), throttleServo.minimum, throttleServo.center);
 		}
 		else if (inputVal < channel.dbMax && inputVal >= channel.dbMin)
 		{
@@ -242,27 +248,39 @@ int ControlTranslator::translateCruiseSpeed(const InputSetting& input, Gear gear
 			// Brake is on - decrease the set speed by the amount of throttle subtracted
 
 			// Get the value of brake applied, in terms of servo output
-			int brakeValue = map(inputVal, channel.min, channel.dbMin, servo.min + ((servo.center - servo.min) / 2), servo.center);
+			int brakeValue = map(inputVal, channel.min, channel.dbMin, throttleServo.minimum + ((throttleServo.center - throttleServo.minimum) / 2), throttleServo.center);
 
 			// Subtract the absolute brake value from the centerpoint to determine the decreased value requested by the driver,
 			// and add it to the current motor speed to get our new desired speed
-			desiredMotorSpeed = constrain(currentMotorSpeed + (servo.center - brakeValue), servo.min, servo.center);
+			desiredMotorSpeed = constrain(currentMotorSpeed + (throttleServo.center - brakeValue), throttleServo.minimum, throttleServo.center);
 		}
 
 		return reverseMotorSpeedTranslator.translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed);
 	}
 
 	// Failsafe
-	return servo.center;
+	return throttleServo.center;
 }
 
 int ControlTranslator::translateSteering(const InputSetting& input, int currentSteering, HardwareSerial& ser) const
 {
 	const AnalogChannel& channel = config.steeringChannel;
-	const ServoConfig& servo = config.steeringServo;
+	const ServoConfig& servo = this->steeringServo;
 	int inputVal = input.channel[channel.channel];
 
-	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.min, servo.max);
+	ser.print("this is control translator - ");
+	ser.print(inputVal);
+	ser.print(":");
+	ser.print(channel.min);
+	ser.print(":");
+	ser.print(channel.max);
+	ser.print(":");
+	ser.print(servo.minimum);
+	ser.print(":");
+	ser.print(servo.maximum);
+	ser.println();
+
+	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.minimum, servo.maximum);
 
 	// TODO M: isn't it possible to store "current steering" inside the translator..?
 	return this->steeringTranslator.translateSteering(currentSteering, desiredSteering, ser);
@@ -284,12 +302,12 @@ WinchSetting ControlTranslator::translateWinch(const InputSetting& input) const
 	switch (winchSwitch)
 	{
 	case ThreeWayPosition::PosA:
-		setting.winch2 = map(operateInputVal, operateChannel.min, operateChannel.max, winch2Servo.min, winch2Servo.max);
+		setting.winch2 = map(operateInputVal, operateChannel.min, operateChannel.max, winch2Servo.minimum, winch2Servo.maximum);
 		setting.winch1 = winch1Servo.center;
 		break;
 
 	case ThreeWayPosition::PosB:
-		setting.winch1 = map(operateInputVal, operateChannel.min, operateChannel.max, winch1Servo.min, winch1Servo.max);
+		setting.winch1 = map(operateInputVal, operateChannel.min, operateChannel.max, winch1Servo.minimum, winch1Servo.maximum);
 		setting.winch2 = winch2Servo.center;
 		break;
 

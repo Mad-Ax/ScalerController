@@ -11,7 +11,7 @@ public:
 		ControlConfig& config,
 		ILatchTranslator& lightsOnTranslator,
 		ILatchTranslator& lightsOffTranslator,
-		ISwitchTranslatorTwoWay* floodlightTranslator);
+		ISwitchTranslatorTwoWay& floodlightTranslator);
 	~LightingTranslator();
 
 	/// <summary>
@@ -26,7 +26,7 @@ private:
 	ControlConfig& config;
 	ILatchTranslator& lightsOnTranslator;
 	ILatchTranslator& lightsOffTranslator;
-	ISwitchTranslatorTwoWay* floodlightTranslator;
+	ISwitchTranslatorTwoWay& floodlightTranslator;
 	LightMode currentLightMode;
 
 	// Translates the brake light setting based on throttle input and current lighting mode

@@ -10,12 +10,12 @@
 class OutputServo : public IOutputServo
 {
   private:
-    ServoConfig config;
+    const ServoConfig& config;
     Servo servo;
     int lastValue;
   
   // Configures the instance with the correct pin
-  public: OutputServo(ServoConfig config);
+  public: OutputServo(const ServoConfig& config);
 
   // Sends the required angle to the servo
   public: void send(int value);

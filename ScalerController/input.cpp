@@ -1,23 +1,23 @@
 #include "input.h"
 #include "defines.h"
 
-Input::Input(InputConfig config, IPpmWrapper* ppmWrapper)
+Input::Input(const int modePin, const int& totalChannels, const IPpmWrapper*& ppmWrapper) : _modePin(modePin), totalChannels(totalChannels), ppmWrapper(ppmWrapper)
 {
-	this->config = config;
-	this->ppmWrapper = ppmWrapper;
-
 	// Set up the mode pin
-	pinMode(config.modePin, INPUT_PULLUP);
+	pinMode(modePin, INPUT_PULLUP);
 }
 
-void Input::update()
+void Input::update(HardwareSerial& ser)
 {
-  for(int channel = 0; channel < this->config.totalChannels; channel++)
+  for(int channel = 0; channel < this->totalChannels; channel++)
   {
-    this->setting.channel[channel] = ppmWrapper->latestValidChannelValue(channel+1, 0);
+    this->setting.channel[channel] = this->ppmWrapper->latestValidChannelValue(channel+1, 0);
   }
 
-  Mode modeSwitch = static_cast<Mode>(digitalRead(this->config.modePin));
+  ser.print("Mode pin is : ");
+  ser.println(this->_modePin);
+
+  Mode modeSwitch = static_cast<Mode>(digitalRead(this->_modePin));
 
   this->setting.mode = modeSwitch;
 }

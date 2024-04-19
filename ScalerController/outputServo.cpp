@@ -2,11 +2,9 @@
 
 // Constructor
 // Takes the servo pin as a parameter
-OutputServo::OutputServo(ServoConfig config)
+OutputServo::OutputServo(const ServoConfig& config) : config(config)
 {
-  this->config = config;
-
-  this->servo.attach(config.pin, config.min, config.max);
+  this->servo.attach(config.pin, config.minimum, config.maximum);
   this->servo.write(config.center);
 }
 

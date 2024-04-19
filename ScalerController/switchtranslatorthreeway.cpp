@@ -1,8 +1,7 @@
 #include "switchtranslatorthreeway.h"
 
-SwitchTranslatorThreeWay::SwitchTranslatorThreeWay(SwitchChannelThreeWay channel)
+SwitchTranslatorThreeWay::SwitchTranslatorThreeWay(SwitchChannelThreeWay& channel) : channel(channel)
 {
-	this->channel = channel;
 }
 
 SwitchTranslatorThreeWay::~SwitchTranslatorThreeWay()

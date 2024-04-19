@@ -4,12 +4,12 @@ LightingTranslator::LightingTranslator(
 	ControlConfig& config,
 	ILatchTranslator& lightsOnTranslator,
 	ILatchTranslator& lightsOffTranslator,
-	ISwitchTranslatorTwoWay* floodlightTranslator) :
+	ISwitchTranslatorTwoWay& floodlightTranslator) :
 	config(config),
 	lightsOnTranslator(lightsOnTranslator),
-	lightsOffTranslator(lightsOffTranslator)
+	lightsOffTranslator(lightsOffTranslator),
+	floodlightTranslator(floodlightTranslator)
 {
-	this->floodlightTranslator = floodlightTranslator;
 	this->currentLightMode = LightMode::Off;
 }
 
@@ -148,7 +148,7 @@ int LightingTranslator::translateFloodlight(InputSetting input)
 	// Check if the floodlight channel is on
 	SwitchChannelTwoWay floodlightChannel = config.floodlightChannel;
 	int switchValue = input.channel[floodlightChannel.channel];
-	if (this->floodlightTranslator->translateSwitch(switchValue))
+	if (this->floodlightTranslator.translateSwitch(switchValue))
 	{
 		return config.lightModeConfig.floodlightIntensity;
 	}

@@ -1,34 +1,34 @@
 #pragma once
 #include "enum.h"
 
-// Configuration for input from receiver
-struct InputConfig
-{
-	int ppmInput;
-	int totalChannels;
-	unsigned long ppmChannelValueMaxError;
-	unsigned long ppmBlankTime;
-	unsigned int minChannelValue;
-	unsigned int maxChannelValue;
-	int modePin;
-};
-
 // Configuration for servo
-struct ServoConfig
+typedef struct ServoConfig
 {
 	// TODO: do we need to store center and EPs for all servos, or should this be a single static setting for all servos?
-	int pin;
-	int center;
-	int min;
-	int max;
+	const int& pin;
+	const int& center;
+	const int& minimum;
+	const int& maximum;
+
+	ServoConfig(
+		const int& pin,
+		const int& center,
+		const int& minimum,
+		const int& maximum) :
+		pin(pin),
+		center(center),
+		minimum(minimum),
+		maximum(maximum)
+	{
+	}
 
 	bool operator==(const ServoConfig& rhs)
 	{
 		return
 			pin == rhs.pin &&
 			center == rhs.center &&
-			min == rhs.min &&
-			max == rhs.max;
+			minimum == rhs.minimum &&
+			maximum == rhs.maximum;
 	}
 };
 
@@ -36,7 +36,7 @@ struct ServoConfig
 /// <summary>
 /// Configures an analog channel (e.g. ESC, steering) 
 /// </summary>
-struct AnalogChannel
+typedef struct AnalogChannel
 {
 	int channel;
 	int min;
@@ -58,7 +58,7 @@ struct AnalogChannel
 /// <summary>
 /// A special analog channel for throttle, with an e-brake threshold
 /// </summary>
-struct ThrottleChannel : AnalogChannel
+typedef struct ThrottleChannel : AnalogChannel
 {
 	ThrottleChannel() {}
 	ThrottleChannel(int channel, int min, int max, int dbMin, int dbMax, int eBrakeThreshold) : AnalogChannel{ channel, min, max, dbMin, dbMax }, eBrakeThreshold{ eBrakeThreshold } {}
@@ -69,7 +69,7 @@ struct ThrottleChannel : AnalogChannel
 /// <summary>
 /// Configures a latching switch, e.g. pull back on right stick to select forward / reverse
 /// </summary>
-struct LatchChannel
+typedef struct LatchChannel
 {
 	int channel;
 	int min;
@@ -79,7 +79,7 @@ struct LatchChannel
 /// <summary>
 /// Configures a 2-way switch, e.g. a toggle on the transmitter to turn a function on and off
 /// </summary>
-struct SwitchChannelTwoWay
+typedef struct SwitchChannelTwoWay
 {
 	int channel;
 	int high;
@@ -88,7 +88,7 @@ struct SwitchChannelTwoWay
 /// <summary>
 /// Configures a 3-way switch, e.g. a toggle on the transmitter to select a mode or function
 /// </summary>
-struct SwitchChannelThreeWay
+typedef struct SwitchChannelThreeWay
 {
 	int channel;
 	int high;
@@ -96,7 +96,7 @@ struct SwitchChannelThreeWay
 };
 
 // Configuration for lighting modes
-struct LightModeConfig
+typedef struct LightModeConfig
 {
 	int brakeIntensityMax;
 	int brakeIntensityLow;
@@ -109,27 +109,59 @@ struct LightModeConfig
 };
 
 // Configuration for Control methods
-struct ControlConfig
+typedef struct ControlConfig
 {
 	int maxFailsafeCount;
-	LatchChannel gearChannel;
-	LatchChannel cruiseChannel;
-	ThrottleChannel throttleChannel;
-	AnalogChannel steeringChannel;
-	AnalogChannel winchOperationChannel;
-	LatchChannel lightsOnChannel;
-	LatchChannel lightsOffChannel;
-	SwitchChannelTwoWay floodlightChannel;
-	SwitchChannelThreeWay winchSelectChannel;
-	ServoConfig throttleServo;
-	ServoConfig steeringServo;
-	ServoConfig winch1Servo;
-	ServoConfig winch2Servo;
-	LightModeConfig lightModeConfig;
+	LatchChannel& gearChannel;
+	LatchChannel& cruiseChannel;
+	ThrottleChannel& throttleChannel;
+	AnalogChannel& steeringChannel;
+	AnalogChannel& winchOperationChannel;
+	LatchChannel& lightsOnChannel;
+	LatchChannel& lightsOffChannel;
+	SwitchChannelTwoWay& floodlightChannel;
+	SwitchChannelThreeWay& winchSelectChannel;
+	const ServoConfig& throttleServo;
+	const ServoConfig& steeringServo;
+	const ServoConfig& winch1Servo;
+	const ServoConfig& winch2Servo;
+	LightModeConfig& lightModeConfig;
+
+	ControlConfig(
+		int maxFailsafeCount,
+		LatchChannel& gearChannel,
+		LatchChannel& cruiseChannel,
+		ThrottleChannel& throttleChannel,
+		AnalogChannel& steeringChannel,
+		AnalogChannel& winchOperationChannel,
+		LatchChannel& lightsOnChannel,
+		LatchChannel& lightsOffChannel,
+		SwitchChannelTwoWay& floodlightChannel,
+		SwitchChannelThreeWay& winchSelectChannel,
+		const ServoConfig& throttleServo,
+		const ServoConfig& steeringServo,
+		const ServoConfig& winch1Servo,
+		const ServoConfig& winch2Servo,
+		LightModeConfig& lightModeConfig) :
+		maxFailsafeCount(maxFailsafeCount),
+		gearChannel(gearChannel),
+		cruiseChannel(cruiseChannel),
+		throttleChannel(throttleChannel),
+		steeringChannel(steeringChannel),
+		winchOperationChannel(winchOperationChannel),
+		lightsOnChannel(lightsOnChannel),
+		lightsOffChannel(lightsOffChannel),
+		floodlightChannel(floodlightChannel),
+		winchSelectChannel(winchSelectChannel),
+		throttleServo(throttleServo),
+		steeringServo(steeringServo),
+		winch1Servo(winch1Servo),
+		winch2Servo(winch2Servo),
+		lightModeConfig(lightModeConfig) {}
 };
 
 // Configuration for lighting output
-struct LightOutputConfig {
+typedef struct LightOutputConfig {
 	int headLightPin;
 	int brakePin;
 	int reversePin;
@@ -139,7 +171,7 @@ struct LightOutputConfig {
 };
 
 // Channel input values
-struct InputSetting
+typedef struct InputSetting
 {
 	int channel[8];
 
@@ -160,7 +192,7 @@ struct InputSetting
 };
 
 // Light control values
-struct LightSetting {
+typedef struct LightSetting {
 	int brakeIntensity;
 	int reverseIntensity;
 	int headLightIntensity;
@@ -179,7 +211,7 @@ struct LightSetting {
 };
 
 // Converted control values
-struct ControlSetting
+typedef struct ControlSetting
 {
 	int motorSpeed;
 	int steering;
@@ -191,7 +223,7 @@ struct ControlSetting
 };
 
 // Winch settings
-struct WinchSetting
+typedef struct WinchSetting
 {
 	int winch1;
 	int winch2;

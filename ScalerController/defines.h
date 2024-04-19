@@ -17,7 +17,7 @@
 // This is static config data and generally should not be changed
 
 #define CHN_MIN 1000				// Minimum input value for any radio channel
-#define CHN_MAX 2000				// Minimum input value for any radio channel
+#define CHN_MAX 2000				// Maximum input value for any radio channel
 #define CHN_DEADBAND_MIN 1486       // Deadband (center position) range start
 #define CHN_DEADBAND_MAX 1504       // Deadband (center position) range end
 
@@ -41,11 +41,12 @@
 // rendering the system unusable.  Pin 21 was found to have no such problems.  This is
 // probably due to a conflict with some other internal operation or library (such as Servo)
 #define PPM_IN 21                   // PPM input pin
-#define PPM_CHANNELS 8				// Total number of channels transmitted
+#define PPM_CHANNEL_COUNT 8			// Total number of channels transmitted
 #define PPM_INPUT_MAX_ERROR 10      // Max error leeway for PPM reader (see https://github.com/Nikkilae/PPM-reader#fine-tuning)
 #define PPM_BLANK_TIME 2250         // Blank time for PPM reader (see above link)
 #define PPM_MIN_CHANNEL_VALUE 850	// Minimum PPM value for the channel
 #define PPM_MAX_CHANNEL_VALUE 2150	// Maximum PPM value for the channel
+
 
 // Radio channel config
 

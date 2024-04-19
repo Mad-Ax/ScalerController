@@ -12,6 +12,11 @@ class ControlTranslator : public IControlTranslator
 public:
 	ControlTranslator(
 		ControlConfig& config,
+		const int& throttleServoCenter,
+		const int& steeringServoPin,
+		const int& steeringServoCenter,
+		const int& steeringServoMin,
+		const int& steeringServoMax,
 		const ISteeringTranslator& steeringTranslator,
 		const IMotorSpeedTranslator& forwardMotorSpeedTranslator,
 		const IMotorSpeedTranslator& reverseMotorSpeedTranslator,
@@ -46,6 +51,8 @@ private:
 	int failsafeCount;
 	InputSetting *lastInput = nullptr;
 	ControlConfig& config;
+	const ServoConfig& throttleServo;
+	const ServoConfig& steeringServo;
 	const ISteeringTranslator& steeringTranslator;
 	const IMotorSpeedTranslator& forwardMotorSpeedTranslator;
 	const IMotorSpeedTranslator& reverseMotorSpeedTranslator;

@@ -1,7 +1,7 @@
 #include "steeringtranslator.h"
 
 
-SteeringTranslator::SteeringTranslator(const IInertia& inertia) : inertia(inertia)
+SteeringTranslator::SteeringTranslator(const IInertia*& inertia) : inertia(inertia)
 {
 }
 
@@ -14,10 +14,11 @@ int SteeringTranslator::translateSteering(
 	int desiredSteering,
 	HardwareSerial& ser) const
 {
+	ser.print("this is steering translator - ");
 	ser.print(currentSteering);
 	ser.print(":");
 	ser.print(desiredSteering);
 	ser.println();
 
-	return this->inertia.map(currentSteering, desiredSteering);
+	return this->inertia->map(currentSteering, desiredSteering);
 }

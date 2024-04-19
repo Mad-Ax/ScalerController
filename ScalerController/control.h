@@ -12,14 +12,19 @@ public:
 	ControlSetting setting;
 
 	// Constructor
-	Control(IControlTranslator& controlTranslator, ILightingTranslator* lightingTranslator, ControlConfig& controlConfig);//TODO: remove config when not needed
+	Control(
+		const int& throttleServoCenter,
+		IControlTranslator& controlTranslator,
+		ILightingTranslator& lightingTranslator,
+		ControlConfig& controlConfig);//TODO: remove config when not needed
 
 	// Translate method
 	// Translates the requested Input object into a set of values that can be sent to the Output
 	void translate(const InputSetting& input, HardwareSerial& ser);
 
 private:
+	const int& throttleServoCenter;
 	IControlTranslator& controlTranslator;
-	ILightingTranslator* lightingTranslator;
+	ILightingTranslator& lightingTranslator;
 	ControlConfig& config;//TODO: remove config when not needed
 };

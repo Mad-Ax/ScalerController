@@ -1,10 +1,15 @@
 #include "motorspeedtranslator.h"
 
-MotorSpeedTranslator::MotorSpeedTranslator(AnalogChannel channel, ServoConfig servo, const IInertia& accel, const IInertia& decel, const IInertia& brake)
-	: accel(accel), decel(decel), brake(brake)
+MotorSpeedTranslator::MotorSpeedTranslator(
+	AnalogChannel& channel,
+	const IInertia& accel,
+	const IInertia& decel,
+	const IInertia& brake) :
+	channel(channel),
+	accel(accel),
+	decel(decel),
+	brake(brake)
 {
-	this->channel = channel;
-	this->servo = servo; // TODO: M: don't think we need the servo here
 }
 
 MotorSpeedTranslator::~MotorSpeedTranslator()

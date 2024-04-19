@@ -5,11 +5,11 @@
 class SwitchTranslatorThreeWay : public ISwitchTranslatorThreeWay
 {
 public:
-	SwitchTranslatorThreeWay(SwitchChannelThreeWay channel);
+	SwitchTranslatorThreeWay(SwitchChannelThreeWay& channel);
 	~SwitchTranslatorThreeWay();
 
 	ThreeWayPosition translateSwitch(int value) const;
 
 private:
-	SwitchChannelThreeWay channel;
+	SwitchChannelThreeWay& channel;
 };

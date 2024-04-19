@@ -22,168 +22,206 @@
 #include "switchtranslatortwoway.h"
 #include "switchtranslatorthreeway.h"
 
-// Global pointers
+// Global structs - for config
+
+LatchChannel gearChannel = {
+	CHN_GEAR_CH - 1,
+	CHN_GEAR_SELECT_MIN,
+	CHN_GEAR_SELECT_MAX
+};
+
+LatchChannel cruiseChannel = {
+	CHN_CRUISE_CH - 1,
+	CHN_CRUISE_SELECT_MIN,
+	CHN_CRUISE_SELECT_MAX
+};
+
+ThrottleChannel throttleChannel{
+	CHN_THROTTLE_CH - 1,
+	CHN_THROTTLE_MIN,
+	CHN_THROTTLE_MAX,
+	CHN_THROTTLE_DEADBAND_MIN,
+	CHN_THROTTLE_DEADBAND_MAX,
+	CHN_THROTTLE_EBRAKE_THRESHOLD
+};
+
+AnalogChannel steeringChannel = {
+	CHN_STEERING_CH - 1,
+	CHN_STEERING_MIN,
+	CHN_STEERING_MAX,
+	CHN_STEERING_DEADBAND_MIN,
+	CHN_STEERING_DEADBAND_MAX
+};
+
+AnalogChannel winchOperationChannel = {
+	CHN_WINCH_OPERATE - 1,
+	CHN_MIN,
+	CHN_MAX,
+	CHN_DEADBAND_MIN,
+	CHN_DEADBAND_MAX
+};
+
+LatchChannel lightsOnChannel{
+	CHN_LIGHTS - 1,
+	CHN_LIGHTS_ON_SELECT_MIN,
+	CHN_LIGHTS_ON_SELECT_MAX
+};
+
+LatchChannel lightsOffChannel{
+	CHN_LIGHTS - 1,
+	CHN_LIGHTS_OFF_SELECT_MIN,
+	CHN_LIGHTS_OFF_SELECT_MAX
+};
+
+SwitchChannelTwoWay floodlightChannel
+{
+	CHN_FLOOD_CH - 1,
+	SWITCH_HIGH
+};
+
+SwitchChannelThreeWay winchSelectChannel{
+	CHN_WINCH_SELECT - 1,
+	SWITCH_HIGH,
+	SWITCH_LOW
+};
+
+const ServoConfig& throttleServo = *new ServoConfig(
+	SVO_ESC_PIN,
+	SVO_ESC_CENTER,
+	SVO_ESC_MIN,
+	SVO_ESC_MAX
+);
+
+const ServoConfig& steeringServo = *new ServoConfig(
+	SVO_STEERING_PIN,
+	SVO_STEERING_CENTER,
+	SVO_STEERING_MIN,
+	SVO_STEERING_MAX
+);
+
+const ServoConfig& winch1Servo = *new ServoConfig(
+	SVO_WINCH_1_PIN,
+	SVO_CENTER,
+	SVO_MIN,
+	SVO_MAX
+);
+
+const ServoConfig& winch2Servo = *new ServoConfig(
+	SVO_WINCH_2_PIN,
+	SVO_CENTER,
+	SVO_MIN,
+	SVO_MAX
+);
+
+LightModeConfig lightModeConfig = {
+	BRAKE_MAX_PWM,
+	BRAKE_LOW_PWM,
+	REVERSE_PWM,
+	HEADLIGHT_MAX_PWM,
+	HEADLIGHT_LOW_PWM,
+	ROOFLIGHT_MAX_PWM,
+	ROOFLIGHT_LOW_PWM,
+	FLOODLIGHT_PWM,
+};
+
+ControlConfig& controlConfig = *new ControlConfig(
+	MAX_FAILSAFE_COUNT,
+	gearChannel,
+	cruiseChannel,
+	throttleChannel,
+	steeringChannel,
+	winchOperationChannel,
+	lightsOnChannel,
+	lightsOffChannel,
+	floodlightChannel,
+	winchSelectChannel,
+	throttleServo,
+	steeringServo,
+	winch1Servo,
+	winch2Servo,
+	lightModeConfig
+);
+
+LightOutputConfig lightOutputConfig = {
+	HEADLIGHT_OUT,
+	BRAKELIGHT_OUT,
+	REVERSE_OUT,
+	ROOFLIGHT_OUT,
+	FLOODLIGHT_OUT
+};
+
+// Global pointers - put here so they are not destroyed at end of setup()
 Input* input;
 Control* control;
 Output* output;
+
+const IPpmWrapper* ppmWrapper;
+
+const IInertia* steeringInertia;
+const ISteeringTranslator* steeringTranslator;
+
+const IInertia* forwardAccel;
+const IInertia* forwardDecel;
+const IInertia* forwardBrake;
+const IMotorSpeedTranslator* forwardMotorSpeedTranslator;
+
+const IInertia* reverseAccel;
+const IInertia* reverseDecel;
+const IInertia* reverseBrake;
+const IMotorSpeedTranslator* reverseMotorSpeedTranslator;
+
+ILatchTranslator* gearTranslator;
+ILatchTranslator* cruiseTranslator;
+const ISwitchTranslatorThreeWay* winchSelectTranslator;
+
+IControlTranslator* controlTranslator;
+
+ILatchTranslator* lightsOnTranslator;
+ILatchTranslator* lightsOffTranslator;
+ISwitchTranslatorTwoWay* floodlightTranslator;
+ILightingTranslator* lightingTranslator;
+
+IOutputServo* outputEsc;
+IOutputServo* outputSteering;
+IOutputServo* outputWinch1;
+IOutputServo* outputWinch2;
+IOutputLights* outputLights;
 
 unsigned long loopTime;
 
 void setup()
 {
-	InputConfig inputConfig = {
-		PPM_IN,
-		PPM_CHANNELS,
-		PPM_INPUT_MAX_ERROR,
-		PPM_BLANK_TIME,
-		PPM_MIN_CHANNEL_VALUE,
-		PPM_MAX_CHANNEL_VALUE,
-		MODE_PIN
-	};
-	PpmWrapper* ppmWrapper = new PpmWrapper(inputConfig);
+	// Open the serial (for debugging)
+	Serial.begin(57600);
 
-	input = new Input(inputConfig, ppmWrapper);
+	ppmWrapper = new PpmWrapper(PPM_IN, PPM_CHANNEL_COUNT, PPM_INPUT_MAX_ERROR, PPM_BLANK_TIME, PPM_MIN_CHANNEL_VALUE, PPM_MAX_CHANNEL_VALUE);
+	
+	input = new Input(10, PPM_CHANNEL_COUNT, ppmWrapper);
 
-	LatchChannel gearChannel = {
-		CHN_GEAR_CH - 1,
-		CHN_GEAR_SELECT_MIN,
-		CHN_GEAR_SELECT_MAX
-	};
+	steeringInertia = new Inertia(STEERING_INERTIA, SVO_STEERING_MIN, SVO_STEERING_MAX, Serial);
+	steeringTranslator = new SteeringTranslator(steeringInertia);
 
-	LatchChannel cruiseChannel = {
-		CHN_CRUISE_CH - 1,
-		CHN_CRUISE_SELECT_MIN,
-		CHN_CRUISE_SELECT_MAX
-	};
+	forwardAccel = new Inertia(FWD_ACCEL_INERTIA, SVO_ESC_CENTER, SVO_ESC_MAX, Serial);
+	forwardDecel = new Inertia(FWD_DECEL_INERTIA, SVO_ESC_CENTER, SVO_ESC_MAX, Serial);
+	forwardBrake = new Inertia(FWD_BRAKE_INERTIA, SVO_ESC_CENTER, SVO_ESC_MAX, Serial);
+	forwardMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, *forwardAccel, *forwardDecel, *forwardBrake);
 
-	ThrottleChannel throttleChannel {
-		CHN_THROTTLE_CH - 1,
-		CHN_THROTTLE_MIN,
-		CHN_THROTTLE_MAX,
-		CHN_THROTTLE_DEADBAND_MIN,
-		CHN_THROTTLE_DEADBAND_MAX,
-		CHN_THROTTLE_EBRAKE_THRESHOLD
-	};
+	reverseAccel = new Inertia(REV_ACCEL_INERTIA, SVO_ESC_MIN, SVO_ESC_CENTER, Serial);
+	reverseDecel = new Inertia(REV_DECEL_INERTIA, SVO_ESC_MIN, SVO_ESC_CENTER, Serial);
+	reverseBrake = new Inertia(REV_BRAKE_INERTIA, SVO_ESC_MIN, SVO_ESC_CENTER, Serial);
+	reverseMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, *reverseAccel, *reverseDecel, *reverseBrake);
 
-	AnalogChannel steeringChannel = {
-		CHN_STEERING_CH - 1,
-		CHN_STEERING_MIN,
-		CHN_STEERING_MAX,
-		CHN_STEERING_DEADBAND_MIN,
-		CHN_STEERING_DEADBAND_MAX
-	};
+	gearTranslator = new LatchTranslator(gearChannel);
+	cruiseTranslator = new LatchTranslator(cruiseChannel);
+	winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
 
-	AnalogChannel winchOperationChannel = {
-		CHN_WINCH_OPERATE - 1,
-		CHN_MIN,
-		CHN_MAX,
-		CHN_DEADBAND_MIN,
-		CHN_DEADBAND_MAX
-	};
-
-	LatchChannel lightsOnChannel {
-		CHN_LIGHTS - 1,
-		CHN_LIGHTS_ON_SELECT_MIN,
-		CHN_LIGHTS_ON_SELECT_MAX
-	};
-
-	LatchChannel lightsOffChannel {
-		CHN_LIGHTS - 1,
-		CHN_LIGHTS_OFF_SELECT_MIN,
-		CHN_LIGHTS_OFF_SELECT_MAX
-	};
-
-	//SwitchChannelTwoWay* floodlightChannel = new SwitchChannelTwoWay(); // TODO: make ctor?
-	//floodlightChannel->channel = CHN_FLOOD_CH - 1;
-	//floodlightChannel->high = SWITCH_HIGH;
-	SwitchChannelTwoWay floodlightChannel
-	{
-		CHN_FLOOD_CH - 1,
-		SWITCH_HIGH
-	};
-
-	SwitchChannelThreeWay winchSelectChannel{
-		CHN_WINCH_SELECT - 1,
-		SWITCH_HIGH,
-		SWITCH_LOW
-	};
-
-	ServoConfig throttleServo = {
-		SVO_ESC_PIN,
+	controlTranslator = new ControlTranslator(
+		controlConfig,
 		SVO_ESC_CENTER,
-		SVO_ESC_MIN,
-		SVO_ESC_MAX
-	};
-
-	ServoConfig steeringServo = {
 		SVO_STEERING_PIN,
 		SVO_STEERING_CENTER,
 		SVO_STEERING_MIN,
-		SVO_STEERING_MAX
-	};
-
-	ServoConfig winch1Servo = {
-		SVO_WINCH_1_PIN,
-		SVO_CENTER,
-		SVO_MIN,
-		SVO_MAX
-	};
-
-	ServoConfig winch2Servo = {
-		SVO_WINCH_2_PIN,
-		SVO_CENTER,
-		SVO_MIN,
-		SVO_MAX
-	};
-
-	LightModeConfig lightModeConfig = {
-		BRAKE_MAX_PWM,
-		BRAKE_LOW_PWM,
-		REVERSE_PWM,
-		HEADLIGHT_MAX_PWM,
-		HEADLIGHT_LOW_PWM,
-		ROOFLIGHT_MAX_PWM,
-		ROOFLIGHT_LOW_PWM,
-		FLOODLIGHT_PWM,
-	};
-
-	ControlConfig controlConfig = {
-		MAX_FAILSAFE_COUNT,
-		gearChannel,
-		cruiseChannel,
-		throttleChannel,
-		steeringChannel,
-		winchOperationChannel,
-		lightsOnChannel,
-		lightsOffChannel,
-		floodlightChannel,
-		winchSelectChannel,
-		throttleServo,
-		steeringServo,
-		winch1Servo,
-		winch2Servo,
-		lightModeConfig
-	};
-
-	const IInertia* steeringInertia = new Inertia(STEERING_INERTIA, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
-	const ISteeringTranslator* steeringTranslator = new SteeringTranslator(*steeringInertia);
-
-	const IInertia* forwardAccel = new Inertia(FWD_ACCEL_INERTIA, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	const IInertia* forwardDecel = new Inertia(FWD_DECEL_INERTIA, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	const IInertia* forwardBrake = new Inertia(FWD_BRAKE_INERTIA, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
-	const IMotorSpeedTranslator* forwardMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo, *forwardAccel, *forwardDecel, *forwardBrake);
-
-	const IInertia* reverseAccel = new Inertia(REV_ACCEL_INERTIA, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	const IInertia* reverseDecel = new Inertia(REV_DECEL_INERTIA, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	const IInertia* reverseBrake = new Inertia(REV_BRAKE_INERTIA, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
-	const IMotorSpeedTranslator* reverseMotorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo, *reverseAccel, *reverseDecel, *reverseBrake);
-
-	ILatchTranslator* gearTranslator = new LatchTranslator(gearChannel);
-	ILatchTranslator* cruiseTranslator = new LatchTranslator(cruiseChannel);
-	const ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
-
-	IControlTranslator* controlTranslator = new ControlTranslator(
-		controlConfig,
+		SVO_STEERING_MAX,
 		*steeringTranslator,
 		*forwardMotorSpeedTranslator,
 		*reverseMotorSpeedTranslator,
@@ -191,38 +229,27 @@ void setup()
 		*cruiseTranslator,
 		*winchSelectTranslator);
 
-	ILatchTranslator* lightsOnTranslator = new LatchTranslator(lightsOnChannel);
-	ILatchTranslator* lightsOffTranslator = new LatchTranslator(lightsOffChannel);
-	ISwitchTranslatorTwoWay* floodlightTranslator = new SwitchTranslatorTwoWay(floodlightChannel);
-	LightingTranslator* lightingTranslator = new LightingTranslator(controlConfig, *lightsOnTranslator, *lightsOffTranslator, floodlightTranslator);
+	lightsOnTranslator = new LatchTranslator(lightsOnChannel);
+	lightsOffTranslator = new LatchTranslator(lightsOffChannel);
+	floodlightTranslator = new SwitchTranslatorTwoWay(floodlightChannel);
+	lightingTranslator = new LightingTranslator(controlConfig, *lightsOnTranslator, *lightsOffTranslator, *floodlightTranslator);
 
-	control = new Control(*controlTranslator, lightingTranslator, controlConfig);
+	control = new Control(SVO_ESC_CENTER, *controlTranslator, *lightingTranslator, controlConfig);
+	
+	outputEsc = new OutputServo(throttleServo);
+	outputSteering = new OutputServo(steeringServo);
+	outputWinch1 = new OutputServo(winch1Servo);
+	outputWinch2 = new OutputServo(winch2Servo);
+	outputLights = new OutputLights(lightOutputConfig);
 
-	LightOutputConfig lightOutputConfig = {
-		HEADLIGHT_OUT,
-		BRAKELIGHT_OUT,
-		REVERSE_OUT,
-		ROOFLIGHT_OUT,
-		FLOODLIGHT_OUT
-	};
-
-	IOutputServo* outputEsc = new OutputServo(throttleServo);
-	IOutputServo* outputSteering = new OutputServo(steeringServo);
-	IOutputServo* outputWinch1 = new OutputServo(winch1Servo);
-	IOutputServo* outputWinch2 = new OutputServo(winch2Servo);
-	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
-
-	output = new Output(outputEsc, outputSteering, outputWinch1, outputWinch2, outputLights);
-
-	// Open the serial (for debugging)
-	Serial.begin(57600);
+	output = new Output(*outputEsc, *outputSteering, *outputWinch1, *outputWinch2, *outputLights);
 }
 
 
 void loop()
 {
 	// get the latest input values from the receiver
-	input->update();
+	input->update(Serial);
 
 	for (int channel = 0; channel < 8; channel++)
 	{
@@ -245,4 +272,25 @@ void loop()
 	{
 	}
 	loopTime = micros();
+}
+
+
+
+
+#ifdef __arm__
+// should use uinstd.h to define sbrk but Due causes a conflict
+extern "C" char* sbrk(int incr);
+#else  // __ARM__
+extern char* __brkval;
+#endif  // __arm__
+
+int freeMemory() {
+	char top;
+#ifdef __arm__
+	return &top - reinterpret_cast<char*>(sbrk(0));
+#elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
+	return &top - __brkval;
+#else  // __arm__
+	return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+#endif  // __arm__
 }

@@ -1,8 +1,7 @@
 #include "switchtranslatortwoway.h"
 
-SwitchTranslatorTwoWay::SwitchTranslatorTwoWay(SwitchChannelTwoWay channel)
+SwitchTranslatorTwoWay::SwitchTranslatorTwoWay(SwitchChannelTwoWay& channel) : channel(channel)
 {
-	this->channel = channel;
 }
 
 SwitchTranslatorTwoWay::~SwitchTranslatorTwoWay()

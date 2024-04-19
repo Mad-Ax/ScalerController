@@ -5,7 +5,7 @@
 class SwitchTranslatorTwoWay : public ISwitchTranslatorTwoWay
 {
 public:
-	SwitchTranslatorTwoWay(SwitchChannelTwoWay channel);
+	SwitchTranslatorTwoWay(SwitchChannelTwoWay& channel);
 	~SwitchTranslatorTwoWay();
 
 	bool translateSwitch(int value);

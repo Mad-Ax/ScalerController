@@ -1,6 +1,15 @@
 #include "inertia.h"
 
-Inertia::Inertia(int inertia, int minimum, int maximum) : inertia(inertia), mininum(mininum), maximum(maximum), factor((maximum - mininum) / inertia)
+Inertia::Inertia(
+    const int& inertia,
+    const int& minimum,
+    const int& maximum,
+    HardwareSerial& ser) :
+    inertia(inertia),
+    minimum(minimum),
+    maximum(maximum),
+    factor((maximum - minimum) / inertia),
+    ser(ser)
 {
 }
 
@@ -23,7 +32,7 @@ int Inertia::map(int current, int requested) const
 
     if (val > this->maximum) return this->maximum;
 
-    if (val < this->mininum) return this->mininum;
+    if (val < this->minimum) return this->minimum;
 
     return val;
 }

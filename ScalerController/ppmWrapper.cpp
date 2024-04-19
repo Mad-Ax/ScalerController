@@ -1,12 +1,18 @@
 #include "ppmWrapper.h"
 
-PpmWrapper::PpmWrapper(InputConfig inputConfig)
+PpmWrapper::PpmWrapper(
+	const byte& ppmInputPin,
+	const byte& totalChannels,
+	const unsigned int& ppmChannelValueMaxError,
+	const unsigned int& ppmBlankTime,
+	const unsigned int& minChannelValue,
+	const unsigned int& maxChannelValue)
 {
-	ppm = new PPMReader(inputConfig.ppmInput, inputConfig.totalChannels);
-	ppm->channelValueMaxError = inputConfig.ppmChannelValueMaxError;
-	ppm->blankTime = inputConfig.ppmBlankTime;
-	ppm->minChannelValue = inputConfig.minChannelValue;
-	ppm->maxChannelValue = inputConfig.maxChannelValue;
+	ppm = new PPMReader(ppmInputPin, totalChannels);
+	ppm->channelValueMaxError = ppmChannelValueMaxError;
+	ppm->blankTime = ppmBlankTime;
+	ppm->minChannelValue = minChannelValue;
+	ppm->maxChannelValue = maxChannelValue;
 }
 
 PpmWrapper::~PpmWrapper()
@@ -14,7 +20,7 @@ PpmWrapper::~PpmWrapper()
 	delete ppm;
 }
 
-unsigned long PpmWrapper::latestValidChannelValue(int channel, unsigned long defaultValue)
+unsigned long PpmWrapper::latestValidChannelValue(int channel, unsigned long defaultValue) const
 {
 	return ppm->latestValidChannelValue(channel, defaultValue);
 }
