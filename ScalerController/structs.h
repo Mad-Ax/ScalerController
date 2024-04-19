@@ -122,6 +122,8 @@ struct ControlConfig
 	int revDecelInertia;
 	int revBrakeInertia;
 	int steeringInertia;
+	int aux1Channel;
+	int aux1Center;
 };
 
 // Configuration for lighting output
@@ -179,6 +181,7 @@ struct ControlSetting
 {
 	int motorSpeed;
 	int steering;
+	int aux1;
 	Gear gear;
 	Cruise cruise;
 	LightSetting lightSetting;
