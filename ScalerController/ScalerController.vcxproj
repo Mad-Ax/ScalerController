@@ -91,6 +91,7 @@
       <DeploymentContent>true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="steeringtranslator.cpp" />
+    <ClCompile Include="switchtranslatorthreeway.cpp" />
     <ClCompile Include="switchtranslatortwoway.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +104,7 @@
     <ClInclude Include="iinputtranslator.h" />
     <ClInclude Include="ilatchtranslator.h" />
     <ClInclude Include="isteeringtranslator.h" />
+    <ClInclude Include="iswitchtranslatorthreeway.h" />
     <ClInclude Include="iswitchtranslatortwoway.h" />
     <ClInclude Include="latchtranslator.h" />
     <ClInclude Include="ilightingtranslator.h" />
@@ -121,6 +123,7 @@
     <ClInclude Include="ppmWrapper.h" />
     <ClInclude Include="steeringtranslator.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="switchtranslatorthreeway.h" />
     <ClInclude Include="switchtranslatortwoway.h" />
     <ClInclude Include="__vm\.ScalerController.vsarduino.h" />
   </ItemGroup>

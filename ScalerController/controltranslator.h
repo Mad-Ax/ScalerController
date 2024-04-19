@@ -6,6 +6,7 @@
 #include "isteeringtranslator.h"
 #include "imotorspeedtranslator.h"
 #include "ilatchtranslator.h"
+#include "iswitchtranslatorthreeway.h"
 #include "iinertia.h"
 
 class ControlTranslator : public IControlTranslator
@@ -24,7 +25,8 @@ public:
 		IInertia* reverseAccel,
 		IInertia* reverseDecel,
 		IInertia* reverseBrake,
-		IInertia* steeringInertia);
+		IInertia* steeringInertia,
+		ISwitchTranslatorThreeWay* winchSelectTranslator);
 	~ControlTranslator();
 
 	// Checks for a fail condition on the input
@@ -46,6 +48,9 @@ public:
 	// Translates the steering angle
 	int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser);
 
+	// Translates the winch operation settings
+	WinchSetting translateWinch(InputSetting input) const;
+
 private:
 	int failsafeCount;
 	InputSetting *lastInput = nullptr;
@@ -62,4 +67,5 @@ private:
 	IInertia* reverseDecel;
 	IInertia* reverseBrake;
 	IInertia* steeringInertia;
+	ISwitchTranslatorThreeWay* winchSelectTranslator; // TODO: M: check feature/referencerefactor to remove all the inertias from here, if it doesn't reintroduce the bug..?
 };

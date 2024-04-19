@@ -61,6 +61,9 @@
     <ClCompile Include="steeringtranslator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="switchtranslatorthreeway.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.ScalerController.vsarduino.h">
@@ -149,6 +152,12 @@
     </ClInclude>
     <ClInclude Include="isteeringtranslator.h">
       <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="iswitchtranslatorthreeway.h">
+      <Filter>Header Files\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="switchtranslatorthreeway.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,6 +14,22 @@
 
 // Input config
 
+// Servo config
+
+// This is static config data and generally should not be changed
+
+#define CHN_MIN 1000				// Minimum input value for any radio channel
+#define CHN_MAX 2000				// Maximum input value for any radio channel
+#define CHN_DEADBAND_MIN 1486       // Deadband (center position) range start
+#define CHN_DEADBAND_MAX 1504       // Deadband (center position) range end
+
+#define SWITCH_HIGH 1650            // Value for "high" or "up" on a Tx switch or knob
+#define SWITCH_LOW 1350             // Value for "low" or "down" on a Tx switch or knob
+
+#define SVO_MIN 1000				// Minimum output value for any ESC / servo channel
+#define SVO_MAX	2000				// Maximum output value for any ESC / servo channel
+#define SVO_CENTER 1500				// Center value for any ESC / servo channel
+
 // Mode switch (physical switch - connect to GND to enable controller; leave open for pass-thru mode)
 #define MODE_PIN 10					// Digital input pin for pass-thru switch
 									// When closed (connected to 0V), ScalerController mode is active
@@ -36,11 +52,6 @@
 // Max Failsafe Count.  Number of times the Rx must receive identical data on all channels
 // before activating the failsafe.
 #define MAX_FAILSAFE_COUNT 30				//TODO: M: test that this is a valid number
-
-// DEFAULTS
-#define DEFAULT_CENTER 1500					// Default center value for channels / servos
-#define DEFAULT_MIN 1000					// Default min value for channels / servos
-#define DEFAULT_MAX 1000					// Default max value for channels / servos
 
 // STEERING channel
 #define CHN_STEERING_CH 1                   // Input channel number
@@ -79,6 +90,10 @@
 // FLOODLIGHT operation channel.  Operates only in Controller mode.
 #define CHN_FLOOD_CH			5			// Input channel number
 
+// WINCH channels.  Operates only in Controller mode.
+#define CHN_WINCH_SELECT		6			// Input channel number.  Determines which winch should be operated
+#define CHN_WINCH_OPERATE		7			// Input channel number.  Determines input value for winch
+
 //// INDICATOR operation channel.  Operates only in DRIVE mode.
 //// If set to 0, indicators will not function.
 //#define CHN_INDICATOR   7                   // Input channel number
@@ -90,8 +105,6 @@
 //#define CHN_AUX4        4           // Output this channel to Aux4 servo when mode is Park
 //
 //
-#define SWITCH_HIGH 1650            // Value for "high" or "up" on a Tx switch or knob
-#define SWITCH_LOW 1350             // Value for "low" or "down" on a Tx switch or knob
 
 // STEERING output settings
 #define SVO_STEERING_PIN 8          // Output pin for steering servo
@@ -149,3 +162,7 @@
 #define ROOFLIGHT_MAX_PWM 255		// Full rooflight
 #define ROOFLIGHT_LOW_PWM 100		// Low rooflight
 #define FLOODLIGHT_PWM 255			// Floodlight on
+
+// Winch configuration
+#define SVO_WINCH_1_PIN		11			// Output for winch 1
+#define SVO_WINCH_2_PIN		12			// Output for winch 2

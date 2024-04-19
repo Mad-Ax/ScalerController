@@ -14,7 +14,8 @@ ControlTranslator::ControlTranslator(
 	IInertia* reverseAccel,
 	IInertia* reverseDecel,
 	IInertia* reverseBrake,
-	IInertia* steeringInertia)
+	IInertia* steeringInertia,
+	ISwitchTranslatorThreeWay* winchSelectTranslator)
 {
 	this->config = config;
 	this->inputTranslator = inputTranslator;
@@ -29,6 +30,7 @@ ControlTranslator::ControlTranslator(
 	this->reverseDecel = reverseDecel;
 	this->reverseBrake = reverseBrake;
 	this->steeringInertia = steeringInertia;
+	this->winchSelectTranslator = winchSelectTranslator;
 }
 
 ControlTranslator::~ControlTranslator()
@@ -280,4 +282,39 @@ int ControlTranslator::translateSteering(InputSetting input, int currentSteering
 
 	// TODO: M: remove this:
 	//return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);
+}
+
+WinchSetting ControlTranslator::translateWinch(InputSetting input) const
+{
+	auto selectChannel = config.winchSelectChannel;
+	auto operateChannel = config.winchOperationChannel;
+	auto winch1Servo = config.winch1Servo;
+	auto winch2Servo = config.winch2Servo;
+	int selectInputVal = input.channel[selectChannel.channel];
+	int operateInputVal = input.channel[operateChannel.channel];
+
+	WinchSetting setting;
+
+	auto winchSwitch = this->winchSelectTranslator->translateSwitch(selectInputVal);
+
+	switch (winchSwitch)
+	{
+	case ThreeWayPosition::PosA:
+		setting.winch2 = map(operateInputVal, operateChannel.min, operateChannel.max, winch2Servo.min, winch2Servo.max);
+		setting.winch1 = winch1Servo.center;
+		break;
+
+	case ThreeWayPosition::PosB:
+		setting.winch1 = map(operateInputVal, operateChannel.min, operateChannel.max, winch1Servo.min, winch1Servo.max);
+		setting.winch2 = winch2Servo.center;
+		break;
+
+	case ThreeWayPosition::PosC:
+	default:
+		setting.winch1 = winch1Servo.center;
+		setting.winch2 = winch2Servo.center;
+		break;
+	}
+
+	return setting;
 }

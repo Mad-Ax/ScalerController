@@ -21,6 +21,7 @@
 #include "outputservo.h"
 #include "outputlights.h"
 #include "switchtranslatortwoway.h"
+#include "switchtranslatorthreeway.h"
 
 // Global pointers
 Input* input;
@@ -73,6 +74,14 @@ void setup()
 		CHN_STEERING_DEADBAND_MAX
 	};
 
+	AnalogChannel winchOperationChannel = {
+		CHN_WINCH_OPERATE - 1,
+		CHN_MIN,
+		CHN_MAX,
+		CHN_DEADBAND_MIN,
+		CHN_DEADBAND_MAX
+	};
+
 	LatchChannel lightsOnChannel{
 		CHN_LIGHTS - 1,
 		CHN_LIGHTS_ON_SELECT_MIN,
@@ -88,6 +97,12 @@ void setup()
 	SwitchChannelTwoWay floodlightChannel{
 		CHN_FLOOD_CH - 1,
 		SWITCH_HIGH
+	};
+
+	SwitchChannelThreeWay winchSelectChannel{
+		CHN_WINCH_SELECT - 1,
+		SWITCH_HIGH,
+		SWITCH_LOW
 	};
 
 	ServoConfig throttleServo = {
@@ -106,9 +121,23 @@ void setup()
 
 	ServoConfig aux1Servo = {
 		AUX_1_PIN,
-		DEFAULT_CENTER,
-		DEFAULT_MIN,
-		DEFAULT_MAX
+		SVO_CENTER,
+		SVO_MIN,
+		SVO_MAX
+	};
+
+	ServoConfig winch1Servo = {
+		SVO_WINCH_1_PIN,
+		SVO_CENTER,
+		SVO_MIN,
+		SVO_MAX,
+	};
+
+	ServoConfig winch2Servo = {
+		SVO_WINCH_2_PIN,
+		SVO_CENTER,
+		SVO_MIN,
+		SVO_MAX,
 	};
 
 	LightModeConfig lightModeConfig = {
@@ -130,13 +159,17 @@ void setup()
 		cruiseChannel,
 		throttleChannel,
 		steeringChannel,
+		winchOperationChannel,
 		lightsOnChannel,
 		lightsOffChannel,
 		floodlightChannel,
+		winchSelectChannel,
 //		indicator,
 //		lights,
 		throttleServo,
 		steeringServo,
+		winch1Servo,
+		winch2Servo,
 		lightModeConfig,
 //		SWITCH_HIGH,
 //		SWITCH_LOW,
@@ -148,7 +181,7 @@ void setup()
 		REV_BRAKE_INERTIA,
 		STEERING_INERTIA,
 		AUX_1_CHN - 1,
-		DEFAULT_CENTER
+		SVO_CENTER
 	};
 
 	IInputTranslator* inputTranslator = new InputTranslator();// TODO: remove when not noeded
@@ -156,6 +189,8 @@ void setup()
 	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
 	ILatchTranslator* gearTranslator = new LatchTranslator();
 	ILatchTranslator* cruiseTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
+	ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
+
 	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* forwardDecel = new Inertia(controlConfig.fwdDecelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* forwardBrake = new Inertia(controlConfig.fwdBrakeInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
@@ -176,7 +211,8 @@ void setup()
 		reverseAccel,
 		reverseDecel,
 		reverseBrake,
-		steeringInertia);
+		steeringInertia,
+		winchSelectTranslator);
 
 	ILatchTranslator* lightsOnTranslator = new LatchTranslator();
 	ILatchTranslator* lightsOffTranslator = new LatchTranslator();
@@ -197,10 +233,12 @@ void setup()
 	IOutputServo* outputEsc = new OutputServo(throttleServo);
 	IOutputServo* outputSteering = new OutputServo(steeringServo);
 	IOutputServo* outputAux1 = new OutputServo(aux1Servo);
+	IOutputServo* outputWinch1 = new OutputServo(winch1Servo);
+	IOutputServo* outputWinch2 = new OutputServo(winch2Servo);
 //	IOutputLights* outputLights = CHN_LIGHTS > 0 ? new OutputLights(lightModeConfig, lightOutputConfig) : nullptr;
 	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
-	output = new Output(outputEsc, outputSteering, outputAux1, outputLights);
+	output = new Output(outputEsc, outputSteering, outputAux1, outputWinch1, outputWinch2, outputLights);
 
 	// Open the serial (for debugging)
 	Serial.begin(57600);
