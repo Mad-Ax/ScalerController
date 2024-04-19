@@ -37,6 +37,11 @@
 // before activating the failsafe.
 #define MAX_FAILSAFE_COUNT 30				//TODO: M: test that this is a valid number
 
+// DEFAULTS
+#define DEFAULT_CENTER 1500					// Default center value for channels / servos
+#define DEFAULT_MIN 1000					// Default min value for channels / servos
+#define DEFAULT_MAX 1000					// Default max value for channels / servos
+
 // STEERING channel
 #define CHN_STEERING_CH 1                   // Input channel number
 #define CHN_STEERING_MIN 1000               // Minimum input  value
@@ -114,6 +119,11 @@
 //#define AUX_OUT_2 11                // Outputs aux2 channel value when in Park mode
 //#define AUX_OUT_3 12                // Outputs aux3 channel value when in Park mode
 //#define AUX_OUT_4 13                // Outputs aux4 channel value when in Park mode
+
+// Aux Servo Channel
+
+#define AUX_1_CHN	8				// Radio channel for aux 1 servo
+#define AUX_1_PIN	13				// Output pin for aux 1 servo
 
 // Light configuration
 

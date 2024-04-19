@@ -12,12 +12,14 @@ class Output
   private: 
     IOutputServo* outputEsc;
     IOutputServo* outputSteering;
+	IOutputServo* outputAux1;
     IOutputLights* outputLights;
 
 	// initialises the class with config values
 public: Output(
 	IOutputServo* outputEsc,
 	IOutputServo* outputSteering,
+	IOutputServo* outputAux1,
 	IOutputLights* outputLights);
 
   // Sends the current control settings to the output pins

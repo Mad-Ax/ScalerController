@@ -104,6 +104,13 @@ void setup()
 		SVO_STEERING_MAX
 	};
 
+	ServoConfig aux1Servo = {
+		AUX_1_PIN,
+		DEFAULT_CENTER,
+		DEFAULT_MIN,
+		DEFAULT_MAX
+	};
+
 	LightModeConfig lightModeConfig = {
 		BRAKE_MAX_PWM,
 		BRAKE_LOW_PWM,
@@ -139,7 +146,9 @@ void setup()
 		REV_ACCEL_INERTIA,
 		REV_DECEL_INERTIA,
 		REV_BRAKE_INERTIA,
-		STEERING_INERTIA
+		STEERING_INERTIA,
+		AUX_1_CHN - 1,
+		DEFAULT_CENTER
 	};
 
 	IInputTranslator* inputTranslator = new InputTranslator();// TODO: remove when not noeded
@@ -187,10 +196,11 @@ void setup()
 
 	IOutputServo* outputEsc = new OutputServo(throttleServo);
 	IOutputServo* outputSteering = new OutputServo(steeringServo);
+	IOutputServo* outputAux1 = new OutputServo(aux1Servo);
 //	IOutputLights* outputLights = CHN_LIGHTS > 0 ? new OutputLights(lightModeConfig, lightOutputConfig) : nullptr;
 	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
-	output = new Output(outputEsc, outputSteering, outputLights);
+	output = new Output(outputEsc, outputSteering, outputAux1, outputLights);
 
 	// Open the serial (for debugging)
 	Serial.begin(57600);
@@ -202,12 +212,12 @@ void loop()
 	// get the latest input values from the receiver
 	input->update();
 
-	/*for (int channel = 0; channel < 8; channel++)
+	for (int channel = 0; channel < 8; channel++)
 	{
 		Serial.print(input->setting.channel[channel]);
 		Serial.print(':');
 	}
-	Serial.println();*/
+	Serial.println();
 
 	// translate the input values to control values that can be sent to the outputs
 	control->translate(input->setting, Serial);

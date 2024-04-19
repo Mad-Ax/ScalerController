@@ -19,6 +19,7 @@ Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lig
 	setting.gear = Gear::Forward;
 	setting.motorSpeed = config.throttleServo.center;
 	setting.steering = config.steeringServo.center;
+	setting.aux1 = config.aux1Center;
 	setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
 }
 
@@ -29,6 +30,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	{
 		setting.motorSpeed = config.throttleServo.center;
 		setting.steering = config.steeringServo.center;
+		setting.aux1 = config.aux1Center;
 		setting.lightSetting.brakeIntensity = config.lightModeConfig.brakeIntensityMax;
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
@@ -46,6 +48,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	{
 		setting.motorSpeed = input.channel[config.throttleChannel.channel];
 		setting.steering = input.channel[config.steeringChannel.channel];
+		setting.aux1 = input.channel[config.aux1Channel];
 		setting.lightSetting.brakeIntensity = 0;
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
@@ -81,6 +84,10 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 
 	// Get the light setting
 	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear);
+
+	// Get the aux channel settings - these are pass-thru and have no servo mapping
+	setting.aux1 = input.channel[config.aux1Channel];
+
 
 //		// Get the light mode
 //		translateLightMode(input.channel[config.lights.channel]);

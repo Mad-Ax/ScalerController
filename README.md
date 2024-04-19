@@ -148,6 +148,15 @@ Inertial steering - apply inertia to the steering to smooth out driver input
 
 ### Version 0.0.9
 
+Gearbox controller - an analog channel (generally a 2-way switch) will be output unmodified to the gear selector channel
+
+- ✔When the switch or channel is moved, the corresponding signal is sent direct to the gear servo
+- ✔If the servo experiences glitching on the test bench, some smoothing will be applied (no change will be sent if the signal change is within a small amount)
+- ✔When on Switch Off (pass-thru) mode, the gear servo will continue to operate as it does in Controller mode
+- ✔Servo operates as direct pass-thru, i.e. no re-mapping takes place (except that performed by the Servo library)
+
+## Version 0.0.10
+
 Winch controller - the use of a 3-way switch on the transmitter can enable either the front or rear winch to be operated by the right vertical axis
 
 - When the switch is in the up position, the right vertical channel continues to control the cruise control setting, as before
@@ -155,13 +164,6 @@ Winch controller - the use of a 3-way switch on the transmitter can enable eithe
 - When the switch is in the bottom position, the right vertical channel controls the rear winch
 - It is not possible to change cruise mode or select / deselect reverse while winch operation is taking place
 
-## Version 0.0.10
-
-Gearbox controller - an analog channel (generally a 2-way switch) will be output unmodified to the gear selector channel
-
-- When the switch or channel is moved, the corresponding signal is sent direct to the gear servo
-- If the servo experiences glitching on the test bench, some smoothing will be applied (no change will be sent if the signal change is within a small amount)
-- When on Switch Off (pass-thru) mode, the gear servo will continue to operate as it does in Controller mode
 
 ### Version 1.0.0
 
