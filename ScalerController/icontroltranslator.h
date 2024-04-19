@@ -39,4 +39,7 @@ public:
 
 	// Translates the steering angle
 	virtual int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) = 0;
+
+	// Translates the winch operation settings
+	virtual WinchSetting translateWinch(InputSetting input) const = 0;
 };

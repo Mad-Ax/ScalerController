@@ -86,6 +86,16 @@ struct SwitchChannelTwoWay
 	int high;
 };
 
+/// <summary>
+/// Configures a 3-way switch, e.g. a toggle on the transmitter to select a mode or function
+/// </summary>
+typedef struct SwitchChannelThreeWay
+{
+	int channel;
+	int high;
+	int low;
+};
+
 // Configuration for lighting modes
 struct LightModeConfig {
 	int brakeIntensityMax;
@@ -107,11 +117,15 @@ struct ControlConfig
 	LatchChannel cruiseChannel;
 	ThrottleChannel throttleChannel;
 	AnalogChannel steeringChannel;
+	AnalogChannel winchOperationChannel;
 	LatchChannel lightsOnChannel;
 	LatchChannel lightsOffChannel;
 	SwitchChannelTwoWay floodlightChannel;
+	SwitchChannelThreeWay winchSelectChannel;
 	ServoConfig throttleServo;
 	ServoConfig steeringServo;
+	ServoConfig winch1Servo;
+	ServoConfig winch2Servo;
 	LightModeConfig lightModeConfig;
 //	int switchHigh;
 //	int switchLow;
@@ -182,7 +196,16 @@ struct ControlSetting
 	int motorSpeed;
 	int steering;
 	int aux1;
+	int winch1;
+	int winch2;
 	Gear gear;
 	Cruise cruise;
 	LightSetting lightSetting;
+};
+
+// Winch settings
+typedef struct WinchSetting
+{
+	int winch1;
+	int winch2;
 };

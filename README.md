@@ -159,10 +159,10 @@ Gearbox controller - an analog channel (generally a 2-way switch) will be output
 
 Winch controller - the use of a 3-way switch on the transmitter can enable either the front or rear winch to be operated by the right vertical axis
 
-- When the switch is in the up position, the right vertical channel continues to control the cruise control setting, as before
-- When the switch is in the middle position, the right vertical channel controls the front winch
-- When the switch is in the bottom position, the right vertical channel controls the rear winch
-- It is not possible to change cruise mode or select / deselect reverse while winch operation is taking place
+- ✔When the switch is in the up position, the right vertical channel continues to control the cruise control setting, as before
+- ✔When the switch is in the middle position, the right vertical channel controls the front winch
+- ✔When the switch is in the bottom position, the right vertical channel controls the rear winch
+- ✔It is not possible to change cruise mode or select / deselect reverse while winch operation is taking place
 
 
 ### Version 1.0.0
