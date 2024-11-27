@@ -10,14 +10,21 @@ MotorSpeedTranslator::~MotorSpeedTranslator()
 {
 }
 
+// TODO: M: naming bug: when reversing, decel is accel; accel is decel; we need a better way to name this.  Also could be an issue when we reverse throttle for reverse-installed motors?
 int MotorSpeedTranslator::translateMotorSpeed(
-	int currentMotorSpeed, 
-	int input, 
-	int desiredMotorSpeed, 
+	int currentMotorSpeed,
+	int input,
+	int desiredMotorSpeed,
+	bool useInertia,
 	IInertia* accel, 
 	IInertia* decel, 
 	IInertia* brake) // TODO: why is Inertia here - shouldn't it be in the ctor?
 {
+	if (!useInertia)
+	{
+		return desiredMotorSpeed;
+	}
+
 	if (input < channel.dbMin)
 	{
 		// User is actively braking - use the brake map

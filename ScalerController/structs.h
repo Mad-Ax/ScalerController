@@ -129,7 +129,8 @@ struct ControlConfig
 	LightModeConfig lightModeConfig;
 //	int switchHigh;
 //	int switchLow;
-	int fwdAccelInertia;
+	bool useAccelInertia;
+	int fwdAccelInertia; // tODO: this could be neater
 	int fwdDecelInertia;
 	int fwdBrakeInertia;
 	int revAccelInertia;

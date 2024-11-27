@@ -51,7 +51,7 @@
 
 // Max Failsafe Count.  Number of times the Rx must receive identical data on all channels
 // before activating the failsafe.
-#define MAX_FAILSAFE_COUNT 30				//TODO: M: test that this is a valid number
+#define MAX_FAILSAFE_COUNT 300				//TODO: M: test that this is a valid number
 
 // STEERING channel
 #define CHN_STEERING_CH 1                   // Input channel number
@@ -117,6 +117,8 @@
 #define SVO_ESC_MIN 1000            // Adjusts ESC maximum reverse position
 #define SVO_ESC_MAX 2000            // Adjusts ESC maximum throttle position
 #define SVO_ESC_CENTER 1500         // Adjusts ESC neutral / drag brake position
+
+#define USE_ACCEL_INERTIA 1			// Set to 1 to use inertia; 0 for straight-thru
 
 #define FWD_ACCEL_INERTIA 6         // Accelerator inertia (forward)
 #define FWD_DECEL_INERTIA 2         // Decelerator inertia (forward)
