@@ -18,7 +18,7 @@ int MotorSpeedTranslator::translateMotorSpeed(
 	bool useInertia,
 	IInertia* accel, 
 	IInertia* decel, 
-	IInertia* brake) // TODO: why is Inertia here - shouldn't it be in the ctor?
+	IInertia* brake)
 {
 	if (!useInertia)
 	{

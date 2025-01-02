@@ -25,6 +25,7 @@ public:
 		IInertia* reverseAccel,
 		IInertia* reverseDecel,
 		IInertia* reverseBrake,
+		IInertia* cruiseInertia,
 		IInertia* steeringInertia,
 		ISwitchTranslatorThreeWay* winchSelectTranslator);
 	~ControlTranslator();
@@ -66,6 +67,7 @@ private:
 	IInertia* reverseAccel;
 	IInertia* reverseDecel;
 	IInertia* reverseBrake;
+	IInertia* cruiseInertia;
 	IInertia* steeringInertia;
 	ISwitchTranslatorThreeWay* winchSelectTranslator; // TODO: M: check feature/referencerefactor to remove all the inertias from here, if it doesn't reintroduce the bug..?
 };

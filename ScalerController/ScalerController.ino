@@ -180,6 +180,7 @@ void setup()
 		REV_ACCEL_INERTIA,
 		REV_DECEL_INERTIA,
 		REV_BRAKE_INERTIA,
+		CRUISE_INERTIA,
 		STEERING_INERTIA,
 		AUX_1_CHN - 1,
 		SVO_CENTER
@@ -198,6 +199,7 @@ void setup()
 	IInertia* reverseAccel = new Inertia(controlConfig.revAccelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IInertia* reverseDecel = new Inertia(controlConfig.revDecelInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
 	IInertia* reverseBrake = new Inertia(controlConfig.revBrakeInertia, controlConfig.throttleServo.min, controlConfig.throttleServo.center);
+	IInertia* cruiseInertia = new Inertia(controlConfig.cruiseInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
 	IInertia* steeringInertia = new Inertia(controlConfig.steeringInertia, controlConfig.steeringServo.min, controlConfig.steeringServo.max);
 	IControlTranslator* controlTranslator = new ControlTranslator(
 		controlConfig,
@@ -212,6 +214,7 @@ void setup()
 		reverseAccel,
 		reverseDecel,
 		reverseBrake,
+		cruiseInertia,
 		steeringInertia,
 		winchSelectTranslator);
 
