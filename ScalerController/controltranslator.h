@@ -35,13 +35,16 @@ public:
 	bool checkFailsafe(InputSetting input);
 
 	// Translates the channel input value to the requested gear
-	Gear translateGear(InputSetting input, Gear lastGear);
+	Gear translateGear(InputSetting input, Gear currentGear);
 
 	// Translates the channel input value to the requested cruise value
-	Cruise translateCruise(InputSetting input, Cruise lastCruise, Gear currentGear);
+	Cruise translateCruise(InputSetting input, Cruise currentCruise, Gear currentGear);
+
+	// Translates the channel input value to the requested use inertia value
+	bool translateInertia(InputSetting input, bool currentUseInertia, Gear currentGear, Cruise currentCruise);
 
 	// Translates the motor speed in drive mode
-	int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
+	int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, bool useInertia, HardwareSerial& ser);
 
 	// Translates the motor speed in cruise mode
 	int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);

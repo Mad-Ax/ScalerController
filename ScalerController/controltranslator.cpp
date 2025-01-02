@@ -134,8 +134,40 @@ Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise,
 	return lastCruise;
 }
 
+// Translates the channel input value to the requested use inertia value
+bool ControlTranslator::translateInertia(InputSetting input, bool currentUseInertia, Gear currentGear, Cruise currentCruise)
+{
+	// If cruise is on, we must turn on inertia - otherwise the truck will
+	// stop dead if we turn cruise off
+	if (currentCruise == Cruise::On)
+	{
+		return true;
+	}
+
+	// If we are in forward gear, we can't change the inertia value
+	if (currentGear == Gear::Forward)
+	{
+		return currentUseInertia;
+	}
+
+	// Get the requested value from the cruise select channel
+	// NOTE: we use the cruise channel because functionality is shared
+	// on this channel
+	LatchChannel channel = this->config.cruiseChannel;
+	int value = input.channel[channel.channel];
+
+	// Determine if we are requesting a change
+	if (this->cruiseTranslator->translateLatch(channel, value)) // TODO: might be a neater way of doing this - consider writing tests
+	{
+		// We have requested to change the inertia value
+		return !currentUseInertia;
+	}
+
+	return currentUseInertia;
+}
+
 // Translates the motor speed in drive mode
-int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial &ser)
+int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, bool useInertia, HardwareSerial& ser)
 {
 	int desiredMotorSpeed;
 	ThrottleChannel channel = config.throttleChannel;
@@ -168,7 +200,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.min, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, this->config.useAccelInertia, forwardAccel, forwardDecel, forwardBrake);
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, useInertia, forwardAccel, forwardDecel, forwardBrake);
 		
 	case Gear::Reverse:
 		// Calculate applied reverse throttle
@@ -187,7 +219,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.max, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, this->config.useAccelInertia, reverseAccel, reverseDecel, reverseBrake);
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, useInertia, reverseAccel, reverseDecel, reverseBrake);
 	}
 
 	// Failsafe

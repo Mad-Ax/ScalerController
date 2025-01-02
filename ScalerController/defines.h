@@ -118,9 +118,6 @@
 #define SVO_ESC_MAX 2000            // Adjusts ESC maximum throttle position
 #define SVO_ESC_CENTER 1500         // Adjusts ESC neutral / drag brake position
 
-// Inertia
-#define USE_ACCEL_INERTIA 0			// Set to 1 to use inertia; 0 for straight-thru
-
 // Inertia settings - use higher values for faster operation
 #define FWD_ACCEL_INERTIA 6         // Accelerator inertia (forward)
 #define FWD_DECEL_INERTIA 2         // Decelerator inertia (forward)

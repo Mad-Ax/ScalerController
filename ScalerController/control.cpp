@@ -15,6 +15,7 @@ Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lig
 //
 //	setting.lightSetting.brakeLightIntensity = 0;
 
+	setting.useInertia = true;
 	setting.cruise = Cruise::Off;
 	setting.gear = Gear::Forward;
 	setting.motorSpeed = config.throttleServo.center;
@@ -72,12 +73,15 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 
 	// Determine if cruise is on or off
 	setting.cruise = this->controlTranslator->translateCruise(input, setting.cruise, setting.gear);
+
+	// Determine if inertia is on or off
+	setting.useInertia = this->controlTranslator->translateInertia(input, setting.useInertia, setting.gear, setting.cruise);
 	
 	// Get the requested motor speed
 	switch (setting.cruise)
 	{
 	case Cruise::Off:
-		setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear, setting.motorSpeed, ser);
+		setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear, setting.motorSpeed, setting.useInertia, ser);
 		break;
 
 	case Cruise::On:
@@ -86,7 +90,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	}
 
 	// Get the steering servo position - do not use inertia if a) useAccelInertia = true, or cruise is on
-	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, this->config.useAccelInertia || setting.cruise == Cruise::On, ser);
+	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, setting.useInertia || setting.cruise == Cruise::On, ser);
 
 	// Get the light setting
 	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear);
