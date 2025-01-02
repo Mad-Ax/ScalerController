@@ -57,8 +57,8 @@
 #define CHN_STEERING_CH 1                   // Input channel number
 #define CHN_STEERING_MIN 1000               // Minimum input  value
 #define CHN_STEERING_MAX 2000               // Maximum input value
-#define CHN_STEERING_DEADBAND_MIN 1486      // Deadband (center position) range start
-#define CHN_STEERING_DEADBAND_MAX 1504      // Deadband (center position) range end
+#define CHN_STEERING_DEADBAND_MIN 1500      // Deadband (center position) range start
+#define CHN_STEERING_DEADBAND_MAX 1500      // Deadband (center position) range end
 
 // THROTTLE/BRAKE channel
 #define CHN_THROTTLE_CH 3                   // Input channel number
