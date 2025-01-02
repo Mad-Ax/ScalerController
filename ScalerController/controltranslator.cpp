@@ -271,7 +271,7 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 	return servo.center;
 }
 
-int ControlTranslator::translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser)
+int ControlTranslator::translateSteering(InputSetting input, int currentSteering, bool useInertia, HardwareSerial& ser)
 {
 	auto channel = config.steeringChannel;
 	auto servo = config.steeringServo;
@@ -280,7 +280,7 @@ int ControlTranslator::translateSteering(InputSetting input, int currentSteering
 	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.min, servo.max);
 
 	// TODO M: isn't it possible to store "current steering" inside the translator..?
-	return this->steeringTranslator->translateSteering(currentSteering, desiredSteering, steeringInertia);
+	return this->steeringTranslator->translateSteering(currentSteering, desiredSteering, useInertia, steeringInertia);
 
 	// TODO: M: remove this:
 	//return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);

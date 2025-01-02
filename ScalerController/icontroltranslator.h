@@ -37,8 +37,15 @@ public:
 	/// <returns>An integer value to be sent to the ESC</returns>
 	virtual int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) = 0;
 
-	// Translates the steering angle
-	virtual int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser) = 0;
+	/// <summary>
+	/// Translates the steering angle
+	/// </summary>
+	/// <param name="input">Input values decoded from the transmitter</param>
+	/// <param name="currentSteering">Current steering value</param>
+	/// <param name="useInertia">Specifies if inertia should be used to translate steering</param>
+	/// <param name="ser">Serial (for debugging - remove in production)</param>
+	/// <returns>An integer value to be sent to the steering servo</returns>
+	virtual int translateSteering(InputSetting input, int currentSteering, bool useInertia, HardwareSerial& ser) = 0;
 
 	// Translates the winch operation settings
 	virtual WinchSetting translateWinch(InputSetting input) const = 0;

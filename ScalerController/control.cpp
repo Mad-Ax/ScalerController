@@ -85,8 +85,8 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		break;
 	}
 
-	// Get the steering servo position
-	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, ser);
+	// Get the steering servo position - do not use inertia if a) useAccelInertia = true, or cruise is on
+	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, this->config.useAccelInertia || setting.cruise == Cruise::On, ser);
 
 	// Get the light setting
 	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear);

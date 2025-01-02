@@ -47,7 +47,7 @@ public:
 	int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
 
 	// Translates the steering angle
-	int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser);
+	int translateSteering(InputSetting input, int currentSteering, bool useInertia, HardwareSerial& ser);
 
 	// Translates the winch operation settings
 	WinchSetting translateWinch(InputSetting input) const;
