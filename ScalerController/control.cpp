@@ -71,7 +71,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	}
 
 	// Determine if cruise is on or off
-	setting.cruise = this->controlTranslator->translateCruise(input, setting.cruise);
+	setting.cruise = this->controlTranslator->translateCruise(input, setting.cruise, setting.gear);
 	
 	// Get the requested motor speed
 	switch (setting.cruise)

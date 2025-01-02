@@ -38,7 +38,7 @@ public:
 	Gear translateGear(InputSetting input, Gear lastGear);
 
 	// Translates the channel input value to the requested cruise value
-	Cruise translateCruise(InputSetting input, Cruise lastCruise);
+	Cruise translateCruise(InputSetting input, Cruise lastCruise, Gear currentGear);
 
 	// Translates the motor speed in drive mode
 	int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);

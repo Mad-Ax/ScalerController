@@ -105,11 +105,19 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 }
 
 // Translates the channel input value to the requested cruise value
-Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
+Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise, Gear currentGear)
 {
+	// If we are in reverse, cruise must be turned off
+	if (currentGear == Gear::Reverse)
+	{
+		return Cruise::Off;
+	}
+
+	// Get the requested value from the cruise select channel
 	LatchChannel channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
 
+	// Determine if we are requesting a change
 	if (this->cruiseTranslator->translateLatch(channel, value))
 	{
 		// We have requested to change the cruise mode

@@ -14,8 +14,14 @@ public:
 	// Translates the channel input value to the requested gear
 	virtual Gear translateGear(InputSetting input, Gear lastGear) = 0;
 
-	// Translates the channel input value to the requested cruise value
-	virtual Cruise translateCruise(InputSetting input, Cruise lastCruise) = 0;
+	/// <summary>
+	/// Translates the channel input value to the requested cruise value
+	/// </summary>
+	/// <param name="input">Input values decoded from the transmitter</param>
+	/// <param name="lastCruise">Current cruise setting</param>
+	/// <param name="currentGear">Currently selected gear</param>
+	/// <returns>A Cruise enum representing the current cruise mode</returns>
+	virtual Cruise translateCruise(InputSetting input, Cruise lastCruise, Gear currentGear) = 0;
 
 	/// <summary>
 	/// Translates the motor speed in drive mode 
