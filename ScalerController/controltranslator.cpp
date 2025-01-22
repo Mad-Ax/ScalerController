@@ -14,6 +14,7 @@ ControlTranslator::ControlTranslator(
 	IInertia* reverseAccel,
 	IInertia* reverseDecel,
 	IInertia* reverseBrake,
+	IInertia* cruiseInertia,
 	IInertia* steeringInertia,
 	ISwitchTranslatorThreeWay* winchSelectTranslator)
 {
@@ -29,6 +30,7 @@ ControlTranslator::ControlTranslator(
 	this->reverseAccel = reverseAccel;
 	this->reverseDecel = reverseDecel;
 	this->reverseBrake = reverseBrake;
+	this->cruiseInertia = cruiseInertia;
 	this->steeringInertia = steeringInertia;
 	this->winchSelectTranslator = winchSelectTranslator;
 }
@@ -103,11 +105,19 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 }
 
 // Translates the channel input value to the requested cruise value
-Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
+Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise, Gear currentGear)
 {
+	// If we are in reverse, cruise must be turned off
+	if (currentGear == Gear::Reverse)
+	{
+		return Cruise::Off;
+	}
+
+	// Get the requested value from the cruise select channel
 	LatchChannel channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
 
+	// Determine if we are requesting a change
 	if (this->cruiseTranslator->translateLatch(channel, value))
 	{
 		// We have requested to change the cruise mode
@@ -124,8 +134,40 @@ Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise)
 	return lastCruise;
 }
 
+// Translates the channel input value to the requested use inertia value
+bool ControlTranslator::translateInertia(InputSetting input, bool currentUseInertia, Gear currentGear, Cruise currentCruise)
+{
+	// If cruise is on, we must turn on inertia - otherwise the truck will
+	// stop dead if we turn cruise off
+	if (currentCruise == Cruise::On)
+	{
+		return true;
+	}
+
+	// If we are in forward gear, we can't change the inertia value
+	if (currentGear == Gear::Forward)
+	{
+		return currentUseInertia;
+	}
+
+	// Get the requested value from the cruise select channel
+	// NOTE: we use the cruise channel because functionality is shared
+	// on this channel
+	LatchChannel channel = this->config.cruiseChannel;
+	int value = input.channel[channel.channel];
+
+	// Determine if we are requesting a change
+	if (this->cruiseTranslator->translateLatch(channel, value)) // TODO: might be a neater way of doing this - consider writing tests
+	{
+		// We have requested to change the inertia value
+		return !currentUseInertia;
+	}
+
+	return currentUseInertia;
+}
+
 // Translates the motor speed in drive mode
-int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial &ser)
+int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, bool useInertia, HardwareSerial& ser)
 {
 	int desiredMotorSpeed;
 	ThrottleChannel channel = config.throttleChannel;
@@ -158,7 +200,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.min, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, this->config.useAccelInertia, forwardAccel, forwardDecel, forwardBrake);
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, useInertia, forwardAccel, forwardDecel, forwardBrake);
 		
 	case Gear::Reverse:
 		// Calculate applied reverse throttle
@@ -177,7 +219,7 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 			desiredMotorSpeed = map(inputVal, channel.min, channel.dbMin, servo.max, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, this->config.useAccelInertia, reverseAccel, reverseDecel, reverseBrake);
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, useInertia, reverseAccel, reverseDecel, reverseBrake);
 	}
 
 	// Failsafe
@@ -230,7 +272,7 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 			desiredMotorSpeed = constrain(currentMotorSpeed - (servo.center - brakeValue), servo.center, servo.max);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, this->config.useAccelInertia, forwardAccel, forwardDecel, forwardBrake);
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, true, cruiseInertia, cruiseInertia, cruiseInertia);
 
 	case Gear::Reverse:
 		// Calculate applied reverse throttle
@@ -262,14 +304,14 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 			desiredMotorSpeed = constrain(currentMotorSpeed + (servo.center - brakeValue), servo.min, servo.center);
 		}
 
-		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, this->config.useAccelInertia, reverseAccel, reverseDecel, reverseBrake);
+		return motorSpeedTranslator->translateMotorSpeed(currentMotorSpeed, inputVal, desiredMotorSpeed, true, cruiseInertia, cruiseInertia, cruiseInertia);
 	}
 
 	// Failsafe
 	return servo.center;
 }
 
-int ControlTranslator::translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser)
+int ControlTranslator::translateSteering(InputSetting input, int currentSteering, bool useInertia, HardwareSerial& ser)
 {
 	auto channel = config.steeringChannel;
 	auto servo = config.steeringServo;
@@ -278,7 +320,7 @@ int ControlTranslator::translateSteering(InputSetting input, int currentSteering
 	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.min, servo.max);
 
 	// TODO M: isn't it possible to store "current steering" inside the translator..?
-	return this->steeringTranslator->translateSteering(currentSteering, desiredSteering, steeringInertia);
+	return this->steeringTranslator->translateSteering(currentSteering, desiredSteering, useInertia, steeringInertia);
 
 	// TODO: M: remove this:
 	//return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);

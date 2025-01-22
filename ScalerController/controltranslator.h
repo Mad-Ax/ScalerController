@@ -25,6 +25,7 @@ public:
 		IInertia* reverseAccel,
 		IInertia* reverseDecel,
 		IInertia* reverseBrake,
+		IInertia* cruiseInertia,
 		IInertia* steeringInertia,
 		ISwitchTranslatorThreeWay* winchSelectTranslator);
 	~ControlTranslator();
@@ -34,19 +35,22 @@ public:
 	bool checkFailsafe(InputSetting input);
 
 	// Translates the channel input value to the requested gear
-	Gear translateGear(InputSetting input, Gear lastGear);
+	Gear translateGear(InputSetting input, Gear currentGear);
 
 	// Translates the channel input value to the requested cruise value
-	Cruise translateCruise(InputSetting input, Cruise lastCruise);
+	Cruise translateCruise(InputSetting input, Cruise currentCruise, Gear currentGear);
+
+	// Translates the channel input value to the requested use inertia value
+	bool translateInertia(InputSetting input, bool currentUseInertia, Gear currentGear, Cruise currentCruise);
 
 	// Translates the motor speed in drive mode
-	int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
+	int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, bool useInertia, HardwareSerial& ser);
 
 	// Translates the motor speed in cruise mode
 	int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser);
 
 	// Translates the steering angle
-	int translateSteering(InputSetting input, int currentSteering, HardwareSerial& ser);
+	int translateSteering(InputSetting input, int currentSteering, bool useInertia, HardwareSerial& ser);
 
 	// Translates the winch operation settings
 	WinchSetting translateWinch(InputSetting input) const;
@@ -66,6 +70,7 @@ private:
 	IInertia* reverseAccel;
 	IInertia* reverseDecel;
 	IInertia* reverseBrake;
+	IInertia* cruiseInertia;
 	IInertia* steeringInertia;
 	ISwitchTranslatorThreeWay* winchSelectTranslator; // TODO: M: check feature/referencerefactor to remove all the inertias from here, if it doesn't reintroduce the bug..?
 };

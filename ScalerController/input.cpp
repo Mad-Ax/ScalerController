@@ -14,7 +14,7 @@ void Input::update()
 {
   for(int channel = 0; channel < this->config.totalChannels; channel++)
   {
-    this->setting.channel[channel] = ppmWrapper->latestValidChannelValue(channel+1, 0);
+    this->setting.channel[channel] = ppmWrapper->latestValidChannelValue(channel+1, 1500); // TODO: M: must use constant here
   }
 
   Mode modeSwitch = static_cast<Mode>(digitalRead(this->config.modePin));

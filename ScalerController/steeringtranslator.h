@@ -10,7 +10,7 @@ public:
 	~SteeringTranslator();
 
 	// Translates the input into a steering position
-	int translateSteering(int currentSteering, int desiredSteering, IInertia* inertia);
+	int translateSteering(int currentSteering, int desiredSteering, bool useInertia, IInertia* inertia);
 
 private:
 	AnalogChannel channel;

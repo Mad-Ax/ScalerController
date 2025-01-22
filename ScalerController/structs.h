@@ -129,13 +129,13 @@ struct ControlConfig
 	LightModeConfig lightModeConfig;
 //	int switchHigh;
 //	int switchLow;
-	bool useAccelInertia;
-	int fwdAccelInertia; // tODO: this could be neater
+	int fwdAccelInertia; // tODO: this could be neater - we could build the inertias here like we do with servos?
 	int fwdDecelInertia;
 	int fwdBrakeInertia;
 	int revAccelInertia;
 	int revDecelInertia;
 	int revBrakeInertia;
+	int cruiseInertia;
 	int steeringInertia;
 	int aux1Channel;
 	int aux1Center;
@@ -202,6 +202,7 @@ struct ControlSetting
 	Gear gear;
 	Cruise cruise;
 	LightSetting lightSetting;
+	bool useInertia;
 };
 
 // Winch settings

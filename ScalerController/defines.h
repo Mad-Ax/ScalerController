@@ -57,8 +57,8 @@
 #define CHN_STEERING_CH 1                   // Input channel number
 #define CHN_STEERING_MIN 1000               // Minimum input  value
 #define CHN_STEERING_MAX 2000               // Maximum input value
-#define CHN_STEERING_DEADBAND_MIN 1486      // Deadband (center position) range start
-#define CHN_STEERING_DEADBAND_MAX 1504      // Deadband (center position) range end
+#define CHN_STEERING_DEADBAND_MIN 1500      // Deadband (center position) range start
+#define CHN_STEERING_DEADBAND_MAX 1500      // Deadband (center position) range end
 
 // THROTTLE/BRAKE channel
 #define CHN_THROTTLE_CH 3                   // Input channel number
@@ -118,8 +118,7 @@
 #define SVO_ESC_MAX 2000            // Adjusts ESC maximum throttle position
 #define SVO_ESC_CENTER 1500         // Adjusts ESC neutral / drag brake position
 
-#define USE_ACCEL_INERTIA 1			// Set to 1 to use inertia; 0 for straight-thru
-
+// Inertia settings - use higher values for faster operation
 #define FWD_ACCEL_INERTIA 6         // Accelerator inertia (forward)
 #define FWD_DECEL_INERTIA 2         // Decelerator inertia (forward)
 #define FWD_BRAKE_INERTIA 8         // Brake interia (forward)
@@ -127,6 +126,8 @@
 #define REV_ACCEL_INERTIA 6         // Accelerator inertia (reverse)
 #define REV_DECEL_INERTIA 2         // Decelerator inertia (reverse)
 #define REV_BRAKE_INERTIA 8         // Brake interia (reverse)
+
+#define CRUISE_INERTIA    4			// Cruise inertia
 
 #define STEERING_INERTIA  40		// Steering inertia
 
