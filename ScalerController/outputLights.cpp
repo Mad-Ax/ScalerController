@@ -19,4 +19,7 @@ void OutputLights::send(LightSetting setting)
 	analogWrite(this->outputConfig.headLightPin, setting.headLightIntensity);
 	analogWrite(this->outputConfig.roofLightPin, setting.roofLightIntensity);
 	analogWrite(this->outputConfig.floodlightPin, setting.floodlightIntensity);
+	analogWrite(this->outputConfig.dashLightPinR, setting.dashLightSetting.redIntensity);
+	analogWrite(this->outputConfig.dashLightPinG, setting.dashLightSetting.greenIntensity);
+	analogWrite(this->outputConfig.dashLightPinB, setting.dashLightSetting.blueIntensity);
 }

@@ -42,8 +42,13 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.lightSetting.roofLightIntensity = 0;
 		setting.lightSetting.brakeIntensity = 0;
 
+		// Set the failsafe on the dash LED
+		setting.lightSetting.dashLightSetting.redIntensity = 255; // TODO: M: get from a config section somehow
+		setting.lightSetting.dashLightSetting.greenIntensity = 0; // TODO: M: get from a config section somehow
+		setting.lightSetting.dashLightSetting.blueIntensity = 0; // TODO: M: get from a config section somehow
+
 		// TODO: M: all other channels to centre
-		// TODO: failsafe flash mode
+
 		return;
 	}
 
@@ -60,6 +65,9 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
 		setting.lightSetting.roofLightIntensity = 0;
+		setting.lightSetting.dashLightSetting.redIntensity = 0;
+		setting.lightSetting.dashLightSetting.greenIntensity = 0;
+		setting.lightSetting.dashLightSetting.blueIntensity = 0;
 
 		// TODO: M: all other channels to centre
 		return;
@@ -93,7 +101,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, setting.useInertia || setting.cruise == Cruise::On, ser);
 
 	// Get the light setting
-	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear);
+	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear, setting.cruise, setting.useInertia);
 
 	// Get the aux channel settings - these are pass-thru and have no servo mapping
 	setting.aux1 = input.channel[config.aux1Channel];
@@ -103,12 +111,6 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	setting.winch1 = winchSetting.winch1;
 	setting.winch2 = winchSetting.winch2;
 
-//		// Get the light mode
-//		translateLightMode(input.channel[config.lights.channel]);
-//
-//		// Get the main beam setting
-//		translateMainBeam(input.channel[config.lights.channel]);
-//
 	// Get the brake light setting
 	//setting.lightSetting.brakeIntensity = this->lightingTranslator->translateBrakeLight(input);
 

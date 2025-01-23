@@ -106,7 +106,6 @@ struct LightModeConfig {
 	int rooflightIntensityMax;
 	int rooflightIntensityLow;
 	int floodlightIntensity;
-//	int failsafeFlashDelay;
 };
 
 // Configuration for Control methods
@@ -127,8 +126,6 @@ struct ControlConfig
 	ServoConfig winch1Servo;
 	ServoConfig winch2Servo;
 	LightModeConfig lightModeConfig;
-//	int switchHigh;
-//	int switchLow;
 	int fwdAccelInertia; // tODO: this could be neater - we could build the inertias here like we do with servos?
 	int fwdDecelInertia;
 	int fwdBrakeInertia;
@@ -148,7 +145,9 @@ struct LightOutputConfig {
 	int reversePin;
 	int roofLightPin;
 	int floodlightPin;
-//	int failsafePin;
+	int dashLightPinR;
+	int dashLightPinG;
+	int dashLightPinB;
 };
 
 // Channel input values
@@ -172,6 +171,24 @@ struct InputSetting
 	}
 };
 
+/// <summary>
+/// Dash light control values
+/// </summary>
+struct DashLightSetting
+{
+	int redIntensity;
+	int greenIntensity;
+	int blueIntensity;
+
+	bool operator==(const DashLightSetting& rhs)
+	{
+		return
+			redIntensity == rhs.redIntensity &&
+			greenIntensity == rhs.greenIntensity &&
+			blueIntensity == rhs.blueIntensity;
+	}
+};
+
 // Light control values
 struct LightSetting {
 	int brakeIntensity;
@@ -179,6 +196,7 @@ struct LightSetting {
 	int headLightIntensity;
 	int roofLightIntensity;
 	int floodlightIntensity;
+	DashLightSetting dashLightSetting;
 
 	bool operator==(const LightSetting& rhs)
 	{
@@ -187,9 +205,11 @@ struct LightSetting {
 			reverseIntensity == rhs.reverseIntensity &&
 			headLightIntensity == rhs.headLightIntensity &&
 			roofLightIntensity == rhs.roofLightIntensity &&
-			floodlightIntensity == rhs.floodlightIntensity;
+			floodlightIntensity == rhs.floodlightIntensity &&
+			dashLightSetting == rhs.dashLightSetting;
 	}
 };
+
 
 // Converted control values
 struct ControlSetting
@@ -202,7 +222,7 @@ struct ControlSetting
 	Gear gear;
 	Cruise cruise;
 	LightSetting lightSetting;
-	bool useInertia;
+	bool useInertia; // TODO: consider using an enum (Inertia = on, off)
 };
 
 // Winch settings
