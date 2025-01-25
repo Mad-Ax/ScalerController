@@ -147,6 +147,23 @@
 #define ROOFLIGHT_LOW_PWM 100				// Low rooflight
 #define FLOODLIGHT_PWM 255					// Floodlight on
 
+// Dash lights
+#define DASHLIGHT_FAILSAFE_PWM_RED 255		// Failsafe PWM value for red channel
+#define DASHLIGHT_FAILSAFE_PWM_GREEN 0		// Failsafe PWM value for green channel
+#define DASHLIGHT_FAILSAFE_PWM_BLUE 0		// Failsafe PWM value for blue channel
+
+#define DASHLIGHT_CRUISE_PWM_RED 0			// Cruise PWM value for red channel
+#define DASHLIGHT_CRUISE_PWM_GREEN 0		// Cruise PWM value for green channel
+#define DASHLIGHT_CRUISE_PWM_BLUE 255		// Cruise PWM value for blue channel
+
+#define DASHLIGHT_INERTIA_PWM_RED 0			// Inertia PWM value for red channel
+#define DASHLIGHT_INERTIA_PWM_GREEN 255		// Inertia PWM value for green channel
+#define DASHLIGHT_INERTIA_PWM_BLUE 0		// Inertia PWM value for blue channel
+
+#define DASHLIGHT_DIRECT_PWM_RED 255		// Direct PWM value for red channel
+#define DASHLIGHT_DIRECT_PWM_GREEN 0		// Direct PWM value for green channel
+#define DASHLIGHT_DIRECT_PWM_BLUE 200		// Direct PWM value for blue channel
+
 // Winch configuration
 #define SVO_WINCH_1_PIN		11				// Output for winch 1
 #define SVO_WINCH_2_PIN		12				// Output for winch 2

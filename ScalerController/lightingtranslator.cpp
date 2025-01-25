@@ -163,29 +163,15 @@ int LightingTranslator::translateFloodlight(InputSetting input)
 // Translates the dash light setting based on inertia, cruise, and failsafe
 DashLightSetting LightingTranslator::translateDashLight(Cruise cruise, bool useInertia)
 {
-	DashLightSetting dashLightSetting;
-
 	if (cruise == Cruise::On)
 	{
-		// TODO: dashlight: should use a setting matrix for this
-		dashLightSetting.redIntensity = 0;
-		dashLightSetting.greenIntensity = 0;
-		dashLightSetting.blueIntensity = 255;
-		return dashLightSetting;
+		return this->config.lightModeConfig.cruiseDashLight;
 	}
 
 	if (useInertia)
 	{
-		// TODO: dashlight: should use a setting matrix for this
-		dashLightSetting.redIntensity = 0;
-		dashLightSetting.greenIntensity = 255;
-		dashLightSetting.blueIntensity = 0;
-		return dashLightSetting;
+		return this->config.lightModeConfig.inertiaDashLight;
 	}
 
-	// TODO: dashlight: should use a setting matrix for this
-	dashLightSetting.redIntensity = 255;
-	dashLightSetting.greenIntensity = 0;
-	dashLightSetting.blueIntensity = 200;
-	return dashLightSetting;
+	return this->config.lightModeConfig.directDashLight;
 }

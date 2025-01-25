@@ -140,6 +140,30 @@ void setup()
 		SVO_MAX,
 	};
 
+	DashLightSetting failsafeDashLight = {
+		DASHLIGHT_FAILSAFE_PWM_RED,
+		DASHLIGHT_FAILSAFE_PWM_GREEN,
+		DASHLIGHT_FAILSAFE_PWM_BLUE
+	};
+
+	DashLightSetting cruiseDashLight = {
+		DASHLIGHT_CRUISE_PWM_RED,
+		DASHLIGHT_CRUISE_PWM_GREEN,
+		DASHLIGHT_CRUISE_PWM_BLUE
+	};
+
+	DashLightSetting inertiaDashLight = {
+		DASHLIGHT_INERTIA_PWM_RED,
+		DASHLIGHT_INERTIA_PWM_GREEN,
+		DASHLIGHT_INERTIA_PWM_BLUE
+	};
+
+	DashLightSetting directDashLight = {
+		DASHLIGHT_DIRECT_PWM_RED,
+		DASHLIGHT_DIRECT_PWM_GREEN,
+		DASHLIGHT_DIRECT_PWM_BLUE
+	};
+
 	LightModeConfig lightModeConfig = {
 		BRAKE_MAX_PWM,
 		BRAKE_LOW_PWM,
@@ -149,7 +173,10 @@ void setup()
 		ROOFLIGHT_MAX_PWM,
 		ROOFLIGHT_LOW_PWM,
 		FLOODLIGHT_PWM,
-//		FAILSAFE_FLASH_TIME,
+		failsafeDashLight,
+		cruiseDashLight,
+		inertiaDashLight,
+		directDashLight
 	};
 
 	ControlConfig controlConfig = {

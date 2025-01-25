@@ -96,6 +96,24 @@ typedef struct SwitchChannelThreeWay
 	int low;
 };
 
+/// <summary>
+/// Dash light control values
+/// </summary>
+struct DashLightSetting
+{
+	int redIntensity;
+	int greenIntensity;
+	int blueIntensity;
+
+	bool operator==(const DashLightSetting& rhs)
+	{
+		return
+			redIntensity == rhs.redIntensity &&
+			greenIntensity == rhs.greenIntensity &&
+			blueIntensity == rhs.blueIntensity;
+	}
+};
+
 // Configuration for lighting modes
 struct LightModeConfig {
 	int brakeIntensityMax;
@@ -106,6 +124,10 @@ struct LightModeConfig {
 	int rooflightIntensityMax;
 	int rooflightIntensityLow;
 	int floodlightIntensity;
+	DashLightSetting failsafeDashLight;
+	DashLightSetting cruiseDashLight;
+	DashLightSetting inertiaDashLight;
+	DashLightSetting directDashLight;
 };
 
 // Configuration for Control methods
@@ -168,24 +190,6 @@ struct InputSetting
 			channel[5] == rhs.channel[5] &&
 			channel[6] == rhs.channel[6] &&
 			channel[7] == rhs.channel[7];
-	}
-};
-
-/// <summary>
-/// Dash light control values
-/// </summary>
-struct DashLightSetting
-{
-	int redIntensity;
-	int greenIntensity;
-	int blueIntensity;
-
-	bool operator==(const DashLightSetting& rhs)
-	{
-		return
-			redIntensity == rhs.redIntensity &&
-			greenIntensity == rhs.greenIntensity &&
-			blueIntensity == rhs.blueIntensity;
 	}
 };
 
