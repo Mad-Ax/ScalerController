@@ -19,7 +19,7 @@ LightingTranslator::~LightingTranslator()
 }
 
 // Translates the light settings based on current input
-LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia)
+LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia, HardwareSerial& ser)
 {
 	// Check if we're incrementing the lights on situation
 	LatchChannel onChannel = this->config.lightsOnChannel;
@@ -103,7 +103,7 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 
 	// Set the dash light intensity
 	newSetting.dashLightSetting = this->translateDashLight(cruise, useInertia);
-
+	
 	return newSetting;
 }
 
@@ -185,7 +185,7 @@ DashLightSetting LightingTranslator::translateDashLight(Cruise cruise, bool useI
 
 	// TODO: dashlight: should use a setting matrix for this
 	dashLightSetting.redIntensity = 255;
-	dashLightSetting.greenIntensity = 255;
-	dashLightSetting.blueIntensity = 0;
+	dashLightSetting.greenIntensity = 0;
+	dashLightSetting.blueIntensity = 200;
 	return dashLightSetting;
 }

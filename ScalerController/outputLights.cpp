@@ -5,11 +5,15 @@ OutputLights::OutputLights(LightModeConfig modeConfig, LightOutputConfig outputC
 {
   this->modeConfig = modeConfig;
   this->outputConfig = outputConfig;
-//  
+
   pinMode(outputConfig.brakePin, OUTPUT);
   pinMode(outputConfig.reversePin, OUTPUT);
   pinMode(outputConfig.headLightPin, OUTPUT);
   pinMode(outputConfig.roofLightPin, OUTPUT);
+  pinMode(outputConfig.floodlightPin, OUTPUT);
+  pinMode(outputConfig.dashLightPinR, OUTPUT);
+  pinMode(outputConfig.dashLightPinG, OUTPUT);
+  pinMode(outputConfig.dashLightPinB, OUTPUT);
 }
 
 void OutputLights::send(LightSetting setting)

@@ -22,7 +22,7 @@ public:
 	/// <param name="cruise">Current cruise setting</param>
 	/// <param name="useInertia">Current inertia setting</param>
 	/// <returns></returns>
-	LightSetting translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia);
+	LightSetting translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia, HardwareSerial& ser);
 
 private:
 	ControlConfig config;

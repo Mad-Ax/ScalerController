@@ -13,5 +13,5 @@ public:
 	/// <param name="cruise">Current cruise setting</param>
 	/// <param name="useInertia">Current inertia setting</param>
 	/// <returns></returns>
-	virtual LightSetting translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia) = 0;
+	virtual LightSetting translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia, HardwareSerial& ser) = 0;
 };

@@ -128,18 +128,18 @@
 
 // LED output pins
 #define HEADLIGHT_OUT_PIN 7					// front headlights (PWM)
-#define BRAKELIGHT_OUT_PIN 3				// brake / tail lights (PWM)
-#define REVERSE_OUT_PIN 4					// reverse lights (PWM)
-#define ROOFLIGHT_OUT_PIN 5					// roof lights (PWM)
-#define FLOODLIGHT_OUT_PIN 9				// floodlight (PWM)
-#define DASHLIGHT_R_PIN 0					// red channel for dash light (PWM)
-#define DASHLIGHT_G_PIN 0					// green channel for dash light (PWM)
-#define DASHLIGHT_B_PIN 0					// blue channel for dash light (PWM)
+#define BRAKELIGHT_OUT_PIN 5				// brake / tail lights (PWM)
+#define REVERSE_OUT_PIN 53					// reverse lights (digital)
+#define ROOFLIGHT_OUT_PIN 6					// roof lights (PWM)
+#define FLOODLIGHT_OUT_PIN 52				// floodlight (digital)
+#define DASHLIGHT_R_PIN 2					// red channel for dash light (PWM)
+#define DASHLIGHT_G_PIN 3					// green channel for dash light (PWM)
+#define DASHLIGHT_B_PIN 4					// blue channel for dash light (PWM)
 
 // LED output settings
 // Intensity values range from 0 (off) to 255 (max, 5V)
 #define BRAKE_MAX_PWM 255					// Brakes on
-#define BRAKE_LOW_PWM 100					// Sidelights/headlights on
+#define BRAKE_LOW_PWM 50					// Sidelights/headlights on
 #define REVERSE_PWM 255						// Reverse light on
 #define HEADLIGHT_MAX_PWM 255				// Main beams
 #define HEADLIGHT_LOW_PWM 100				// Dipped beams
