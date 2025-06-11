@@ -140,6 +140,30 @@ void setup()
 		SVO_MAX,
 	};
 
+	DashLightSetting failsafeDashLight = {
+		DASHLIGHT_FAILSAFE_PWM_RED,
+		DASHLIGHT_FAILSAFE_PWM_GREEN,
+		DASHLIGHT_FAILSAFE_PWM_BLUE
+	};
+
+	DashLightSetting cruiseDashLight = {
+		DASHLIGHT_CRUISE_PWM_RED,
+		DASHLIGHT_CRUISE_PWM_GREEN,
+		DASHLIGHT_CRUISE_PWM_BLUE
+	};
+
+	DashLightSetting inertiaDashLight = {
+		DASHLIGHT_INERTIA_PWM_RED,
+		DASHLIGHT_INERTIA_PWM_GREEN,
+		DASHLIGHT_INERTIA_PWM_BLUE
+	};
+
+	DashLightSetting directDashLight = {
+		DASHLIGHT_DIRECT_PWM_RED,
+		DASHLIGHT_DIRECT_PWM_GREEN,
+		DASHLIGHT_DIRECT_PWM_BLUE
+	};
+
 	LightModeConfig lightModeConfig = {
 		BRAKE_MAX_PWM,
 		BRAKE_LOW_PWM,
@@ -149,12 +173,14 @@ void setup()
 		ROOFLIGHT_MAX_PWM,
 		ROOFLIGHT_LOW_PWM,
 		FLOODLIGHT_PWM,
-//		FAILSAFE_FLASH_TIME,
+		failsafeDashLight,
+		cruiseDashLight,
+		inertiaDashLight,
+		directDashLight
 	};
 
 	ControlConfig controlConfig = {
 		MAX_FAILSAFE_COUNT,
-//		mode,
 		gearChannel,
 		cruiseChannel,
 		throttleChannel,
@@ -164,15 +190,11 @@ void setup()
 		lightsOffChannel,
 		floodlightChannel,
 		winchSelectChannel,
-//		indicator,
-//		lights,
 		throttleServo,
 		steeringServo,
 		winch1Servo,
 		winch2Servo,
 		lightModeConfig,
-//		SWITCH_HIGH,
-//		SWITCH_LOW,
 		FWD_ACCEL_INERTIA,
 		FWD_DECEL_INERTIA,
 		FWD_BRAKE_INERTIA,
@@ -225,12 +247,14 @@ void setup()
 	control = new Control(controlTranslator, lightingTranslator, controlConfig);
 
 	LightOutputConfig lightOutputConfig = {
-		HEADLIGHT_OUT,
-		BRAKELIGHT_OUT,
-		REVERSE_OUT,
-		ROOFLIGHT_OUT,
-		FLOODLIGHT_OUT
-//		FAILSAFE_OUT
+		HEADLIGHT_OUT_PIN,
+		BRAKELIGHT_OUT_PIN,
+		REVERSE_OUT_PIN,
+		ROOFLIGHT_OUT_PIN,
+		FLOODLIGHT_OUT_PIN,
+		DASHLIGHT_R_PIN,
+		DASHLIGHT_G_PIN,
+		DASHLIGHT_B_PIN
 	};
 
 	IOutputServo* outputEsc = new OutputServo(throttleServo);
@@ -238,7 +262,6 @@ void setup()
 	IOutputServo* outputAux1 = new OutputServo(aux1Servo);
 	IOutputServo* outputWinch1 = new OutputServo(winch1Servo);
 	IOutputServo* outputWinch2 = new OutputServo(winch2Servo);
-//	IOutputLights* outputLights = CHN_LIGHTS > 0 ? new OutputLights(lightModeConfig, lightOutputConfig) : nullptr;
 	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
 	output = new Output(outputEsc, outputSteering, outputAux1, outputWinch1, outputWinch2, outputLights);
