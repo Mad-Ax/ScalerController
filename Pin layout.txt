@@ -1,0 +1,56 @@
+PWM out pins						Wire colour		Other End Pins
+-----------------					------------	--------------
+D2		DASH LED R					RED				R  R-B  C  E
+D3		DASH LED G					GREE			R  R-B  C  E
+D4		DASH LED B					BLUE			R  R-B  C  E
+D5		BRAKELIGHT					PURPLE			R  R-B  C  E
+D53		REVERSE LIGHT				WHITE			R  R-B  C  E
+D6		ROOF LIGHT					ORANGE			R  R-B  C  E
+D52		FLOODLIGHT					YELLOW			R  R-B  C  E
+D7		HEADLIGHT					BROWN			R  R-B  C  E
+
+8		ESC							BLUE			S     G
+9~		STEERING					PURPLE			S  +  G
+10~		AUX 1 (gear select?)		WHITE			S  +  G
+11~		WINCH 1						GREEN			S  +  G
+12		WINCH 2						YELLOW			S  +  G
+13		MODE (master, to ground)	ORANGE			SW SW G
+
+
+Input / control pins
+--------------------
+
+21		PPM In (receiver)			BROWN			S  +  G
+
+CONTROL PIN LAYOUT
+
+		TOP
+	
+			Winch 2	|	Gear	|	 ESC
+		 ----------------------------------- 
+		| G | + | S | G | + | S | G |   | S |
+		 -----------------------------------
+		| G | + | S | G | + | S | G | + | S |
+		 -----------------------------------
+			Winch 1	|	 Rx		|  Steering
+					
+
+		BOTTOM  (_!_)
+	
+			Winch 1	|	 Rx		|  Steering
+		 ----------------------------------- 
+		| G | + | S | G | + | S | G |   | S |
+		 -----------------------------------
+		| G | + | S | G | + | S | G | + | S |
+		 -----------------------------------
+			Winch 2	|	Gear	|	 ESC
+
+
+MODE			LED Colour
+--------------	------
+Inertia (F/R)	Green
+Cruise			Blue
+Thru			Yellow
+Failsafe		Red
+
+
