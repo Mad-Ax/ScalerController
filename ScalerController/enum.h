@@ -48,3 +48,10 @@ enum class ThreeWayPosition
 	PosB = 1,
 	PosC = 2
 };
+
+enum class WinchMode
+{
+	Off = 0,
+	Winch1 = 1,
+	Winch2 = 2
+};

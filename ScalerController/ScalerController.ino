@@ -19,6 +19,7 @@
 #include "motorspeedtranslator.h"
 #include "latchtranslator.h"
 #include "outputservo.h"
+#include "outputhbridge.h"
 #include "outputlights.h"
 #include "switchtranslatortwoway.h"
 #include "switchtranslatorthreeway.h"
@@ -140,6 +141,20 @@ void setup()
 		SVO_MAX,
 	};
 
+	HbridgeConfig winch1Hbridge = {
+		LOGIC_WINCH_1_A_PIN,
+		LOGIC_WINCH_1_B_PIN,
+		SWITCH_HIGH,
+		SWITCH_LOW
+	};
+
+	HbridgeConfig winch2Hbridge = {
+		LOGIC_WINCH_2_A_PIN,
+		LOGIC_WINCH_2_B_PIN,
+		SWITCH_HIGH,
+		SWITCH_LOW
+	};
+	
 	DashLightSetting failsafeDashLight = {
 		DASHLIGHT_FAILSAFE_PWM_RED,
 		DASHLIGHT_FAILSAFE_PWM_GREEN,
@@ -194,6 +209,8 @@ void setup()
 		steeringServo,
 		winch1Servo,
 		winch2Servo,
+		winch1Hbridge,
+		winch2Hbridge,
 		lightModeConfig,
 		FWD_ACCEL_INERTIA,
 		FWD_DECEL_INERTIA,
@@ -260,11 +277,21 @@ void setup()
 	IOutputServo* outputEsc = new OutputServo(throttleServo);
 	IOutputServo* outputSteering = new OutputServo(steeringServo);
 	IOutputServo* outputAux1 = new OutputServo(aux1Servo);
-	IOutputServo* outputWinch1 = new OutputServo(winch1Servo);
-	IOutputServo* outputWinch2 = new OutputServo(winch2Servo);
+	IOutputServo* outputWinch1Servo = new OutputServo(winch1Servo);
+	IOutputServo* outputWinch2Servo = new OutputServo(winch2Servo);
+	IOutputHbridge* outputWinch1Hbridge = new OutputHbridge(winch1Hbridge);
+	IOutputHbridge* outputWinch2Hbridge = new OutputHbridge(winch2Hbridge);
 	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
-	output = new Output(outputEsc, outputSteering, outputAux1, outputWinch1, outputWinch2, outputLights);
+	output = new Output(
+		outputEsc,
+		outputSteering,
+		outputAux1,
+		outputWinch1Servo,
+		outputWinch2Servo,
+		outputWinch1Hbridge,
+		outputWinch2Hbridge,
+		outputLights);
 
 	// Open the serial (for debugging)
 	Serial.begin(57600);

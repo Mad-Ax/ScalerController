@@ -63,4 +63,8 @@ private:
 //
 //	// Toggles the indicator on/off flash based on timing settings
 //	int indicatorToggle(int delay);
+
+	bool resetAfterWinching(bool crawlModeWhenWinching, WinchMode newWinchMode, WinchMode oldWinchMode);
+
+	bool setCrawlModeWhileWinching(bool crawlModeWhenWinching, WinchMode winchMode);
 };

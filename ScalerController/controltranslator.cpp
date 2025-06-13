@@ -342,19 +342,22 @@ WinchSetting ControlTranslator::translateWinch(InputSetting input) const
 	switch (winchSwitch)
 	{
 	case ThreeWayPosition::PosA:
-		setting.winch2 = map(operateInputVal, operateChannel.min, operateChannel.max, winch2Servo.min, winch2Servo.max);
-		setting.winch1 = winch1Servo.center;
+		setting.winch2Position = map(operateInputVal, operateChannel.min, operateChannel.max, winch2Servo.min, winch2Servo.max);
+		setting.winch1Position = winch1Servo.center;
+		setting.winchMode = WinchMode::Winch2;
 		break;
 
 	case ThreeWayPosition::PosB:
-		setting.winch1 = map(operateInputVal, operateChannel.min, operateChannel.max, winch1Servo.min, winch1Servo.max);
-		setting.winch2 = winch2Servo.center;
+		setting.winch1Position = map(operateInputVal, operateChannel.min, operateChannel.max, winch1Servo.min, winch1Servo.max);
+		setting.winch2Position = winch2Servo.center;
+		setting.winchMode = WinchMode::Winch1;
 		break;
 
 	case ThreeWayPosition::PosC:
 	default:
-		setting.winch1 = winch1Servo.center;
-		setting.winch2 = winch2Servo.center;
+		setting.winch1Position = winch1Servo.center;
+		setting.winch2Position = winch2Servo.center;
+		setting.winchMode = WinchMode::Off;
 		break;
 	}
 

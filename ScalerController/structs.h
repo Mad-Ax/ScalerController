@@ -1,8 +1,6 @@
 #pragma once
 #include "enum.h"
 
-//#include "enum.h"
-
 // Configuration for input from receiver
 struct InputConfig
 {
@@ -30,6 +28,24 @@ struct ServoConfig
 			center == rhs.center &&
 			min == rhs.min &&
 			max == rhs.max;
+	}
+};
+
+// Configuration for H-Bridge
+struct HbridgeConfig
+{
+	int pinA;
+	int pinB;
+	int switchHigh;
+	int switchLow;
+
+	bool operator==(const HbridgeConfig& rhs)
+	{
+		return
+			pinA == rhs.pinA &&
+			pinB == rhs.pinB &&
+			switchHigh == rhs.switchHigh &&
+			switchLow == rhs.switchLow;
 	}
 };
 
@@ -147,6 +163,8 @@ struct ControlConfig
 	ServoConfig steeringServo;
 	ServoConfig winch1Servo;
 	ServoConfig winch2Servo;
+	HbridgeConfig winch1Logic;
+	HbridgeConfig winch2Logic;
 	LightModeConfig lightModeConfig;
 	int fwdAccelInertia; // tODO: this could be neater - we could build the inertias here like we do with servos?
 	int fwdDecelInertia;
@@ -227,11 +245,14 @@ struct ControlSetting
 	Cruise cruise;
 	LightSetting lightSetting;
 	bool useInertia; // TODO: consider using an enum (Inertia = on, off)
+	WinchMode winchMode;
+	bool crawlModeWhenWinching;
 };
 
 // Winch settings
 typedef struct WinchSetting
 {
-	int winch1;
-	int winch2;
+	int winch1Position;
+	int winch2Position;
+	WinchMode winchMode;
 };

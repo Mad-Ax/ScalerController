@@ -64,6 +64,9 @@
     <ClCompile Include="switchtranslatorthreeway.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="outputhbridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.ScalerController.vsarduino.h">
@@ -157,6 +160,12 @@
       <Filter>Header Files\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="switchtranslatorthreeway.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ioutputhbridge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="outputhbridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
