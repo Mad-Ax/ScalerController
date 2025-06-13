@@ -144,17 +144,23 @@ bool ControlTranslator::translateInertia(InputSetting input, bool currentUseIner
 		return true;
 	}
 
-	// If we are in forward gear, we can't change the inertia value
-	if (currentGear == Gear::Forward)
-	{
-		return currentUseInertia;
-	}
-
 	// Get the requested value from the cruise select channel
 	// NOTE: we use the cruise channel because functionality is shared
 	// on this channel
 	LatchChannel channel = this->config.cruiseChannel;
 	int value = input.channel[channel.channel];
+
+	// If inertia is off, we should check for a request to turn it back on
+	if (!currentUseInertia && this->cruiseTranslator->translateLatch(channel, value))
+	{
+		return true;
+	}
+
+	// If we are in forward gear, we can't change the inertia value
+	if (currentGear == Gear::Forward)
+	{
+		return currentUseInertia;
+	}
 
 	// Determine if we are requesting a change
 	if (this->cruiseTranslator->translateLatch(channel, value)) // TODO: might be a neater way of doing this - consider writing tests
@@ -173,6 +179,13 @@ int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int cu
 	ThrottleChannel channel = config.throttleChannel;
 	ServoConfig servo = config.throttleServo;
 	int inputVal = input.channel[channel.channel];
+
+	if (!useInertia)
+	{
+		// Just map the plain value and return
+		desiredMotorSpeed = map(inputVal, channel.min, channel.max, servo.min, servo.max);
+		return desiredMotorSpeed;
+	}
 
 	if (inputVal < channel.eBrakeThreshold)
 	{

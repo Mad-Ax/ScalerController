@@ -105,14 +105,22 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		// Determine if inertia is on or off
 		setting.useInertia = this->controlTranslator->translateInertia(input, setting.useInertia, setting.gear, setting.cruise);
 
-		// Get the selected gear (if the motor is stationary)
-		if (setting.motorSpeed == this->config.throttleServo.center)
+		if (!setting.useInertia)
 		{
-			setting.gear = this->controlTranslator->translateGear(input, setting.gear);
+			setting.gear = Gear::Forward;
+			setting.cruise == Cruise::Off;
 		}
+		else
+		{
+			// Get the selected gear (if the motor is stationary)
+			if (setting.motorSpeed == this->config.throttleServo.center)
+			{
+				setting.gear = this->controlTranslator->translateGear(input, setting.gear);
+			}
 
-		// Determine if cruise is on or off
-		setting.cruise = this->controlTranslator->translateCruise(input, setting.cruise, setting.gear);
+			// Determine if cruise is on or off
+			setting.cruise = this->controlTranslator->translateCruise(input, setting.cruise, setting.gear);
+		}
 	}
 
 	setting.winchMode = winchSetting.winchMode;

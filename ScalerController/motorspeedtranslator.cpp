@@ -19,7 +19,7 @@ int MotorSpeedTranslator::translateMotorSpeed(
 	IInertia* accel, 
 	IInertia* decel, 
 	IInertia* brake)
-{
+{// TODO: M: useInertia no longer used here - remove it
 	if (!useInertia)
 	{
 		return desiredMotorSpeed;
