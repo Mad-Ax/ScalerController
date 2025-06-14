@@ -15,16 +15,10 @@ int MotorSpeedTranslator::translateMotorSpeed(
 	int currentMotorSpeed,
 	int input,
 	int desiredMotorSpeed,
-	bool useInertia,
 	IInertia* accel, 
 	IInertia* decel, 
 	IInertia* brake)
-{// TODO: M: useInertia no longer used here - remove it
-	if (!useInertia)
-	{
-		return desiredMotorSpeed;
-	}
-
+{
 	if (input < channel.dbMin)
 	{
 		// User is actively braking - use the brake map

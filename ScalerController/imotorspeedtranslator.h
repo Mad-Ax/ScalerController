@@ -6,5 +6,5 @@ class IMotorSpeedTranslator
 {
 public:
 	// Translates the input into a motor speed
-	virtual int translateMotorSpeed(int currentMotorSpeed, int input, int desiredMotorSpeed, bool useInertia, IInertia* accel, IInertia* decel, IInertia* brake) = 0;
+	virtual int translateMotorSpeed(int currentMotorSpeed, int input, int desiredMotorSpeed, IInertia* accel, IInertia* decel, IInertia* brake) = 0;
 };
