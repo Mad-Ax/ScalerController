@@ -10,16 +10,10 @@ SteeringTranslator::~SteeringTranslator()
 {
 }
 
-int SteeringTranslator::translateSteering(
+int SteeringTranslator::translateDriveSteering(
 	int currentSteering,
 	int desiredSteering,
-	bool useInertia,
 	IInertia* inertia) // TODO: why is Inertia here - shouldn't it be in the ctor?
 {
-	if (useInertia)
-	{
-		return inertia->map(currentSteering, desiredSteering);
-	}
-
-	return desiredSteering;
+	return inertia->map(currentSteering, desiredSteering);
 }

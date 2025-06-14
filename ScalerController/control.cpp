@@ -15,8 +15,7 @@ Control::Control(IControlTranslator* controlTranslator, ILightingTranslator* lig
 //
 //	setting.lightSetting.brakeLightIntensity = 0;
 
-	setting.useInertia = true;
-	setting.cruise = Cruise::Off;
+	setting.driveMode = DriveMode::Drive;
 	setting.gear = Gear::Forward;
 	setting.motorSpeed = config.throttleServo.center;
 	setting.steering = config.steeringServo.center;
@@ -85,30 +84,27 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 	{
 		// If we have turned off the winch, and we share a winch and gear channel,
 		// we should reset to Forward gear, turn off cruise, and use inertia
-		setting.useInertia = true;
 		setting.gear = Gear::Forward;
-		setting.cruise = Cruise::Off;
+		setting.driveMode = DriveMode::Drive;
 	}
 	else if (setCrawlModeWhileWinching(setting.crawlModeWhenWinching, winchSetting.winchMode))
 	{
 		// If we have started winching, and we share a winch and gear channel, we
 		// should set to crawl mode
-		setting.useInertia = false;
 		setting.gear = Gear::Forward;
-		setting.cruise = Cruise::Off;
+		setting.driveMode = DriveMode::Crawl;
 	}
 	else
 	{
 		// In non-winch scenarios, or when we don't share a winch channel, we can
-		// go ahead and set our gear and inertia modes in the normal way
+		// go ahead and set our gear and drive modes in the normal way
 
-		// Determine if inertia is on or off
-		setting.useInertia = this->controlTranslator->translateInertia(input, setting.useInertia, setting.gear, setting.cruise);
+		setting.driveMode = this->controlTranslator->translateDriveMode(input, setting.gear, setting.driveMode);
 
-		if (!setting.useInertia)
+		if (setting.driveMode == DriveMode::Crawl)
 		{
+			// If we have selected crawl mode, we must set forward gear
 			setting.gear = Gear::Forward;
-			setting.cruise == Cruise::Off;
 		}
 		else
 		{
@@ -116,32 +112,39 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 			if (setting.motorSpeed == this->config.throttleServo.center)
 			{
 				setting.gear = this->controlTranslator->translateGear(input, setting.gear);
-			}
 
-			// Determine if cruise is on or off
-			setting.cruise = this->controlTranslator->translateCruise(input, setting.cruise, setting.gear);
+				if (setting.gear == Gear::Reverse)
+				{
+					// If we have selected reverse, we must turn off cruise
+					setting.driveMode = DriveMode::Drive;
+				}
+			}
 		}
 	}
 
 	setting.winchMode = winchSetting.winchMode;
 
 	// Get the requested motor speed
-	switch (setting.cruise)
+	switch (setting.driveMode)
 	{
-	case Cruise::Off:
-		setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear, setting.motorSpeed, setting.useInertia, ser);
+	case DriveMode::Crawl:
+		setting.motorSpeed = this->controlTranslator->translateCrawlSpeed(input);
+		setting.steering = this->controlTranslator->translateCrawlSteering(input);
 		break;
 
-	case Cruise::On:
+	case DriveMode::Drive:
+		setting.motorSpeed = this->controlTranslator->translateMotorSpeed(input, setting.gear, setting.motorSpeed, ser);
+		setting.steering = this->controlTranslator->translateDriveSteering(input, setting.steering, ser);
+		break;
+
+	case DriveMode::Cruise:
 		setting.motorSpeed = this->controlTranslator->translateCruiseSpeed(input, setting.gear, setting.motorSpeed, ser);
+		setting.steering = this->controlTranslator->translateDriveSteering(input, setting.steering, ser);
 		break;
 	}
 
-	// Get the steering servo position - do not use inertia if a) useAccelInertia = true, or cruise is on
-	setting.steering = this->controlTranslator->translateSteering(input, setting.steering, setting.useInertia || setting.cruise == Cruise::On, ser);
-
 	// Get the light setting
-	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear, setting.cruise, setting.useInertia, ser);
+	setting.lightSetting = this->lightingTranslator->translateLightSetting(input, setting.gear, setting.driveMode, ser);
 
 	// Get the aux channel settings - these are pass-thru and have no servo mapping
 	setting.aux1 = input.channel[config.aux1Channel];

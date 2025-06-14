@@ -52,7 +52,7 @@ void setup()
 		CHN_GEAR_SELECT_MAX
 	};
 
-	LatchChannel cruiseChannel = {
+	LatchChannel driveModeChannel = {
 		CHN_CRUISE_CH - 1,
 		CHN_CRUISE_SELECT_MIN,
 		CHN_CRUISE_SELECT_MAX
@@ -167,13 +167,13 @@ void setup()
 		DASHLIGHT_CRUISE_PWM_BLUE
 	};
 
-	DashLightSetting inertiaDashLight = {
+	DashLightSetting driveDashLight = {
 		DASHLIGHT_INERTIA_PWM_RED,
 		DASHLIGHT_INERTIA_PWM_GREEN,
 		DASHLIGHT_INERTIA_PWM_BLUE
 	};
 
-	DashLightSetting directDashLight = {
+	DashLightSetting crawlDashLight = {
 		DASHLIGHT_DIRECT_PWM_RED,
 		DASHLIGHT_DIRECT_PWM_GREEN,
 		DASHLIGHT_DIRECT_PWM_BLUE
@@ -190,14 +190,14 @@ void setup()
 		FLOODLIGHT_PWM,
 		failsafeDashLight,
 		cruiseDashLight,
-		inertiaDashLight,
-		directDashLight
+		driveDashLight,
+		crawlDashLight
 	};
 
 	ControlConfig controlConfig = {
 		MAX_FAILSAFE_COUNT,
 		gearChannel,
-		cruiseChannel,
+		driveModeChannel,
 		throttleChannel,
 		steeringChannel,
 		winchOperationChannel,
@@ -228,7 +228,7 @@ void setup()
 	ISteeringTranslator* steeringTranslator = new SteeringTranslator(steeringChannel, steeringServo);
 	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
 	ILatchTranslator* gearTranslator = new LatchTranslator();
-	ILatchTranslator* cruiseTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
+	ILatchTranslator* driveModeTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
 	ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
 
 	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
@@ -245,7 +245,7 @@ void setup()
 		steeringTranslator,
 		motorSpeedTranslator,
 		gearTranslator,
-		cruiseTranslator,
+		driveModeTranslator,
 		forwardAccel,
 		forwardDecel,
 		forwardBrake,

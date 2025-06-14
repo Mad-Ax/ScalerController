@@ -7,7 +7,7 @@ ControlTranslator::ControlTranslator(
 	ISteeringTranslator* steeringTranslator,
 	IMotorSpeedTranslator* motorSpeedTranslator,
 	ILatchTranslator* gearTranslator,
-	ILatchTranslator* cruiseTranslator,
+	ILatchTranslator* driveModeTranslator,
 	IInertia* forwardAccel,
 	IInertia* forwardDecel,
 	IInertia* forwardBrake,
@@ -23,7 +23,7 @@ ControlTranslator::ControlTranslator(
 	this->steeringTranslator = steeringTranslator;
 	this->motorSpeedTranslator = motorSpeedTranslator;
 	this->gearTranslator = gearTranslator;
-	this->cruiseTranslator = cruiseTranslator;
+	this->driveModeTranslator = driveModeTranslator;
 	this->forwardAccel = forwardAccel;
 	this->forwardDecel = forwardDecel;
 	this->forwardBrake = forwardBrake;
@@ -104,88 +104,67 @@ Gear ControlTranslator::translateGear(InputSetting input, Gear lastGear)
 	return lastGear;
 }
 
-// Translates the channel input value to the requested cruise value
-Cruise ControlTranslator::translateCruise(InputSetting input, Cruise lastCruise, Gear currentGear)
+// Translates the channel input value to the requested drive mode
+DriveMode ControlTranslator::translateDriveMode(InputSetting input, Gear currentGear, DriveMode currentDriveMode)
 {
-	// If we are in reverse, cruise must be turned off
+	// Get the requested value from the drive mode select channel
+	LatchChannel channel = this->config.driveModeChannel;
+	int value = input.channel[channel.channel];
+
+	bool changeRequested = this->driveModeTranslator->translateLatch(channel, value);
+
+	if (!changeRequested)
+	{
+		// If we haven't requested a drive mode change, just return
+		// whatever the default was
+		return currentDriveMode;
+	}
+
+	// If we are in reverse, we should check for a request to go to crawl mode
 	if (currentGear == Gear::Reverse)
 	{
-		return Cruise::Off;
+		// If we are in reverse, we need to set crawl mode
+		return DriveMode::Crawl;
 	}
-
-	// Get the requested value from the cruise select channel
-	LatchChannel channel = this->config.cruiseChannel;
-	int value = input.channel[channel.channel];
-
-	// Determine if we are requesting a change
-	if (this->cruiseTranslator->translateLatch(channel, value))
+	else if (currentDriveMode == DriveMode::Crawl)
 	{
-		// We have requested to change the cruise mode
-		switch (lastCruise)
+		// If we are in crawl mode, we need to return to drive mode
+		return DriveMode::Drive;
+	}
+	else
+	{
+		// We must be in forward gear - if we've requested a change of
+		// drive mode, we need to toggle between drive or cruise
+		if (currentDriveMode == DriveMode::Cruise)
 		{
-		case Cruise::Off:
-			return Cruise::On;
+			return DriveMode::Drive;
+		}
 
-		case Cruise::On:
-			return Cruise::Off;
+		if (currentDriveMode == DriveMode::Drive)
+		{
+			return DriveMode::Cruise;
 		}
 	}
-
-	return lastCruise;
 }
 
-// Translates the channel input value to the requested use inertia value
-bool ControlTranslator::translateInertia(InputSetting input, bool currentUseInertia, Gear currentGear, Cruise currentCruise)
+// Translates the motor speed in crawl mode
+int ControlTranslator::translateCrawlSpeed(InputSetting input)
 {
-	// If cruise is on, we must turn on inertia - otherwise the truck will
-	// stop dead if we turn cruise off
-	if (currentCruise == Cruise::On)
-	{
-		return true;
-	}
+	ThrottleChannel channel = config.throttleChannel;
+	ServoConfig servo = config.throttleServo;
+	int inputVal = input.channel[channel.channel];
 
-	// Get the requested value from the cruise select channel
-	// NOTE: we use the cruise channel because functionality is shared
-	// on this channel
-	LatchChannel channel = this->config.cruiseChannel;
-	int value = input.channel[channel.channel];
-
-	// If inertia is off, we should check for a request to turn it back on
-	if (!currentUseInertia && this->cruiseTranslator->translateLatch(channel, value))
-	{
-		return true;
-	}
-
-	// If we are in forward gear, we can't change the inertia value
-	if (currentGear == Gear::Forward)
-	{
-		return currentUseInertia;
-	}
-
-	// Determine if we are requesting a change
-	if (this->cruiseTranslator->translateLatch(channel, value)) // TODO: might be a neater way of doing this - consider writing tests
-	{
-		// We have requested to change the inertia value
-		return !currentUseInertia;
-	}
-
-	return currentUseInertia;
+	// Just map the plain value and return
+	return map(inputVal, channel.min, channel.max, servo.min, servo.max);
 }
 
 // Translates the motor speed in drive mode
-int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, bool useInertia, HardwareSerial& ser)
+int ControlTranslator::translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser)
 {
 	int desiredMotorSpeed;
 	ThrottleChannel channel = config.throttleChannel;
 	ServoConfig servo = config.throttleServo;
 	int inputVal = input.channel[channel.channel];
-
-	if (!useInertia)
-	{
-		// Just map the plain value and return
-		desiredMotorSpeed = map(inputVal, channel.min, channel.max, servo.min, servo.max);
-		return desiredMotorSpeed;
-	}
 
 	if (inputVal < channel.eBrakeThreshold)
 	{
@@ -324,7 +303,16 @@ int ControlTranslator::translateCruiseSpeed(InputSetting input, Gear gear, int c
 	return servo.center;
 }
 
-int ControlTranslator::translateSteering(InputSetting input, int currentSteering, bool useInertia, HardwareSerial& ser)
+int ControlTranslator::translateCrawlSteering(InputSetting input)
+{
+	auto channel = config.steeringChannel;
+	auto servo = config.steeringServo;
+	int inputVal = input.channel[channel.channel];
+
+	return map(inputVal, channel.min, channel.max, servo.min, servo.max);
+}
+
+int ControlTranslator::translateDriveSteering(InputSetting input, int currentSteering, HardwareSerial& ser)
 {
 	auto channel = config.steeringChannel;
 	auto servo = config.steeringServo;
@@ -332,11 +320,7 @@ int ControlTranslator::translateSteering(InputSetting input, int currentSteering
 
 	auto desiredSteering = map(inputVal, channel.min, channel.max, servo.min, servo.max);
 
-	// TODO M: isn't it possible to store "current steering" inside the translator..?
-	return this->steeringTranslator->translateSteering(currentSteering, desiredSteering, useInertia, steeringInertia);
-
-	// TODO: M: remove this:
-	//return this->inputTranslator->translateStickInput(input.channel[config.steeringChannel.channel], config.steeringChannel, config.steeringServo);
+	return this->steeringTranslator->translateDriveSteering(currentSteering, desiredSteering, steeringInertia);
 }
 
 WinchSetting ControlTranslator::translateWinch(InputSetting input) const

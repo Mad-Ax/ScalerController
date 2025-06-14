@@ -14,10 +14,11 @@ enum class Gear
 	Reverse = 1,
 };
 
-enum class Cruise
+enum class DriveMode
 {
-	Off = 0,
-	On = 1
+	Crawl = 0,
+	Drive = 1,
+	Cruise = 2
 };
 
 enum class LightMode
@@ -27,13 +28,6 @@ enum class LightMode
 	Rooflights = 2,
 	Full = 3
 };
-
-//enum class MainBeam
-//{
-//	Off,
-//	Flash,
-//	On
-//};
 
 enum class BrakeLight
 {

@@ -142,8 +142,8 @@ struct LightModeConfig {
 	int floodlightIntensity;
 	DashLightSetting failsafeDashLight;
 	DashLightSetting cruiseDashLight;
-	DashLightSetting inertiaDashLight;
-	DashLightSetting directDashLight;
+	DashLightSetting driveDashLight;
+	DashLightSetting crawlDashLight;
 };
 
 // Configuration for Control methods
@@ -151,7 +151,7 @@ struct ControlConfig
 {
 	int maxFailsafeCount;
 	LatchChannel gearChannel;
-	LatchChannel cruiseChannel;
+	LatchChannel driveModeChannel;
 	ThrottleChannel throttleChannel;
 	AnalogChannel steeringChannel;
 	AnalogChannel winchOperationChannel;
@@ -242,9 +242,8 @@ struct ControlSetting
 	int winch1;
 	int winch2;
 	Gear gear;
-	Cruise cruise;
+	DriveMode driveMode;
 	LightSetting lightSetting;
-	bool useInertia; // TODO: consider using an enum (Inertia = on, off)
 	WinchMode winchMode;
 	bool crawlModeWhenWinching;
 };

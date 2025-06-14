@@ -19,7 +19,7 @@ LightingTranslator::~LightingTranslator()
 }
 
 // Translates the light settings based on current input
-LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia, HardwareSerial& ser)
+LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear gear, DriveMode driveMode, HardwareSerial& ser)
 {
 	// Check if we're incrementing the lights on situation
 	LatchChannel onChannel = this->config.lightsOnChannel;
@@ -102,7 +102,7 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 	newSetting.floodlightIntensity = this->translateFloodlight(input);
 
 	// Set the dash light intensity
-	newSetting.dashLightSetting = this->translateDashLight(cruise, useInertia);
+	newSetting.dashLightSetting = this->translateDashLight(driveMode);
 	
 	return newSetting;
 }
@@ -160,18 +160,18 @@ int LightingTranslator::translateFloodlight(InputSetting input)
 	return 0;
 }
 
-// Translates the dash light setting based on inertia, cruise, and failsafe
-DashLightSetting LightingTranslator::translateDashLight(Cruise cruise, bool useInertia)
+// Translates the dash light setting based on gear and drive mode
+DashLightSetting LightingTranslator::translateDashLight(DriveMode driveMode)
 {
-	if (cruise == Cruise::On)
+	switch (driveMode)
 	{
+	case DriveMode::Crawl:
+		return this->config.lightModeConfig.crawlDashLight;
+
+	case DriveMode::Drive:
+		return this->config.lightModeConfig.driveDashLight;
+
+	case DriveMode::Cruise:
 		return this->config.lightModeConfig.cruiseDashLight;
 	}
-
-	if (useInertia)
-	{
-		return this->config.lightModeConfig.inertiaDashLight;
-	}
-
-	return this->config.lightModeConfig.directDashLight;
 }
