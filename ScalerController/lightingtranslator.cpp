@@ -93,10 +93,10 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 	}
 	
 	// Set the brake light intensity
-	newSetting.brakeIntensity = this->translateBrakeLight(input, currentLightMode);
+	newSetting.brakeIntensity = this->translateBrakeLight(input, currentLightMode, driveMode);
 
 	// Set the reverse light intensity
-	newSetting.reverseIntensity = this->translateReverseLight(gear);
+	newSetting.reverseIntensity = this->translateReverseLight(gear, driveMode, input);
 
 	// Set the floodlight intensity
 	newSetting.floodlightIntensity = this->translateFloodlight(input);
@@ -108,12 +108,12 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 }
 
 // Translates the brake light setting based on throttle input and current lighting mode
-int LightingTranslator::translateBrakeLight(InputSetting input, LightMode lightMode)
+int LightingTranslator::translateBrakeLight(InputSetting input, LightMode lightMode, DriveMode driveMode)
 {
 	ThrottleChannel channel = config.throttleChannel;
 	int inputVal = input.channel[channel.channel];
 
-	if (inputVal < config.throttleChannel.dbMin)
+	if (inputVal < config.throttleChannel.dbMin && driveMode != DriveMode::Crawl)
 	{
 		// We are braking - return the high intensity value for the brake light
 		return config.lightModeConfig.brakeIntensityMax;
@@ -132,8 +132,18 @@ int LightingTranslator::translateBrakeLight(InputSetting input, LightMode lightM
 }
 
 // Translates the reverse light setting based on gear setting
-int LightingTranslator::translateReverseLight(Gear gear)
+int LightingTranslator::translateReverseLight(Gear gear, DriveMode driveMode, InputSetting input)
 {
+	ThrottleChannel channel = config.throttleChannel;
+	int inputVal = input.channel[channel.channel];
+
+	if (driveMode == DriveMode::Crawl && inputVal < config.throttleChannel.dbMin)
+	{
+		// We are in crawl mode and stick is in reverse - we should show
+		// reverse light
+		return config.lightModeConfig.reverseIntensity;
+	}
+
 	switch (gear)
 	{
 	case Gear::Forward:

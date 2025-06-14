@@ -31,10 +31,10 @@ private:
 	LightMode currentLightMode;
 
 	// Translates the brake light setting based on throttle input and current lighting mode
-	int translateBrakeLight(InputSetting input, LightMode lightMode);
+	int translateBrakeLight(InputSetting input, LightMode lightMode, DriveMode driveMode);
 
 	// Translates the reverse light setting based on gear setting
-	int translateReverseLight(Gear gear);
+	int translateReverseLight(Gear gear, DriveMode driveMode, InputSetting input);
 
 	// Translates the floodlight setting based on switch setting
 	int translateFloodlight(InputSetting input);
