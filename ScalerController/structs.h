@@ -138,6 +138,7 @@ struct LightModeConfig {
 	int headlightIntensityMax;
 	int headlightIntensityLow;
 	int rooflightIntensityMax;
+	int rooflightIntensityMed;
 	int rooflightIntensityLow;
 	int floodlightIntensity;
 	DashLightSetting failsafeDashLight;

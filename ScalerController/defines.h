@@ -144,7 +144,8 @@
 #define HEADLIGHT_MAX_PWM 255				// Main beams
 #define HEADLIGHT_LOW_PWM 100				// Dipped beams
 #define ROOFLIGHT_MAX_PWM 255				// Full rooflight
-#define ROOFLIGHT_LOW_PWM 100				// Low rooflight
+#define ROOFLIGHT_MED_PWM 100				// Medium rooflight
+#define ROOFLIGHT_LOW_PWM 40				// Low rooflight
 #define FLOODLIGHT_PWM 255					// Floodlight on
 
 // Dash lights

@@ -25,8 +25,10 @@ enum class LightMode
 {
 	Off = 0,
 	Dipped = 1,
-	Rooflights = 2,
-	Full = 3
+	Main = 2,
+	RoofLow = 3,
+	RoofMed = 4,
+	RoofHigh = 5
 };
 
 enum class BrakeLight

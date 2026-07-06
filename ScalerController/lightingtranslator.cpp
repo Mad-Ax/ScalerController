@@ -35,11 +35,19 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 			break;
 
 		case LightMode::Dipped:
-			currentLightMode = LightMode::Rooflights;
+			currentLightMode = LightMode::Main;
 			break;
 
-		case LightMode::Rooflights:
-			currentLightMode = LightMode::Full;
+		case LightMode::Main:
+			currentLightMode = LightMode::RoofLow;
+			break;
+
+		case LightMode::RoofLow:
+			currentLightMode = LightMode::RoofMed;
+			break;
+
+		case LightMode::RoofMed:
+			currentLightMode = LightMode::RoofHigh;
 			break;
 		}
 	}
@@ -53,11 +61,19 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 		// We have requested to increment the light mode
 		switch (currentLightMode)
 		{
-		case LightMode::Full:
-			currentLightMode = LightMode::Rooflights;
+		case LightMode::RoofHigh:
+			currentLightMode = LightMode::RoofMed;
 			break;
 
-		case LightMode::Rooflights:
+		case LightMode::RoofMed:
+			currentLightMode = LightMode::RoofLow;
+			break;
+
+		case LightMode::RoofLow:
+			currentLightMode = LightMode::Main;
+			break;
+
+		case LightMode::Main:
 			currentLightMode = LightMode::Dipped;
 			break;
 
@@ -81,12 +97,22 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 		newSetting.roofLightIntensity = 0;
 		break;
 
-	case LightMode::Rooflights:
-		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityLow;
+	case LightMode::Main:
+		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
+		newSetting.roofLightIntensity = 0;
+		break;
+
+	case LightMode::RoofLow:
+		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityLow;
 		break;
 
-	case LightMode::Full:
+	case LightMode::RoofMed:
+		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
+		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityMed;
+		break;
+
+	case LightMode::RoofHigh:
 		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityMax;
 		break;
