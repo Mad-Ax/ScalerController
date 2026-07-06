@@ -10,8 +10,7 @@ public:
 	/// </summary>
 	/// <param name="input">Raw channel input data from the receiver</param>
 	/// <param name="gear">Current gear</param>
-	/// <param name="cruise">Current cruise setting</param>
-	/// <param name="useInertia">Current inertia setting</param>
-	/// <returns></returns>
-	virtual LightSetting translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia, HardwareSerial& ser) = 0;
+	/// <param name="driveMode">Current drive mode</param>
+	/// <returns>The light setting</returns>
+	virtual LightSetting translateLightSetting(InputSetting input, Gear gear, DriveMode driveMode, HardwareSerial& ser) = 0;
 };

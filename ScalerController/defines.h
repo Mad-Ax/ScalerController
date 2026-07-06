@@ -92,7 +92,7 @@
 
 // WINCH channels.  Operates only in Controller mode.
 #define CHN_WINCH_SELECT		6			// Input channel number.  Determines which winch should be operated
-#define CHN_WINCH_OPERATE		7			// Input channel number.  Determines input value for winch
+#define CHN_WINCH_OPERATE		2			// Input channel number.  Determines input value for winch
 
 // STEERING output settings
 #define SVO_STEERING_PIN 9					// Output pin for steering servo
@@ -144,7 +144,8 @@
 #define HEADLIGHT_MAX_PWM 255				// Main beams
 #define HEADLIGHT_LOW_PWM 100				// Dipped beams
 #define ROOFLIGHT_MAX_PWM 255				// Full rooflight
-#define ROOFLIGHT_LOW_PWM 100				// Low rooflight
+#define ROOFLIGHT_MED_PWM 100				// Medium rooflight
+#define ROOFLIGHT_LOW_PWM 40				// Low rooflight
 #define FLOODLIGHT_PWM 255					// Floodlight on
 
 // Dash lights
@@ -165,5 +166,9 @@
 #define DASHLIGHT_DIRECT_PWM_BLUE 200		// Direct PWM value for blue channel
 
 // Winch configuration
-#define SVO_WINCH_1_PIN		11				// Output for winch 1
-#define SVO_WINCH_2_PIN		12				// Output for winch 2
+#define SVO_WINCH_1_PIN		11				// Servo output for winch 1
+#define SVO_WINCH_2_PIN		12				// Servo output for winch 2
+#define LOGIC_WINCH_1_A_PIN	45				// H-bridge pin A for winch 1
+#define LOGIC_WINCH_1_B_PIN	47				// H-bridge pin B for winch 1
+#define LOGIC_WINCH_2_A_PIN	49				// H-bridge pin A for winch 2
+#define LOGIC_WINCH_2_B_PIN	51				// H-bridge pin B for winch 2

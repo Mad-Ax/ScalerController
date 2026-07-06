@@ -19,7 +19,7 @@ LightingTranslator::~LightingTranslator()
 }
 
 // Translates the light settings based on current input
-LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia, HardwareSerial& ser)
+LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear gear, DriveMode driveMode, HardwareSerial& ser)
 {
 	// Check if we're incrementing the lights on situation
 	LatchChannel onChannel = this->config.lightsOnChannel;
@@ -35,11 +35,19 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 			break;
 
 		case LightMode::Dipped:
-			currentLightMode = LightMode::Rooflights;
+			currentLightMode = LightMode::Main;
 			break;
 
-		case LightMode::Rooflights:
-			currentLightMode = LightMode::Full;
+		case LightMode::Main:
+			currentLightMode = LightMode::RoofLow;
+			break;
+
+		case LightMode::RoofLow:
+			currentLightMode = LightMode::RoofMed;
+			break;
+
+		case LightMode::RoofMed:
+			currentLightMode = LightMode::RoofHigh;
 			break;
 		}
 	}
@@ -53,11 +61,19 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 		// We have requested to increment the light mode
 		switch (currentLightMode)
 		{
-		case LightMode::Full:
-			currentLightMode = LightMode::Rooflights;
+		case LightMode::RoofHigh:
+			currentLightMode = LightMode::RoofMed;
 			break;
 
-		case LightMode::Rooflights:
+		case LightMode::RoofMed:
+			currentLightMode = LightMode::RoofLow;
+			break;
+
+		case LightMode::RoofLow:
+			currentLightMode = LightMode::Main;
+			break;
+
+		case LightMode::Main:
 			currentLightMode = LightMode::Dipped;
 			break;
 
@@ -81,39 +97,49 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 		newSetting.roofLightIntensity = 0;
 		break;
 
-	case LightMode::Rooflights:
-		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityLow;
+	case LightMode::Main:
+		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
+		newSetting.roofLightIntensity = 0;
+		break;
+
+	case LightMode::RoofLow:
+		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityLow;
 		break;
 
-	case LightMode::Full:
+	case LightMode::RoofMed:
+		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
+		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityMed;
+		break;
+
+	case LightMode::RoofHigh:
 		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityMax;
 		break;
 	}
 	
 	// Set the brake light intensity
-	newSetting.brakeIntensity = this->translateBrakeLight(input, currentLightMode);
+	newSetting.brakeIntensity = this->translateBrakeLight(input, currentLightMode, driveMode);
 
 	// Set the reverse light intensity
-	newSetting.reverseIntensity = this->translateReverseLight(gear);
+	newSetting.reverseIntensity = this->translateReverseLight(gear, driveMode, input);
 
 	// Set the floodlight intensity
 	newSetting.floodlightIntensity = this->translateFloodlight(input);
 
 	// Set the dash light intensity
-	newSetting.dashLightSetting = this->translateDashLight(cruise, useInertia);
+	newSetting.dashLightSetting = this->translateDashLight(driveMode);
 	
 	return newSetting;
 }
 
 // Translates the brake light setting based on throttle input and current lighting mode
-int LightingTranslator::translateBrakeLight(InputSetting input, LightMode lightMode)
+int LightingTranslator::translateBrakeLight(InputSetting input, LightMode lightMode, DriveMode driveMode)
 {
 	ThrottleChannel channel = config.throttleChannel;
 	int inputVal = input.channel[channel.channel];
 
-	if (inputVal < config.throttleChannel.dbMin)
+	if (inputVal < config.throttleChannel.dbMin && driveMode != DriveMode::Crawl)
 	{
 		// We are braking - return the high intensity value for the brake light
 		return config.lightModeConfig.brakeIntensityMax;
@@ -132,8 +158,18 @@ int LightingTranslator::translateBrakeLight(InputSetting input, LightMode lightM
 }
 
 // Translates the reverse light setting based on gear setting
-int LightingTranslator::translateReverseLight(Gear gear)
+int LightingTranslator::translateReverseLight(Gear gear, DriveMode driveMode, InputSetting input)
 {
+	ThrottleChannel channel = config.throttleChannel;
+	int inputVal = input.channel[channel.channel];
+
+	if (driveMode == DriveMode::Crawl && inputVal < config.throttleChannel.dbMin)
+	{
+		// We are in crawl mode and stick is in reverse - we should show
+		// reverse light
+		return config.lightModeConfig.reverseIntensity;
+	}
+
 	switch (gear)
 	{
 	case Gear::Forward:
@@ -160,18 +196,18 @@ int LightingTranslator::translateFloodlight(InputSetting input)
 	return 0;
 }
 
-// Translates the dash light setting based on inertia, cruise, and failsafe
-DashLightSetting LightingTranslator::translateDashLight(Cruise cruise, bool useInertia)
+// Translates the dash light setting based on gear and drive mode
+DashLightSetting LightingTranslator::translateDashLight(DriveMode driveMode)
 {
-	if (cruise == Cruise::On)
+	switch (driveMode)
 	{
+	case DriveMode::Crawl:
+		return this->config.lightModeConfig.crawlDashLight;
+
+	case DriveMode::Drive:
+		return this->config.lightModeConfig.driveDashLight;
+
+	case DriveMode::Cruise:
 		return this->config.lightModeConfig.cruiseDashLight;
 	}
-
-	if (useInertia)
-	{
-		return this->config.lightModeConfig.inertiaDashLight;
-	}
-
-	return this->config.lightModeConfig.directDashLight;
 }

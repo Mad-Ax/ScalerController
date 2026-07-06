@@ -14,26 +14,22 @@ enum class Gear
 	Reverse = 1,
 };
 
-enum class Cruise
+enum class DriveMode
 {
-	Off = 0,
-	On = 1
+	Crawl = 0,
+	Drive = 1,
+	Cruise = 2
 };
 
 enum class LightMode
 {
 	Off = 0,
 	Dipped = 1,
-	Rooflights = 2,
-	Full = 3
+	Main = 2,
+	RoofLow = 3,
+	RoofMed = 4,
+	RoofHigh = 5
 };
-
-//enum class MainBeam
-//{
-//	Off,
-//	Flash,
-//	On
-//};
 
 enum class BrakeLight
 {
@@ -47,4 +43,11 @@ enum class ThreeWayPosition
 	PosA = 0,
 	PosB = 1,
 	PosC = 2
+};
+
+enum class WinchMode
+{
+	Off = 0,
+	Winch1 = 1,
+	Winch2 = 2
 };

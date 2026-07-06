@@ -19,6 +19,7 @@
 #include "motorspeedtranslator.h"
 #include "latchtranslator.h"
 #include "outputservo.h"
+#include "outputhbridge.h"
 #include "outputlights.h"
 #include "switchtranslatortwoway.h"
 #include "switchtranslatorthreeway.h"
@@ -51,7 +52,7 @@ void setup()
 		CHN_GEAR_SELECT_MAX
 	};
 
-	LatchChannel cruiseChannel = {
+	LatchChannel driveModeChannel = {
 		CHN_CRUISE_CH - 1,
 		CHN_CRUISE_SELECT_MIN,
 		CHN_CRUISE_SELECT_MAX
@@ -140,6 +141,20 @@ void setup()
 		SVO_MAX,
 	};
 
+	HbridgeConfig winch1Hbridge = {
+		LOGIC_WINCH_1_A_PIN,
+		LOGIC_WINCH_1_B_PIN,
+		SWITCH_HIGH,
+		SWITCH_LOW
+	};
+
+	HbridgeConfig winch2Hbridge = {
+		LOGIC_WINCH_2_A_PIN,
+		LOGIC_WINCH_2_B_PIN,
+		SWITCH_HIGH,
+		SWITCH_LOW
+	};
+	
 	DashLightSetting failsafeDashLight = {
 		DASHLIGHT_FAILSAFE_PWM_RED,
 		DASHLIGHT_FAILSAFE_PWM_GREEN,
@@ -152,13 +167,13 @@ void setup()
 		DASHLIGHT_CRUISE_PWM_BLUE
 	};
 
-	DashLightSetting inertiaDashLight = {
+	DashLightSetting driveDashLight = {
 		DASHLIGHT_INERTIA_PWM_RED,
 		DASHLIGHT_INERTIA_PWM_GREEN,
 		DASHLIGHT_INERTIA_PWM_BLUE
 	};
 
-	DashLightSetting directDashLight = {
+	DashLightSetting crawlDashLight = {
 		DASHLIGHT_DIRECT_PWM_RED,
 		DASHLIGHT_DIRECT_PWM_GREEN,
 		DASHLIGHT_DIRECT_PWM_BLUE
@@ -171,18 +186,19 @@ void setup()
 		HEADLIGHT_MAX_PWM,
 		HEADLIGHT_LOW_PWM,
 		ROOFLIGHT_MAX_PWM,
+		ROOFLIGHT_MED_PWM,
 		ROOFLIGHT_LOW_PWM,
 		FLOODLIGHT_PWM,
 		failsafeDashLight,
 		cruiseDashLight,
-		inertiaDashLight,
-		directDashLight
+		driveDashLight,
+		crawlDashLight
 	};
 
 	ControlConfig controlConfig = {
 		MAX_FAILSAFE_COUNT,
 		gearChannel,
-		cruiseChannel,
+		driveModeChannel,
 		throttleChannel,
 		steeringChannel,
 		winchOperationChannel,
@@ -194,6 +210,8 @@ void setup()
 		steeringServo,
 		winch1Servo,
 		winch2Servo,
+		winch1Hbridge,
+		winch2Hbridge,
 		lightModeConfig,
 		FWD_ACCEL_INERTIA,
 		FWD_DECEL_INERTIA,
@@ -211,7 +229,7 @@ void setup()
 	ISteeringTranslator* steeringTranslator = new SteeringTranslator(steeringChannel, steeringServo);
 	IMotorSpeedTranslator* motorSpeedTranslator = new MotorSpeedTranslator(throttleChannel, throttleServo);
 	ILatchTranslator* gearTranslator = new LatchTranslator();
-	ILatchTranslator* cruiseTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
+	ILatchTranslator* driveModeTranslator = new LatchTranslator(); // TODO: M: does it make sense for these to take channel as a parm?
 	ISwitchTranslatorThreeWay* winchSelectTranslator = new SwitchTranslatorThreeWay(winchSelectChannel);
 
 	IInertia* forwardAccel = new Inertia(controlConfig.fwdAccelInertia, controlConfig.throttleServo.center, controlConfig.throttleServo.max);
@@ -228,7 +246,7 @@ void setup()
 		steeringTranslator,
 		motorSpeedTranslator,
 		gearTranslator,
-		cruiseTranslator,
+		driveModeTranslator,
 		forwardAccel,
 		forwardDecel,
 		forwardBrake,
@@ -260,11 +278,21 @@ void setup()
 	IOutputServo* outputEsc = new OutputServo(throttleServo);
 	IOutputServo* outputSteering = new OutputServo(steeringServo);
 	IOutputServo* outputAux1 = new OutputServo(aux1Servo);
-	IOutputServo* outputWinch1 = new OutputServo(winch1Servo);
-	IOutputServo* outputWinch2 = new OutputServo(winch2Servo);
+	IOutputServo* outputWinch1Servo = new OutputServo(winch1Servo);
+	IOutputServo* outputWinch2Servo = new OutputServo(winch2Servo);
+	IOutputHbridge* outputWinch1Hbridge = new OutputHbridge(winch1Hbridge);
+	IOutputHbridge* outputWinch2Hbridge = new OutputHbridge(winch2Hbridge);
 	IOutputLights* outputLights = new OutputLights(lightModeConfig, lightOutputConfig);
 
-	output = new Output(outputEsc, outputSteering, outputAux1, outputWinch1, outputWinch2, outputLights);
+	output = new Output(
+		outputEsc,
+		outputSteering,
+		outputAux1,
+		outputWinch1Servo,
+		outputWinch2Servo,
+		outputWinch1Hbridge,
+		outputWinch2Hbridge,
+		outputLights);
 
 	// Open the serial (for debugging)
 	Serial.begin(57600);

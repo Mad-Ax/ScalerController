@@ -15,25 +15,19 @@ public:
 	virtual Gear translateGear(InputSetting input, Gear currentGear) = 0;
 
 	/// <summary>
-	/// Translates the channel input value to the requested cruise value
-	/// /// dependent on current cruise value, and selected gear
+	/// Translates the channel input value to the requested drive mode
 	/// </summary>
 	/// <param name="input">Input values decoded from the transmitter</param>
-	/// <param name="currentCruise">Current cruise setting</param>
 	/// <param name="currentGear">Currently selected gear</param>
+	/// <param name="currentDriveMode">Current drive mode setting</param>
 	/// <returns>A Cruise enum representing the current cruise mode</returns>
-	virtual Cruise translateCruise(InputSetting input, Cruise currentCruise, Gear currentGear) = 0;
+	virtual DriveMode translateDriveMode(InputSetting input, Gear currentGear, DriveMode currentDriveMode) = 0;
 
 	/// <summary>
-	/// Translates the channel input value to the requested use inertia value
-	/// dependent on current use inertia value, and selected gear
+	/// Translates the motor speed in crawl mode
 	/// </summary>
-	/// <param name="input">Input values decoded from the transmitter</param>
-	/// <param name="currentUseInertia">Current use inertia setting</param>
-	/// <param name="currentGear">Currently selected gear</param>
-	/// <param name="currentCruise">Currently selected cruise</param>
-	/// <returns>A bool value specifying if we should use inertia or not</returns>
-	virtual bool translateInertia(InputSetting input, bool currentUseInertia, Gear currentGear, Cruise currentCruise) = 0;
+	/// <param name="input"Input values decoded from the transmitter></param>
+	virtual int translateCrawlSpeed(InputSetting input) = 0;
 
 	/// <summary>
 	/// Translates the motor speed in drive mode 
@@ -41,10 +35,9 @@ public:
 	/// <param name="input">Input values decoded from the transmitter</param>
 	/// <param name="gear">Current gear</param>
 	/// <param name="currentMotorSpeed">Current motor speed</param>
-	/// <param name="useInertia">Specifies if inertia should be used to translate steering</param>
 	/// <param name="ser">Serial (for debugging - remove in production)</param>
 	/// <returns>An integer value to be sent to the ESC</returns>
-	virtual int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, bool useInertia, HardwareSerial& ser) = 0;
+	virtual int translateMotorSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) = 0;
 
 	/// <summary>
 	/// Translates the motor speed in cruise mode
@@ -56,15 +49,23 @@ public:
 	/// <returns>An integer value to be sent to the ESC</returns>
 	virtual int translateCruiseSpeed(InputSetting input, Gear gear, int currentMotorSpeed, HardwareSerial& ser) = 0;
 
+	// Translates the steeering angle in crawl mode
+
 	/// <summary>
-	/// Translates the steering angle
+	/// Translates the steeering angle in crawl mode
+	/// </summary>
+	/// <param name="input">Input values decoded from the transmitter</param>
+	/// <returns>An integer value to be sent to the steering servo</returns>
+	virtual int translateCrawlSteering(InputSetting input) = 0;
+
+	/// <summary>
+	/// Translates the steering angle in drive and cruise mode
 	/// </summary>
 	/// <param name="input">Input values decoded from the transmitter</param>
 	/// <param name="currentSteering">Current steering value</param>
-	/// <param name="useInertia">Specifies if inertia should be used to translate steering</param>
 	/// <param name="ser">Serial (for debugging - remove in production)</param>
 	/// <returns>An integer value to be sent to the steering servo</returns>
-	virtual int translateSteering(InputSetting input, int currentSteering, bool useInertia, HardwareSerial& ser) = 0;
+	virtual int translateDriveSteering(InputSetting input, int currentSteering, HardwareSerial& ser) = 0;
 
 	// Translates the winch operation settings
 	virtual WinchSetting translateWinch(InputSetting input) const = 0;

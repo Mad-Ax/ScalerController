@@ -12,9 +12,15 @@ D7		HEADLIGHT					BROWN			R  R-B  C  E
 8		ESC							BLUE			S     G
 9~		STEERING					PURPLE			S  +  G
 10~		AUX 1 (gear select?)		WHITE			S  +  G
-11~		WINCH 1						GREEN			S  +  G
-12		WINCH 2						YELLOW			S  +  G
+11~		WINCH 1	(servo)				GREEN			S  +  G
+12		WINCH 2	(servo)				YELLOW			S  +  G
 13		MODE (master, to ground)	ORANGE			SW SW G
+
+D45		WINCH 1 A (H-bridge)		tbc				N1
+D47		WINCH 1 B (H-bridge)		tbc				N2
+D49		WINCH 1 A (H-bridge)		tbc				N3
+D51		WINCH 1 B (H-bridge)		tbc				N4
+
 
 
 Input / control pins

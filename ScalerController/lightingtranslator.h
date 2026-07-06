@@ -19,10 +19,9 @@ public:
 	/// </summary>
 	/// <param name="input">Raw channel input data from the receiver</param>
 	/// <param name="gear">Current gear</param>
-	/// <param name="cruise">Current cruise setting</param>
-	/// <param name="useInertia">Current inertia setting</param>
-	/// <returns></returns>
-	LightSetting translateLightSetting(InputSetting input, Gear gear, Cruise cruise, bool useInertia, HardwareSerial& ser);
+	/// <param name="driveMode">Current drive mode</param>
+	/// <returns>The light setting</returns>
+	LightSetting translateLightSetting(InputSetting input, Gear gear, DriveMode driveMode, HardwareSerial& ser);
 
 private:
 	ControlConfig config;
@@ -32,14 +31,14 @@ private:
 	LightMode currentLightMode;
 
 	// Translates the brake light setting based on throttle input and current lighting mode
-	int translateBrakeLight(InputSetting input, LightMode lightMode);
+	int translateBrakeLight(InputSetting input, LightMode lightMode, DriveMode driveMode);
 
 	// Translates the reverse light setting based on gear setting
-	int translateReverseLight(Gear gear);
+	int translateReverseLight(Gear gear, DriveMode driveMode, InputSetting input);
 
 	// Translates the floodlight setting based on switch setting
 	int translateFloodlight(InputSetting input);
 
-	// Translates the dash light setting based on gear, cruise, and failsafe
-	DashLightSetting translateDashLight(Cruise cruise, bool useInertia);
+	// Translates the dash light setting based on gear and drive mode
+	DashLightSetting translateDashLight(DriveMode driveMode);
 };

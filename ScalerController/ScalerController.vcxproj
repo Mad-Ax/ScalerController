@@ -83,6 +83,7 @@
     <ClCompile Include="lightingtranslator.cpp" />
     <ClCompile Include="motorspeedtranslator.cpp" />
     <ClCompile Include="output.cpp" />
+    <ClCompile Include="outputhbridge.cpp" />
     <ClCompile Include="outputLights.cpp" />
     <ClCompile Include="outputServo.cpp" />
     <ClCompile Include="ppmWrapper.cpp" />
@@ -103,6 +104,7 @@
     <ClInclude Include="iinertia.h" />
     <ClInclude Include="iinputtranslator.h" />
     <ClInclude Include="ilatchtranslator.h" />
+    <ClInclude Include="ioutputhbridge.h" />
     <ClInclude Include="isteeringtranslator.h" />
     <ClInclude Include="iswitchtranslatorthreeway.h" />
     <ClInclude Include="iswitchtranslatortwoway.h" />
@@ -118,6 +120,7 @@
     <ClInclude Include="lightingtranslator.h" />
     <ClInclude Include="motorspeedtranslator.h" />
     <ClInclude Include="output.h" />
+    <ClInclude Include="outputhbridge.h" />
     <ClInclude Include="outputLights.h" />
     <ClInclude Include="outputServo.h" />
     <ClInclude Include="ppmWrapper.h" />
@@ -131,9 +134,9 @@
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>C:\\Users\\alexs\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\cores\\arduino;C:\\Users\\alexs\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\variants\\mega;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include-fixed;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\avr\include</IncludePath>
-    <RemoteCCompileToolExe>C:\\Users\\alexs\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\avr-gcc\\7.3.0-atmel3.6.1-arduino7\bin\avr-g++</RemoteCCompileToolExe>
-    <RemoteCppCompileToolExe>C:\\Users\\alexs\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\avr-gcc\\7.3.0-atmel3.6.1-arduino7\bin\avr-g++</RemoteCppCompileToolExe>
+    <IncludePath>$(ProjectDir)..\ScalerController;C:\Users\alexs\Documents\Arduino\libraries\PPM-reader\src;C:\Users\alexs\Documents\Arduino\libraries\Servo\src;C:\Users\alexs\AppData\Local\arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino;C:\Users\alexs\AppData\Local\arduino15\packages\arduino\hardware\avr\1.8.6\variants\mega;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include-fixed;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\avr\include</IncludePath>
+    <RemoteCCompileToolExe>C:\Users\alexs\AppData\Local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\bin\avr-g++</RemoteCCompileToolExe>
+    <RemoteCppCompileToolExe>C:\Users\alexs\AppData\Local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\bin\avr-g++</RemoteCppCompileToolExe>
     <ValidateArchitecture>false</ValidateArchitecture>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -152,13 +155,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\\Users\\alexs\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\cores\\arduino;C:\\Users\\alexs\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.6\\variants\\mega;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include-fixed;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\avr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <GccToolChain>C:\\Users\\alexs\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\avr-gcc\\7.3.0-atmel3.6.1-arduino7\bin\avr-g++</GccToolChain>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\ScalerController;C:\Users\alexs\Documents\Arduino\libraries\PPM-reader\src;C:\Users\alexs\Documents\Arduino\libraries\Servo\src;C:\Users\alexs\AppData\Local\arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino;C:\Users\alexs\AppData\Local\arduino15\packages\arduino\hardware\avr\1.8.6\variants\mega;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\lib\gcc\avr\7.3.0\include-fixed;c:\users\alexs\appdata\local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\avr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <GccToolChain>C:\Users\alexs\AppData\Local\arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\bin\avr-g++</GccToolChain>
       <CppLanguageStandard>gnu++11</CppLanguageStandard>
       <CLanguageStandard>gnu11</CLanguageStandard>
       <CAdditionalWarning />
       <CppAdditionalWarning />
-      <ForcedIncludeFiles>c:\program files\microsoft visual studio\2022\professional\common7\ide\extensions\osqpjdds.xje\Micro Platforms\default\vm-intelli-pre.h;C:\Users\alexs\AppData\Local\Temp\VMBuilds\ScalerController\mega_atmega2560\Debug\.vmintelli\a83926a6f9b9ee31788fbd4aa74c2904\vm-intelli-gcc-defines.h;c:\program files\microsoft visual studio\2022\professional\common7\ide\extensions\osqpjdds.xje\Micro Platforms\default\vm-intelli-post.h;$(ProjectDir)__vm\.ScalerController.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>c:\program files\microsoft visual studio\18\community\common7\ide\extensions\hti01q5k.0wk\Micro Platforms\default\vm-intelli-pre.h;C:\Users\alexs\AppData\Local\Temp\VMBuilds\ScalerController\mega_atmega2560\Debug\.vmintelli\62a1401bd3ee4ba6aee138b889e6a3f3\vm-intelli-gcc-defines.h;c:\program files\microsoft visual studio\18\community\common7\ide\extensions\hti01q5k.0wk\Micro Platforms\default\vm-intelli-post.h;$(ProjectDir)__vm\.ScalerController.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <UndefineAllPreprocessorDefinitions>true</UndefineAllPreprocessorDefinitions>
       <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
       <PreprocessorDefinitions>_VMICRO_INTELLISENSE;__AVR_atmega2560__;__AVR_ATmega2560__;_VMDEBUG=1;F_CPU=16000000L;ARDUINO=108010;ARDUINO_AVR_MEGA2560;ARDUINO_ARCH_AVR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -169,7 +172,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties arduino.upload.port="COM6" config.Debug.customdebug_mega_atmega2560_debugger_type="universal" />
+      <UserProperties arduino.upload.port="COM5" config.Debug.customdebug_mega_atmega2560_debugger_type="universal" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
