@@ -41,6 +41,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
 		setting.lightSetting.roofLightIntensity = 0;
+		setting.lightSetting.sidelightIntensity = 0;
 		setting.lightSetting.brakeIntensity = 0;
 
 		// Set the failsafe on the dash LED
@@ -66,6 +67,7 @@ void Control::translate(InputSetting input, HardwareSerial &ser)
 		setting.lightSetting.reverseIntensity = 0;
 		setting.lightSetting.headLightIntensity = 0;
 		setting.lightSetting.roofLightIntensity = 0;
+		setting.lightSetting.sidelightIntensity = 0;
 		setting.lightSetting.dashLightSetting.redIntensity = 0;
 		setting.lightSetting.dashLightSetting.greenIntensity = 0;
 		setting.lightSetting.dashLightSetting.blueIntensity = 0;

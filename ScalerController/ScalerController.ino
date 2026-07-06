@@ -189,6 +189,7 @@ void setup()
 		ROOFLIGHT_MED_PWM,
 		ROOFLIGHT_LOW_PWM,
 		FLOODLIGHT_PWM,
+		SIDELIGHT_PWM,
 		failsafeDashLight,
 		cruiseDashLight,
 		driveDashLight,
@@ -270,6 +271,7 @@ void setup()
 		REVERSE_OUT_PIN,
 		ROOFLIGHT_OUT_PIN,
 		FLOODLIGHT_OUT_PIN,
+		SIDELIGHT_OUT_PIN,
 		DASHLIGHT_R_PIN,
 		DASHLIGHT_G_PIN,
 		DASHLIGHT_B_PIN

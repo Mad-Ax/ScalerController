@@ -132,6 +132,7 @@
 #define REVERSE_OUT_PIN 53					// reverse lights (digital)
 #define ROOFLIGHT_OUT_PIN 6					// roof lights (PWM)
 #define FLOODLIGHT_OUT_PIN 52				// floodlight (digital)
+#define SIDELIGHT_OUT_PIN 54				// sidelights (digital)
 #define DASHLIGHT_R_PIN 2					// red channel for dash light (PWM)
 #define DASHLIGHT_G_PIN 3					// green channel for dash light (PWM)
 #define DASHLIGHT_B_PIN 4					// blue channel for dash light (PWM)
@@ -147,6 +148,7 @@
 #define ROOFLIGHT_MED_PWM 100				// Medium rooflight
 #define ROOFLIGHT_LOW_PWM 40				// Low rooflight
 #define FLOODLIGHT_PWM 255					// Floodlight on
+#define SIDELIGHT_PWM 255					// Sidelights on
 
 // Dash lights
 #define DASHLIGHT_FAILSAFE_PWM_RED 255		// Failsafe PWM value for red channel

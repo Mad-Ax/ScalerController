@@ -11,6 +11,7 @@ OutputLights::OutputLights(LightModeConfig modeConfig, LightOutputConfig outputC
   pinMode(outputConfig.headLightPin, OUTPUT);
   pinMode(outputConfig.roofLightPin, OUTPUT);
   pinMode(outputConfig.floodlightPin, OUTPUT);
+  pinMode(outputConfig.sidelightPin, OUTPUT);
   pinMode(outputConfig.dashLightPinR, OUTPUT);
   pinMode(outputConfig.dashLightPinG, OUTPUT);
   pinMode(outputConfig.dashLightPinB, OUTPUT);
@@ -23,6 +24,7 @@ void OutputLights::send(LightSetting setting)
 	analogWrite(this->outputConfig.headLightPin, setting.headLightIntensity);
 	analogWrite(this->outputConfig.roofLightPin, setting.roofLightIntensity);
 	analogWrite(this->outputConfig.floodlightPin, setting.floodlightIntensity);
+	analogWrite(this->outputConfig.sidelightPin, setting.sidelightIntensity);
 	analogWrite(this->outputConfig.dashLightPinR, setting.dashLightSetting.redIntensity);
 	analogWrite(this->outputConfig.dashLightPinG, setting.dashLightSetting.greenIntensity);
 	analogWrite(this->outputConfig.dashLightPinB, setting.dashLightSetting.blueIntensity);

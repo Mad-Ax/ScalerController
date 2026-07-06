@@ -88,31 +88,37 @@ LightSetting LightingTranslator::translateLightSetting(InputSetting input, Gear 
 	switch (currentLightMode)
 	{
 	case LightMode::Off:
+		newSetting.sidelightIntensity = 0;
 		newSetting.headLightIntensity = 0;
 		newSetting.roofLightIntensity = 0;
 		break;
 
 	case LightMode::Dipped:
+		newSetting.sidelightIntensity = this->config.lightModeConfig.sidelightIntensity;
 		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityLow;
 		newSetting.roofLightIntensity = 0;
 		break;
 
 	case LightMode::Main:
+		newSetting.sidelightIntensity = this->config.lightModeConfig.sidelightIntensity;
 		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = 0;
 		break;
 
 	case LightMode::RoofLow:
+		newSetting.sidelightIntensity = this->config.lightModeConfig.sidelightIntensity;
 		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityLow;
 		break;
 
 	case LightMode::RoofMed:
+		newSetting.sidelightIntensity = this->config.lightModeConfig.sidelightIntensity;
 		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityMed;
 		break;
 
 	case LightMode::RoofHigh:
+		newSetting.sidelightIntensity = this->config.lightModeConfig.sidelightIntensity;
 		newSetting.headLightIntensity = this->config.lightModeConfig.headlightIntensityMax;
 		newSetting.roofLightIntensity = this->config.lightModeConfig.rooflightIntensityMax;
 		break;

@@ -8,6 +8,7 @@ D53		REVERSE LIGHT				WHITE			R  R-B  C  E
 D6		ROOF LIGHT					ORANGE			R  R-B  C  E
 D52		FLOODLIGHT					YELLOW			R  R-B  C  E
 D7		HEADLIGHT					BROWN			R  R-B  C  E
+D54		SIDELIGHTS					tbc				R  R-B  C  E	
 
 8		ESC							BLUE			S     G
 9~		STEERING					PURPLE			S  +  G

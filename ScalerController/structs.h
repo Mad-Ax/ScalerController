@@ -141,6 +141,7 @@ struct LightModeConfig {
 	int rooflightIntensityMed;
 	int rooflightIntensityLow;
 	int floodlightIntensity;
+	int sidelightIntensity;
 	DashLightSetting failsafeDashLight;
 	DashLightSetting cruiseDashLight;
 	DashLightSetting driveDashLight;
@@ -186,6 +187,7 @@ struct LightOutputConfig {
 	int reversePin;
 	int roofLightPin;
 	int floodlightPin;
+	int sidelightPin;
 	int dashLightPinR;
 	int dashLightPinG;
 	int dashLightPinB;
@@ -219,6 +221,7 @@ struct LightSetting {
 	int headLightIntensity;
 	int roofLightIntensity;
 	int floodlightIntensity;
+	int sidelightIntensity;
 	DashLightSetting dashLightSetting;
 
 	bool operator==(const LightSetting& rhs)
@@ -229,6 +232,7 @@ struct LightSetting {
 			headLightIntensity == rhs.headLightIntensity &&
 			roofLightIntensity == rhs.roofLightIntensity &&
 			floodlightIntensity == rhs.floodlightIntensity &&
+			sidelightIntensity == rhs.sidelightIntensity &&
 			dashLightSetting == rhs.dashLightSetting;
 	}
 };
